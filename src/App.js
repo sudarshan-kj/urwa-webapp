@@ -1,20 +1,22 @@
-// import logo from "./tree.png";
-import "./App.css";
-import Header from "components/Header";
-import LandingPage from "components/LandingPage";
+import LoginPage from "components/LoginPage";
+import NotFound from "components/NotFound";
+import Home from "components/Home";
+import { Route, Switch } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <LandingPage />
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p className="message">
-          This website is currently under development, please come back a little
-          while later
-        </p>
-        <p className="copyright">&copy; URWA 2020</p>
-      </header> */}
+      <Switch>
+        <Route exact path={["/", "/home"]}>
+          <Home />
+        </Route>
+        <Route path="/login">
+          <LoginPage />
+        </Route>
+        <Route>
+          <NotFound />
+        </Route>
+      </Switch>
     </div>
   );
 }

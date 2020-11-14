@@ -13,7 +13,7 @@ import React from "react";
 import { FormControl, FormLabel } from "@chakra-ui/react";
 import Logo from "assets/logo.png";
 
-const LandingPage = () => {
+const LoginPage = () => {
   const [show, setShow] = React.useState(false);
   const handleShowClick = () => setShow(!show);
   return (
@@ -37,12 +37,12 @@ const LandingPage = () => {
                 />
               </Center>
               <Center>
-                <Heading as="p" size="md">
+                <Heading textAlign="center" as="p" size="md">
                   Upkar Residency Welfare Association
                 </Heading>
               </Center>
             </Box>
-            <Text fontSize="xs" p={8}>
+            <Text textAlign="center" fontSize="xs" p={8}>
               &copy; URWA 2020
             </Text>
           </Box>
@@ -78,13 +78,14 @@ const LandingPage = () => {
                     h="1.75rem"
                     size="xs"
                     onClick={handleShowClick}
+                    _focus={{}}
                   >
                     {show ? "Hide" : "Show"}
                   </Button>
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <Button type="submit" w={"100%"} colorScheme="teal">
+            <Button type="submit" w={"100%"} colorScheme="teal" _focus={{}}>
               Login
             </Button>
           </Box>
@@ -94,4 +95,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default LoginPage;
