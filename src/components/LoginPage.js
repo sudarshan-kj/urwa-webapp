@@ -11,11 +11,40 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FormControl, FormLabel } from "@chakra-ui/react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Logo from "assets/logo.png";
+
+const yupValidationObject = Yup.object({
+  name: Yup.string()
+    .max(30, "Ah! That's too long! Try a bit shorter")
+    .required("Please fill your name"),
+  email: Yup.string()
+    .max(50, "That email is way too long.")
+    .email("That doesn't look like an email address")
+    .required("Please fill your email"),
+  message: Yup.string()
+    .max(300, "You have exceeded your message limit")
+    .required("Atleast a short message is required"),
+});
 
 const LoginPage = () => {
   const [show, setShow] = React.useState(false);
   const handleShowClick = () => setShow(!show);
+
+  const postData = (values) => {};
+
+  const formik = useFormik({
+    initialValues: {
+      userid: "",
+      password: "",
+    },
+    validationSchema: yupValidationObject,
+    onSubmit: (values, { resetForm }) => {
+      postData(values);
+      resetForm({ values: "" });
+    },
+  });
   return (
     <>
       <Box display={{ md: "flex" }}>
