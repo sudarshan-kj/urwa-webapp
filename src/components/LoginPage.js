@@ -8,8 +8,10 @@ import {
   Button,
   InputRightElement,
   InputGroup,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
+import { SlideFade } from "@chakra-ui/transition";
 import { FormControl, FormLabel } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -32,6 +34,7 @@ const LoginPage = () => {
   const [show, setShow] = React.useState(false);
   const handleShowClick = () => setShow(!show);
 
+  const { isOpen, onToggle } = useDisclosure();
   const postData = (values) => {};
 
   const formik = useFormik({
@@ -83,40 +86,46 @@ const LoginPage = () => {
           p={4}
           color="black"
         >
-          <Box w={{ base: "90%", md: "40%" }}>
-            <FormControl id="username" my={8}>
-              <FormLabel>User ID</FormLabel>
-              <Input
-                focusBorderColor="teal.400"
-                size="lg"
-                type="text"
-                bg="gray.100"
-              />
-            </FormControl>
-            <FormControl id="password" my={8}>
-              <FormLabel>Password</FormLabel>
-              <InputGroup size="lg">
+          <Box transition="transform 0.5s" w={{ base: "90%", md: "40%" }}>
+            <SlideFade in={true} offsetX="60px">
+              <FormControl id="username" my={8}>
+                <FormLabel>User ID</FormLabel>
                 <Input
                   focusBorderColor="teal.400"
+                  size="lg"
+                  type="text"
                   bg="gray.100"
-                  type={show ? "text" : "password"}
                 />
-                <InputRightElement width="4.5rem">
-                  <Button
-                    color="teal.500"
-                    h="1.75rem"
-                    size="xs"
-                    onClick={handleShowClick}
-                    _focus={{}}
-                  >
-                    {show ? "Hide" : "Show"}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-            <Button type="submit" w={"100%"} colorScheme="teal" _focus={{}}>
-              Login
-            </Button>
+              </FormControl>
+            </SlideFade>
+            <SlideFade in={true} offsetX="60px">
+              <FormControl id="password" my={8}>
+                <FormLabel>Password</FormLabel>
+                <InputGroup size="lg">
+                  <Input
+                    focusBorderColor="teal.400"
+                    bg="gray.100"
+                    type={show ? "text" : "password"}
+                  />
+                  <InputRightElement width="4.5rem">
+                    <Button
+                      color="teal.500"
+                      h="1.75rem"
+                      size="xs"
+                      onClick={handleShowClick}
+                      _focus={{}}
+                    >
+                      {show ? "Hide" : "Show"}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+            </SlideFade>
+            <SlideFade in={true} offsetX="60px">
+              <Button type="submit" w={"100%"} colorScheme="teal" _focus={{}}>
+                Login
+              </Button>
+            </SlideFade>
           </Box>
         </Center>
       </Box>
