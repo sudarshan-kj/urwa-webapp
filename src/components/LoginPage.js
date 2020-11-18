@@ -8,7 +8,6 @@ import {
   Button,
   InputRightElement,
   InputGroup,
-  useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
 import { SlideFade } from "@chakra-ui/transition";
@@ -17,12 +16,16 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Logo from "assets/logo.png";
 
+const MAX_USERID_LENGTH = 50;
+const MAX_PASSWORD_LENGTH = 20;
+
 const yupValidationObject = Yup.object({
   userId: Yup.string()
     .max(50, "User id too long")
-    .email("That doesn't look like an email address")
+    .email("Invalid user id")
     .required("Enter your user ID"),
   password: Yup.string()
+    .min(6, "Invalid password")
     .max(20, "Password is too long")
     .required("Please enter your password"),
 });
@@ -30,8 +33,6 @@ const yupValidationObject = Yup.object({
 const LoginPage = () => {
   const [show, setShow] = React.useState(false);
   const handleShowClick = () => setShow(!show);
-
-  const { isOpen, onToggle } = useDisclosure();
   const postData = (values) => {};
 
   const formik = useFormik({
@@ -40,9 +41,12 @@ const LoginPage = () => {
       password: "",
     },
     validationSchema: yupValidationObject,
-    onSubmit: (values, { resetForm }) => {
-      postData(values);
-      resetForm({ values: "" });
+    onSubmit: (values, { resetForm, setSubmitting }) => {
+      setTimeout(() => {
+        postData(values);
+        setSubmitting(false);
+        resetForm({ values: "" });
+      }, 3000);
     },
   });
   return (
@@ -84,7 +88,7 @@ const LoginPage = () => {
           color="black"
         >
           <Box transition="transform 0.5s" w={{ base: "90%", md: "40%" }}>
-            <form>
+            <form onSubmit={formik.handleSubmit}>
               <SlideFade in={true} offsetX="60px">
                 <FormControl
                   id="userId"
@@ -98,7 +102,7 @@ const LoginPage = () => {
                     type="text"
                     bg="gray.100"
                     onChange={(e) => {
-                      if (e.target.value.length <= 30 + 1)
+                      if (e.target.value.length <= MAX_USERID_LENGTH + 1)
                         formik.handleChange(e);
                     }}
                     onBlur={formik.handleBlur}
@@ -121,7 +125,7 @@ const LoginPage = () => {
                       bg="gray.100"
                       type={show ? "text" : "password"}
                       onChange={(e) => {
-                        if (e.target.value.length <= 30 + 1)
+                        if (e.target.value.length <= MAX_PASSWORD_LENGTH + 1)
                           formik.handleChange(e);
                       }}
                       onBlur={formik.handleBlur}
@@ -143,7 +147,13 @@ const LoginPage = () => {
                 </FormControl>
               </SlideFade>
               <SlideFade in={true} offsetX="60px">
-                <Button type="submit" w={"100%"} colorScheme="teal" _focus={{}}>
+                <Button
+                  isLoading={formik.isSubmitting}
+                  type="submit"
+                  w={"100%"}
+                  colorScheme="teal"
+                  _focus={{}}
+                >
                   Login
                 </Button>
               </SlideFade>
