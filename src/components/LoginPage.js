@@ -21,13 +21,13 @@ const MAX_PASSWORD_LENGTH = 20;
 
 const yupValidationObject = Yup.object({
   userId: Yup.string()
-    .max(50, "User id too long")
-    .email("Invalid user id")
+    .max(50, "Invalid user ID")
+    .email("Invalid user ID")
     .required("Enter your user ID"),
   password: Yup.string()
     .min(6, "Invalid password")
-    .max(20, "Password is too long")
-    .required("Please enter your password"),
+    .max(20, "Invalid password")
+    .required("Enter your password"),
 });
 
 const LoginPage = () => {
