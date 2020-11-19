@@ -17,16 +17,16 @@ import * as Yup from "yup";
 import Logo from "assets/logo.png";
 
 const MAX_USERID_LENGTH = 50;
-const MAX_PASSWORD_LENGTH = 20;
+const MAX_PASSWORD_LENGTH = 30;
 
 const yupValidationObject = Yup.object({
   userId: Yup.string()
-    .max(50, "Invalid user ID")
+    .max(MAX_USERID_LENGTH, "Invalid user ID")
     .email("Invalid user ID")
     .required("Enter your user ID"),
   password: Yup.string()
     .min(6, "Invalid password")
-    .max(20, "Invalid password")
+    .max(MAX_PASSWORD_LENGTH, "Invalid password")
     .required("Enter your password"),
 });
 
