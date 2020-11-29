@@ -15,6 +15,8 @@ import { FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Logo from "assets/logo.png";
+import axios from "axios";
+import config from "../config";
 
 const MAX_USERID_LENGTH = 50;
 const MAX_PASSWORD_LENGTH = 30;
@@ -33,7 +35,13 @@ const yupValidationObject = Yup.object({
 const LoginPage = () => {
   const [show, setShow] = React.useState(false);
   const handleShowClick = () => setShow(!show);
-  const postData = (values) => {};
+  const postData = (values) => {
+    axios.post(config.API_ENDPOINT, values).then((response) => {
+      if (response.status === 200) {
+        return response.data;
+      }
+    });
+  };
 
   const formik = useFormik({
     initialValues: {
