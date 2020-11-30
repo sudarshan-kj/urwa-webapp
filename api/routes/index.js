@@ -1,3 +1,3 @@
-const UsersRoutes = require("./members");
+const MembersRoutes = require("./members");
 
-module.exports = { UsersRoutes };
+module.exports = { MembersRoutes };
