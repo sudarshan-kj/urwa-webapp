@@ -1,4 +1,4 @@
-const mongoose = require("../../common/services/mongoose.service").mongoose;
+const mongoose = require("../services/mongoose.service").mongoose;
 const MemberDetailsModel = require("./memberDetails.model");
 
 let { Schema } = mongoose;
