@@ -17,16 +17,18 @@ const opts = {
 
 let memberSchema = new Schema(
   {
-    siteNumber: { type: Number, unique: true, required: true },
+    siteNumber: { type: Number, index: { unique: true }, required: true },
     firstName: { type: String, unique: false, required: true },
     lastName: { type: String, unique: false, required: true },
-    email: { type: String, unique: true, required: true },
+    email: { type: String, index: { unique: true }, required: true },
     password: { type: String, unique: false, required: true },
     permissionLevel: { type: Number, unique: false, required: true },
     revokeAccess: { type: Boolean, unique: false, required: true },
   },
   opts
 );
+
+//refer : https://stackoverflow.com/questions/5794834/how-to-access-a-preexisting-collection-with-mongoose, if you want to control the collection name
 
 let Member = mongoose.model("Member", memberSchema);
 
@@ -49,4 +51,8 @@ exports.delete = (memberId) => {
         .catch((err) => reject(err));
     });
   });
+};
+
+exports.findByEmailOrSiteNumber = (value) => {
+  return Member.findOne({ $or: [{ email: value }, { siteNumber: value }] });
 };

@@ -2,8 +2,7 @@ module.exports = {
   local: {
     MONGO_DB_USERNAME: "admin",
     MONGO_DB_PASSWORD: "admin",
-    MONGO_DB_URL:
-      "mongodb://127.0.0.1:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false",
+    MONGO_DB_URL: "mongodb://localhost/urwa",
   },
   production: {
     MONGO_DB_USERNAME: process.env.MONGO_DB_USERNAME,
