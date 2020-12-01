@@ -54,5 +54,5 @@ exports.delete = (memberId) => {
 };
 
 exports.findByEmailOrSiteNumber = (value) => {
-  return Member.findOne({ $or: [{ email: value }, { siteNumber: value }] });
+  return Member.findOne({ email: value });
 };

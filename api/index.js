@@ -5,11 +5,12 @@ const app = express();
 const log4j = require("log4js");
 const logger = log4j.getLogger();
 logger.level = "debug";
-const { MembersRoutes } = require("./routes");
+const { AuthRoutes, MembersRoutes } = require("./routes");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 const apiRouter = express.Router();
 app.use("/api", apiRouter);
+apiRouter.use("/auth", AuthRoutes);
 apiRouter.use("/members", MembersRoutes);
 app.listen(port, () => logger.info(`Listening on port ${port}`));
