@@ -13,7 +13,7 @@ const opts = {
 
 let memberDetailsSchema = new Schema(
   {
-    member: { type: Schema.Types.ObjectId, ref: "Member" },
+    memberId: { type: Schema.Types.ObjectId, ref: "Member" },
     mobile: Number,
     altContact: Number,
     anniversary: String,
@@ -34,4 +34,15 @@ let MemberDetails = mongoose.model("MemberDetails", memberDetailsSchema);
 exports.insert = (memberDetailsData) => {
   const memberDetails = new MemberDetails(memberDetailsData);
   return memberDetails.save();
+};
+
+exports.delete = (id) => {
+  return new Promise((resolve, reject) => {
+    MemberDetails.deleteMany({
+      memberId: id,
+    }).exec((err, deletedDetails) => {
+      if (err) reject(err);
+      else resolve(deletedDetails);
+    });
+  });
 };
