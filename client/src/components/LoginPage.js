@@ -17,13 +17,14 @@ import * as Yup from "yup";
 import Logo from "assets/logo.png";
 import axios from "axios";
 import config from "../config";
+import { useHistory } from "react-router-dom";
 
-const MAX_USERID_LENGTH = 50;
+const MAX_USERNAME_LENGTH = 50;
 const MAX_PASSWORD_LENGTH = 30;
 
 const yupValidationObject = Yup.object({
-  userId: Yup.string()
-    .max(MAX_USERID_LENGTH, "Invalid user ID")
+  userName: Yup.string()
+    .max(MAX_USERNAME_LENGTH, "Invalid user ID")
     .email("Invalid user ID")
     .required("Enter your user ID"),
   password: Yup.string()
@@ -34,18 +35,26 @@ const yupValidationObject = Yup.object({
 
 const LoginPage = () => {
   const [show, setShow] = React.useState(false);
+  const [isFormError, setIsFormError] = React.useState(false);
   const handleShowClick = () => setShow(!show);
+  const history = useHistory();
   const postData = (values) => {
-    axios.post(config.API_ENDPOINT, values).then((response) => {
-      if (response.status === 200) {
-        return response.data;
-      }
-    });
+    axios
+      .post(`${config.API_ENDPOINT}/api/auth/login`, values)
+      .then((response) => {
+        if (response.status === 201) {
+          localStorage.setItem("token", response.data.accessToken);
+          history.push("/admin/addMember");
+        } else {
+          console.log("I was here");
+        }
+      })
+      .catch((err) => setIsFormError(true));
   };
 
   const formik = useFormik({
     initialValues: {
-      userId: "",
+      userName: "",
       password: "",
     },
     validationSchema: yupValidationObject,
@@ -54,7 +63,7 @@ const LoginPage = () => {
         postData(values);
         setSubmitting(false);
         resetForm({ values: "" });
-      }, 3000);
+      }, 500);
     },
   });
   return (
@@ -99,9 +108,9 @@ const LoginPage = () => {
             <form onSubmit={formik.handleSubmit}>
               <SlideFade in={true} offsetX="60px">
                 <FormControl
-                  id="userId"
+                  id="userName"
                   my={8}
-                  isInvalid={formik.errors.userId && formik.touched.userId}
+                  isInvalid={formik.errors.userName && formik.touched.userName}
                 >
                   <FormLabel>User ID</FormLabel>
                   <Input
@@ -110,13 +119,14 @@ const LoginPage = () => {
                     type="text"
                     bg="gray.100"
                     onChange={(e) => {
-                      if (e.target.value.length <= MAX_USERID_LENGTH + 1)
+                      setIsFormError(false);
+                      if (e.target.value.length <= MAX_USERNAME_LENGTH + 1)
                         formik.handleChange(e);
                     }}
                     onBlur={formik.handleBlur}
-                    value={formik.values.userId}
+                    value={formik.values.userName}
                   />
-                  <FormErrorMessage>{formik.errors.userId}</FormErrorMessage>
+                  <FormErrorMessage>{formik.errors.userName}</FormErrorMessage>
                 </FormControl>
               </SlideFade>
               <SlideFade in={true} offsetX="60px">
@@ -133,6 +143,7 @@ const LoginPage = () => {
                       bg="gray.100"
                       type={show ? "text" : "password"}
                       onChange={(e) => {
+                        setIsFormError(false);
                         if (e.target.value.length <= MAX_PASSWORD_LENGTH + 1)
                           formik.handleChange(e);
                       }}
@@ -165,6 +176,11 @@ const LoginPage = () => {
                   Login
                 </Button>
               </SlideFade>
+              {isFormError && (
+                <Text mt="10%" color="red.500">
+                  Invalid credentials
+                </Text>
+              )}
             </form>
           </Box>
         </Center>
