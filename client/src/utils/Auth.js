@@ -1,5 +1,8 @@
 exports.isAuthenticated = () => {
-  if (localStorage.getItem("token") !== "undefined") {
+  if (
+    localStorage.getItem("token") ||
+    localStorage.getItem("token") !== "undefined"
+  ) {
     return true;
   }
   return false;

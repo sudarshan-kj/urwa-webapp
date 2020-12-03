@@ -38,7 +38,7 @@ const LoginPage = () => {
   const [isFormError, setIsFormError] = React.useState(false);
   const handleShowClick = () => setShow(!show);
   const history = useHistory();
-  const postData = (values) => {
+  const postData = (values, setSubmitting) => {
     axios
       .post(`${config.API_ENDPOINT}/api/auth/login`, values)
       .then((response) => {
@@ -49,7 +49,8 @@ const LoginPage = () => {
           console.log("I was here");
         }
       })
-      .catch((err) => setIsFormError(true));
+      .catch((err) => setIsFormError(true))
+      .finally(setSubmitting(false));
   };
 
   const formik = useFormik({
@@ -59,11 +60,8 @@ const LoginPage = () => {
     },
     validationSchema: yupValidationObject,
     onSubmit: (values, { resetForm, setSubmitting }) => {
-      setTimeout(() => {
-        postData(values);
-        setSubmitting(false);
-        resetForm({ values: "" });
-      }, 500);
+      postData(values, setSubmitting);
+      resetForm({ values: "" });
     },
   });
   return (
@@ -169,7 +167,7 @@ const LoginPage = () => {
                 <Button
                   isLoading={formik.isSubmitting}
                   type="submit"
-                  w={"100%"}
+                  isFullWidth
                   colorScheme="teal"
                   _focus={{}}
                 >

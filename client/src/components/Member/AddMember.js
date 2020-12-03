@@ -14,156 +14,342 @@ import {
   Select,
   Button,
 } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
+import { useFormik } from "formik";
+import config from "../../config";
+import axios from "axios";
+import { useToast } from "@chakra-ui/react";
 
 const AddMember = () => {
+  const [submitError, setSubmitError] = React.useState("");
+  const history = useHistory();
+  const toast = useToast();
+
+  const createMember = (values, setSubmitting, resetForm) => {
+    axios
+      .post(`${config.API_ENDPOINT}/api/members/add`, values)
+      .then((res) => {
+        if (res.status === 201) {
+          history.push("/admin/addMember");
+          resetForm({ values: "" });
+          toast({
+            title: "Account created",
+            description: `${values.firstName} has been added`,
+            status: "success",
+            duration: 4000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "An error occurred.",
+            description: "Unable to create member account.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+          throw new Error("Could not create new member");
+        }
+      })
+      .catch((err) => {
+        console.log();
+        toast({
+          title: "Account was not created",
+          description: `${err.response.data.error[0].message}`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .finally(setSubmitting(false));
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      siteNumber: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      details: {
+        mobile: "",
+        altContact: "",
+        anniversary: "",
+        dob: "",
+        land: "built",
+        noOfFloors: "",
+        bloodGroup: "",
+        maintenanceAmount: "",
+        borewell: "false",
+        siteDimensions: "",
+        address: "",
+      },
+    },
+
+    onSubmit: (values, { resetForm, setSubmitting }) => {
+      createMember(values, setSubmitting, resetForm);
+    },
+  });
+
   return (
     <Box bg="gray.200" w="60%" m="auto">
       <Box>
-        <VStack w="50%" m="auto" py="30px" spacing="40px">
-          <Heading as="h1" size="md">
-            Member Basic Info
-          </Heading>
+        <form onSubmit={formik.handleSubmit}>
+          <VStack w="50%" m="auto" py="30px" spacing="40px">
+            <Heading as="h1" size="md">
+              Member Basic Info
+            </Heading>
 
-          <FormControl id="firstName" isRequired>
-            <FormLabel>First Name</FormLabel>
-            <Input focusBorderColor="teal.400" bg="gray.100" type="text" />
-          </FormControl>
+            <FormControl id="firstName" isRequired>
+              <FormLabel>First Name</FormLabel>
+              <Input
+                focusBorderColor="teal.400"
+                bg="gray.100"
+                type="text"
+                value={formik.values.firstName}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+              />
+            </FormControl>
 
-          <FormControl id="lastName" isRequired>
-            <FormLabel>Last Name</FormLabel>
-            <Input focusBorderColor="teal.400" bg="gray.100" type="text" />
-          </FormControl>
+            <FormControl id="lastName" isRequired>
+              <FormLabel>Last Name</FormLabel>
+              <Input
+                focusBorderColor="teal.400"
+                bg="gray.100"
+                type="text"
+                value={formik.values.lastName}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+              />
+            </FormControl>
 
-          <FormControl id="email" isRequired>
-            <FormLabel>Email address</FormLabel>
-            <Input focusBorderColor="teal.400" bg="gray.100" type="email" />
-          </FormControl>
+            <FormControl id="email" isRequired>
+              <FormLabel>Email address</FormLabel>
+              <Input
+                focusBorderColor="teal.400"
+                bg="gray.100"
+                type="email"
+                value={formik.values.email}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+              />
+            </FormControl>
 
-          <FormControl id="primaryContact" isRequired>
-            <FormLabel>Mobile Number</FormLabel>
-            <NumberInput focusBorderColor="teal.400" bg="gray.100">
-              <NumberInputField />
-            </NumberInput>
-          </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Mobile Number</FormLabel>
+              <NumberInput
+                value={formik.values.details.mobile}
+                id="details.mobile"
+                focusBorderColor="teal.400"
+                bg="gray.100"
+              >
+                <NumberInputField
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                  }}
+                />
+              </NumberInput>
+            </FormControl>
 
-          <FormControl id="siteNumber">
-            <FormLabel>Site Number</FormLabel>
-            <NumberInput focusBorderColor="teal.400" bg="gray.100" type="email">
-              <NumberInputField />
-            </NumberInput>
-          </FormControl>
-        </VStack>
+            <FormControl isRequired>
+              <FormLabel>Site Number</FormLabel>
+              <NumberInput
+                value={formik.values.siteNumber}
+                id="siteNumber"
+                focusBorderColor="teal.400"
+                bg="gray.100"
+              >
+                <NumberInputField
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                  }}
+                />
+              </NumberInput>
+            </FormControl>
+          </VStack>
 
-        <VStack w="50%" m="auto" py="30px" spacing="40px">
-          <Heading as="h1" size="md">
-            Member Details
-          </Heading>
+          <VStack w="50%" m="auto" py="30px" spacing="40px">
+            <Heading as="h1" size="md">
+              Member Details
+            </Heading>
 
-          <FormControl id="secondaryContact" isRequired>
-            <FormLabel>Alternate Contact Number</FormLabel>
-            <NumberInput focusBorderColor="teal.400" bg="gray.100">
-              <NumberInputField />
-            </NumberInput>
-          </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Alternate Contact Number</FormLabel>
+              <NumberInput
+                value={formik.values.details.altContact}
+                id="details.altContact"
+                focusBorderColor="teal.400"
+                bg="gray.100"
+              >
+                <NumberInputField
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                  }}
+                />
+              </NumberInput>
+            </FormControl>
 
-          <FormControl id="dob" isRequired>
-            <FormLabel>Birthday</FormLabel>
-            <Input focusBorderColor="teal.400" bg="gray.100" type="date" />
-          </FormControl>
+            <FormControl id="details.dob" isRequired>
+              <FormLabel>Birthday</FormLabel>
+              <Input
+                focusBorderColor="teal.400"
+                bg="gray.100"
+                type="date"
+                value={formik.values.details.dob}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+              />
+            </FormControl>
 
-          <FormControl id="anniversaryDate" isRequired>
-            <FormLabel>Anniversary Date</FormLabel>
-            <Input focusBorderColor="teal.400" bg="gray.100" type="date" />
-          </FormControl>
+            <FormControl id="details.anniversary" isRequired>
+              <FormLabel>Anniversary Date</FormLabel>
+              <Input
+                focusBorderColor="teal.400"
+                bg="gray.100"
+                type="date"
+                value={formik.values.details.anniversary}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+              />
+            </FormControl>
 
-          <FormControl id="address" isRequired>
-            <FormLabel>Address</FormLabel>
-            <Input focusBorderColor="teal.400" bg="gray.100" type="text" />
-            <FormHelperText>Enter only main and cross</FormHelperText>
-          </FormControl>
+            <FormControl id="details.address">
+              <FormLabel>Address</FormLabel>
+              <Input
+                focusBorderColor="teal.400"
+                bg="gray.100"
+                type="text"
+                value={formik.values.details.address}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+              />
+              <FormHelperText>Enter only main and cross</FormHelperText>
+            </FormControl>
 
-          <FormControl as="fieldset">
-            <FormLabel as="legend">Land status</FormLabel>
-            <RadioGroup defaultValue="built">
-              <HStack spacing="24px">
-                <Radio bgColor="gray.300" colorScheme="teal" value="built">
-                  Built
-                </Radio>
-                <Radio bgColor="gray.300" colorScheme="teal" value="vacant">
-                  Vacant
-                </Radio>
-              </HStack>
-            </RadioGroup>
-          </FormControl>
+            <FormControl id="details.land" as="fieldset">
+              <FormLabel as="legend">Land status</FormLabel>
+              <RadioGroup
+                checked={formik.values.details.land}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+              >
+                <HStack spacing="24px">
+                  <Radio bgColor="gray.300" colorScheme="teal" value="built">
+                    Built
+                  </Radio>
+                  <Radio bgColor="gray.300" colorScheme="teal" value="vacant">
+                    Vacant
+                  </Radio>
+                </HStack>
+              </RadioGroup>
+            </FormControl>
 
-          <FormControl id="floorCount">
-            <StyledSelect placeholder="Select Floor Count">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="3+">3+</option>
-            </StyledSelect>
-            <FormHelperText>Ground floor is counted as 1</FormHelperText>
-          </FormControl>
+            <FormControl id="details.noOfFloors">
+              <StyledSelect
+                value={formik.values.details.noOfFloors}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                placeholder="Select Floor Count"
+              >
+                <option value="G">G</option>
+                <option value="G+1">G+1</option>
+                <option value="G+2">G+2</option>
+                <option value="G+3">G+3</option>
+                <option value="G+4">G+4</option>
+              </StyledSelect>
+            </FormControl>
 
-          <FormControl>
-            <StyledSelect placeholder="Select Blood Group">
-              <option value="A+">A+</option>
-              <option value="B+">B+</option>
-              <option value="AB+">AB+</option>
-              <option value="O+">O+</option>
-              <option value="A-">A-</option>
-              <option value="B-">B-</option>
-              <option value="AB-">AB-</option>
-              <option value="O-">O-</option>
-            </StyledSelect>
-          </FormControl>
+            <FormControl id="details.bloodGroup">
+              <StyledSelect
+                value={formik.values.details.bloodGroup}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                placeholder="Select Blood Group"
+              >
+                <option value="A+">A+</option>
+                <option value="B+">B+</option>
+                <option value="AB+">AB+</option>
+                <option value="O+">O+</option>
+                <option value="A-">A-</option>
+                <option value="B-">B-</option>
+                <option value="AB-">AB-</option>
+                <option value="O-">O-</option>
+              </StyledSelect>
+            </FormControl>
 
-          <FormControl>
-            <StyledSelect placeholder="Select Maintenance Amount">
-              <option value="300">₹300</option>
-              <option value="500">₹500</option>
-            </StyledSelect>
-          </FormControl>
+            <FormControl id="details.maintenanceAmount">
+              <StyledSelect
+                value={formik.values.details.maintenanceAmount}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                placeholder="Select Maintenance Amount"
+              >
+                <option value="300">₹300</option>
+                <option value="500">₹500</option>
+              </StyledSelect>
+            </FormControl>
 
-          <FormControl as="fieldset">
-            <FormLabel as="legend">Borewell</FormLabel>
-            <RadioGroup defaultValue="no">
-              <HStack spacing="24px">
-                <Radio bgColor="gray.300" colorScheme="teal" value="yes">
-                  Yes
-                </Radio>
-                <Radio bgColor="gray.300" colorScheme="teal" value="no">
-                  No
-                </Radio>
-              </HStack>
-            </RadioGroup>
-          </FormControl>
+            <FormControl id="details.borewell" as="fieldset">
+              <FormLabel as="legend">Borewell</FormLabel>
+              <RadioGroup
+                value={formik.values.details.borewell}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+              >
+                <HStack spacing="24px">
+                  <Radio bgColor="gray.300" colorScheme="teal" value="true">
+                    Yes
+                  </Radio>
+                  <Radio bgColor="gray.300" colorScheme="teal" value="false">
+                    No
+                  </Radio>
+                </HStack>
+              </RadioGroup>
+            </FormControl>
 
-          <FormControl>
-            <StyledSelect placeholder="Select site dimensions">
-              <option value="30x40">30x40</option>
-              <option value="40x60">40x60</option>
-              <option value="50x80">50x80</option>
-            </StyledSelect>
-          </FormControl>
-          <Button
-            colorScheme="teal"
-            isLoading={false}
-            type="submit"
-            _focus={{}}
-          >
-            Submit
-          </Button>
-        </VStack>
+            <FormControl id="details.siteDimensions">
+              <StyledSelect
+                value={formik.values.details.siteDimensions}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                placeholder="Select site dimensions"
+              >
+                <option value="30x40">30x40</option>
+                <option value="40x60">40x60</option>
+                <option value="50x80">50x80</option>
+              </StyledSelect>
+            </FormControl>
+            <Button
+              isLoading={formik.isSubmitting}
+              colorScheme="teal"
+              type="submit"
+              _focus={{}}
+            >
+              Submit
+            </Button>
+          </VStack>
+        </form>
       </Box>
     </Box>
   );
 };
 
-const StyledSelect = ({ placeholder, children }) => {
+const StyledSelect = ({ placeholder, children, ...rest }) => {
   return (
     <Select
+      {...rest}
       _focus={{
         borderColor: "teal.500",
       }}

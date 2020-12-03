@@ -12,7 +12,11 @@ const schema = Joi.object({
       minDomainSegments: 2,
     })
     .required(),
-  siteNumber: Joi.number().integer().min(1).max(10000).required(),
+  siteNumber: Joi.string()
+    .min(2)
+    .max(5)
+    .pattern(/^[0-9]+$/)
+    .required(),
   password: Joi.string().min(5).max(20).required(),
   details: Joi.object({
     mobile: Joi.string()
@@ -42,9 +46,10 @@ const schema = Joi.object({
 });
 
 exports.createMember = (req, res) => {
-  if (!req.body.password)
+  if (!req.body.password) {
     req.body.password =
       req.body.siteNumber + req.body.firstName.toLowerCase().replace(/\s/g, "");
+  }
   let salt = crypto.randomBytes(16).toString("base64");
   let hash = crypto
     .createHmac("sha512", salt)
@@ -56,7 +61,7 @@ exports.createMember = (req, res) => {
     return res.status(400).send({ error: error.details });
   }
   req.body.password = salt + "$" + hash;
-  req.body.permissionLevel = 15;
+  req.body.permissionLevel = 1;
   req.body.revokeAccess = false;
 
   MemberModel.insert(req.body)
