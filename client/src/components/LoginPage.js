@@ -35,7 +35,10 @@ const yupValidationObject = Yup.object({
 
 const LoginPage = () => {
   const [show, setShow] = React.useState(false);
-  const [isFormError, setIsFormError] = React.useState(false);
+  const [formError, setFormError] = React.useState({
+    error: false,
+    msg: "",
+  });
   const handleShowClick = () => setShow(!show);
   const history = useHistory();
   const postData = (values, setSubmitting, resetForm) => {
@@ -48,7 +51,12 @@ const LoginPage = () => {
           resetForm({ value: "" });
         }
       })
-      .catch((err) => setIsFormError(true))
+      .catch((err) => {
+        setFormError({
+          error: true,
+          msg: err.response.data.error,
+        });
+      })
       .finally(() => setSubmitting(false));
   };
 
@@ -115,7 +123,7 @@ const LoginPage = () => {
                     type="text"
                     bg="gray.100"
                     onChange={(e) => {
-                      setIsFormError(false);
+                      setFormError({ status: false, msg: "" });
                       if (e.target.value.length <= MAX_USERNAME_LENGTH + 1)
                         formik.handleChange(e);
                     }}
@@ -139,7 +147,7 @@ const LoginPage = () => {
                       bg="gray.100"
                       type={show ? "text" : "password"}
                       onChange={(e) => {
-                        setIsFormError(false);
+                        setFormError({ status: false, msg: "" });
                         if (e.target.value.length <= MAX_PASSWORD_LENGTH + 1)
                           formik.handleChange(e);
                       }}
@@ -172,9 +180,9 @@ const LoginPage = () => {
                   Login
                 </Button>
               </SlideFade>
-              {isFormError && (
+              {formError.error && (
                 <Text mt="10%" color="red.500">
-                  Invalid credentials
+                  {formError.msg}
                 </Text>
               )}
             </form>
