@@ -28,7 +28,7 @@ const yupValidationObject = Yup.object({
     .email("Invalid user ID")
     .required("Enter your user ID"),
   password: Yup.string()
-    .min(6, "Invalid password")
+    .min(4, "Invalid password")
     .max(MAX_PASSWORD_LENGTH, "Invalid password")
     .required("Enter your password"),
 });

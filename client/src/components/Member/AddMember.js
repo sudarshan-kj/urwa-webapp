@@ -161,7 +161,7 @@ const AddMember = () => {
   );
 };
 
-const StyledSelect = ({ placeholder }) => {
+const StyledSelect = ({ placeholder, children }) => {
   return (
     <Select
       _focus={{
@@ -169,7 +169,9 @@ const StyledSelect = ({ placeholder }) => {
       }}
       bgColor="gray.100"
       placeholder={placeholder}
-    />
+    >
+      {children}
+    </Select>
   );
 };
 
