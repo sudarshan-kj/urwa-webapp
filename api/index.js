@@ -8,6 +8,7 @@ const logger = log4j.getLogger();
 logger.level = "debug";
 const { AuthRoutes, MembersRoutes } = require("./routes");
 
+//Test app
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
