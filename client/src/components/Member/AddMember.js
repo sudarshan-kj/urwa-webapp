@@ -60,7 +60,7 @@ const AddMember = () => {
           isClosable: true,
         });
       })
-      .finally(setSubmitting(false));
+      .finally(() => setSubmitting(false));
   };
 
   const formik = useFormik({

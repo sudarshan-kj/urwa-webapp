@@ -38,19 +38,18 @@ const LoginPage = () => {
   const [isFormError, setIsFormError] = React.useState(false);
   const handleShowClick = () => setShow(!show);
   const history = useHistory();
-  const postData = (values, setSubmitting) => {
+  const postData = (values, setSubmitting, resetForm) => {
     axios
       .post(`${config.API_ENDPOINT}/api/auth/login`, values)
       .then((response) => {
         if (response.status === 201) {
           localStorage.setItem("token", response.data.accessToken);
           history.push("/admin/addMember");
-        } else {
-          console.log("I was here");
+          resetForm({ value: "" });
         }
       })
       .catch((err) => setIsFormError(true))
-      .finally(setSubmitting(false));
+      .finally(() => setSubmitting(false));
   };
 
   const formik = useFormik({
@@ -60,8 +59,7 @@ const LoginPage = () => {
     },
     validationSchema: yupValidationObject,
     onSubmit: (values, { resetForm, setSubmitting }) => {
-      postData(values, setSubmitting);
-      resetForm({ values: "" });
+      postData(values, setSubmitting, resetForm);
     },
   });
   return (
