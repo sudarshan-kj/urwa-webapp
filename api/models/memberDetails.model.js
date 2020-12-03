@@ -16,15 +16,15 @@ let memberDetailsSchema = new Schema(
     memberId: { type: Schema.Types.ObjectId, ref: "Member" },
     mobile: Number,
     altContact: Number,
-    anniversary: String,
+    anniversary: Date,
+    dob: Date,
     land: String,
-    noOfFloors: Number,
+    noOfFloors: String,
     bloodGroup: String,
     maintenanceAmount: Number,
     borewell: Boolean,
     siteDimensions: String,
     address: String,
-    dob: String,
   },
   opts
 );
