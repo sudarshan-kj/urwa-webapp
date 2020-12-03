@@ -12,6 +12,7 @@ import {
   FormHelperText,
   NumberInputField,
   Select,
+  Button,
 } from "@chakra-ui/react";
 
 const AddMember = () => {
@@ -22,24 +23,29 @@ const AddMember = () => {
           <Heading as="h1" size="md">
             Member Basic Info
           </Heading>
+
           <FormControl id="firstName" isRequired>
             <FormLabel>First Name</FormLabel>
             <Input focusBorderColor="teal.400" bg="gray.100" type="text" />
           </FormControl>
+
           <FormControl id="lastName" isRequired>
             <FormLabel>Last Name</FormLabel>
             <Input focusBorderColor="teal.400" bg="gray.100" type="text" />
           </FormControl>
+
           <FormControl id="email" isRequired>
             <FormLabel>Email address</FormLabel>
             <Input focusBorderColor="teal.400" bg="gray.100" type="email" />
           </FormControl>
+
           <FormControl id="primaryContact" isRequired>
             <FormLabel>Mobile Number</FormLabel>
             <NumberInput focusBorderColor="teal.400" bg="gray.100">
               <NumberInputField />
             </NumberInput>
           </FormControl>
+
           <FormControl id="siteNumber">
             <FormLabel>Site Number</FormLabel>
             <NumberInput focusBorderColor="teal.400" bg="gray.100" type="email">
@@ -52,25 +58,30 @@ const AddMember = () => {
           <Heading as="h1" size="md">
             Member Details
           </Heading>
+
           <FormControl id="secondaryContact" isRequired>
             <FormLabel>Alternate Contact Number</FormLabel>
             <NumberInput focusBorderColor="teal.400" bg="gray.100">
               <NumberInputField />
             </NumberInput>
           </FormControl>
+
           <FormControl id="dob" isRequired>
             <FormLabel>Birthday</FormLabel>
             <Input focusBorderColor="teal.400" bg="gray.100" type="date" />
           </FormControl>
+
           <FormControl id="anniversaryDate" isRequired>
             <FormLabel>Anniversary Date</FormLabel>
             <Input focusBorderColor="teal.400" bg="gray.100" type="date" />
           </FormControl>
+
           <FormControl id="address" isRequired>
             <FormLabel>Address</FormLabel>
             <Input focusBorderColor="teal.400" bg="gray.100" type="text" />
             <FormHelperText>Enter only main and cross</FormHelperText>
           </FormControl>
+
           <FormControl as="fieldset">
             <FormLabel as="legend">Land status</FormLabel>
             <RadioGroup defaultValue="built">
@@ -84,25 +95,19 @@ const AddMember = () => {
               </HStack>
             </RadioGroup>
           </FormControl>
+
           <FormControl id="floorCount">
-            <Select
-              bgColor="gray.100"
-              colorScheme="teal"
-              placeholder="Select Floor Count"
-            >
+            <StyledSelect placeholder="Select Floor Count">
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
               <option value="3+">3+</option>
-            </Select>
+            </StyledSelect>
             <FormHelperText>Ground floor is counted as 1</FormHelperText>
           </FormControl>
+
           <FormControl>
-            <Select
-              bgColor="gray.100"
-              colorScheme="teal"
-              placeholder="Select Blood Group"
-            >
+            <StyledSelect placeholder="Select Blood Group">
               <option value="A+">A+</option>
               <option value="B+">B+</option>
               <option value="AB+">AB+</option>
@@ -111,18 +116,16 @@ const AddMember = () => {
               <option value="B-">B-</option>
               <option value="AB-">AB-</option>
               <option value="O-">O-</option>
-            </Select>
+            </StyledSelect>
           </FormControl>
+
           <FormControl>
-            <Select
-              bgColor="gray.100"
-              colorScheme="teal"
-              placeholder="Select Maintenance Amount"
-            >
+            <StyledSelect placeholder="Select Maintenance Amount">
               <option value="300">₹300</option>
               <option value="500">₹500</option>
-            </Select>
+            </StyledSelect>
           </FormControl>
+
           <FormControl as="fieldset">
             <FormLabel as="legend">Borewell</FormLabel>
             <RadioGroup defaultValue="no">
@@ -136,20 +139,37 @@ const AddMember = () => {
               </HStack>
             </RadioGroup>
           </FormControl>
+
           <FormControl>
-            <Select
-              bgColor="gray.100"
-              colorScheme="teal"
-              placeholder="Select site dimensions"
-            >
+            <StyledSelect placeholder="Select site dimensions">
               <option value="30x40">30x40</option>
               <option value="40x60">40x60</option>
               <option value="50x80">50x80</option>
-            </Select>
+            </StyledSelect>
           </FormControl>
+          <Button
+            colorScheme="teal"
+            isLoading={false}
+            type="submit"
+            _focus={{}}
+          >
+            Submit
+          </Button>
         </VStack>
       </Box>
     </Box>
+  );
+};
+
+const StyledSelect = ({ placeholder }) => {
+  return (
+    <Select
+      _focus={{
+        borderColor: "teal.500",
+      }}
+      bgColor="gray.100"
+      placeholder={placeholder}
+    />
   );
 };
 
