@@ -7,6 +7,6 @@ module.exports = {
   production: {
     MONGO_DB_USERNAME: process.env.MONGO_DB_USERNAME,
     MONGO_DB_PASSWORD: process.env.MONGO_DB_USERNAME,
-    MONGO_DB_URL: `mongodb+srv://${this.MONGO_DB_USERNAME}:${this.MONGO_DB_PASSWORD}@cluster0.fpezm.mongodb.net/test?retryWrites=true&w=majority`,
+    MONGO_DB_URL: `mongodb+srv://kjsudikjsudi:qwerty64504099@cluster0.fpezm.mongodb.net/test?retryWrites=true&w=majority`,
   },
 };
