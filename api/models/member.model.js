@@ -13,6 +13,7 @@ const opts = {
       delete ret.revokeAccess;
     },
   },
+  timestamps: true,
 };
 
 let memberSchema = new Schema(

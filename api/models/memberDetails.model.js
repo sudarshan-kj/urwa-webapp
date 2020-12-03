@@ -9,6 +9,7 @@ const opts = {
       delete ret._id;
     },
   },
+  timestamps: true,
 };
 
 let memberDetailsSchema = new Schema(
