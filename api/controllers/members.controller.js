@@ -60,15 +60,28 @@ exports.createMember = (req, res) => {
   if (error) {
     return res.status(400).send({ error: error.details });
   }
-  req.body.password = salt + "$" + hash;
-  req.body.permissionLevel = 1;
-  req.body.revokeAccess = false;
-
-  MemberModel.insert(req.body)
-    .then((result) => {
-      res.status(201).send({ id: result._id });
+  MemberModel.findByEmail(req.body.email)
+    .then((member) => {
+      if (member) {
+        return res.status(409).send({
+          error: [
+            { message: `User with email: ${req.body.email} already exists` },
+          ],
+        });
+      } else {
+        req.body.password = salt + "$" + hash;
+        req.body.permissionLevel = 1;
+        req.body.revokeAccess = false;
+        MemberModel.insert(req.body)
+          .then((result) => {
+            res.status(201).send({ id: result._id });
+          })
+          .catch((err) => res.status(400).send({ errors: err }));
+      }
     })
-    .catch((err) => res.status(400).send({ errors: err }));
+    .catch((err) =>
+      res.status(500).send({ error: [{ message: "Something went wrong" }] })
+    );
 };
 
 exports.updateMember = (req, res) => {};

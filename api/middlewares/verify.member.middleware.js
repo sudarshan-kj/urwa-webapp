@@ -22,7 +22,7 @@ exports.hasValidAuthFields = (req, res, next) => {
 };
 
 exports.verifyUserAndPassword = (req, res, next) => {
-  MemberModel.findByEmailOrSiteNumber(req.body.userName)
+  MemberModel.findByEmail(req.body.userName)
     .then((member) => {
       if (!member) {
         res.status(401).send({ error: "Invalid credentials" });

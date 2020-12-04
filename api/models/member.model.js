@@ -54,6 +54,6 @@ exports.delete = (memberId) => {
   });
 };
 
-exports.findByEmailOrSiteNumber = (value) => {
+exports.findByEmail = (value) => {
   return Member.findOne({ email: value });
 };
