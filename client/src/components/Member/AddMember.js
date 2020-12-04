@@ -21,7 +21,6 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 
 const AddMember = () => {
-  const [submitError, setSubmitError] = React.useState("");
   const history = useHistory();
   const toast = useToast();
 
