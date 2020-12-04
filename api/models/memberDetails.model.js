@@ -22,6 +22,7 @@ let memberDetailsSchema = new Schema(
     land: String,
     noOfFloors: String,
     bloodGroup: String,
+    monthlyMaintenance: Boolean,
     maintenanceAmount: Number,
     borewell: Boolean,
     siteDimensions: String,

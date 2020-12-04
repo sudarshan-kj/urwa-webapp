@@ -78,7 +78,8 @@ const AddMember = () => {
         land: "built",
         noOfFloors: "",
         bloodGroup: "",
-        maintenanceAmount: "",
+        monthlyMaintenance: "true",
+        maintenanceAmount: -1,
         borewell: "false",
         siteDimensions: "",
         address: "",
@@ -218,55 +219,6 @@ const AddMember = () => {
               />
             </FormControl>
 
-            <FormControl id="details.address">
-              <FormLabel>Address</FormLabel>
-              <Input
-                focusBorderColor="teal.400"
-                bg="gray.100"
-                type="text"
-                value={formik.values.details.address}
-                onChange={(e) => {
-                  formik.handleChange(e);
-                }}
-              />
-              <FormHelperText>Enter only main and cross</FormHelperText>
-            </FormControl>
-
-            <FormControl id="details.land" as="fieldset">
-              <FormLabel as="legend">Land status</FormLabel>
-              <RadioGroup
-                checked={formik.values.details.land}
-                onChange={(e) => {
-                  formik.handleChange(e);
-                }}
-              >
-                <HStack spacing="24px">
-                  <Radio bgColor="gray.300" colorScheme="teal" value="built">
-                    Built
-                  </Radio>
-                  <Radio bgColor="gray.300" colorScheme="teal" value="vacant">
-                    Vacant
-                  </Radio>
-                </HStack>
-              </RadioGroup>
-            </FormControl>
-
-            <FormControl id="details.noOfFloors">
-              <StyledSelect
-                value={formik.values.details.noOfFloors}
-                onChange={(e) => {
-                  formik.handleChange(e);
-                }}
-                placeholder="Select Floor Count"
-              >
-                <option value="G">G</option>
-                <option value="G+1">G+1</option>
-                <option value="G+2">G+2</option>
-                <option value="G+3">G+3</option>
-                <option value="G+4">G+4</option>
-              </StyledSelect>
-            </FormControl>
-
             <FormControl id="details.bloodGroup">
               <StyledSelect
                 value={formik.values.details.bloodGroup}
@@ -286,36 +238,18 @@ const AddMember = () => {
               </StyledSelect>
             </FormControl>
 
-            <FormControl id="details.maintenanceAmount">
-              <StyledSelect
-                value={formik.values.details.maintenanceAmount}
+            <FormControl id="details.address">
+              <FormLabel>Address</FormLabel>
+              <Input
+                focusBorderColor="teal.400"
+                bg="gray.100"
+                type="text"
+                value={formik.values.details.address}
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                placeholder="Select Maintenance Amount"
-              >
-                <option value="300">₹300</option>
-                <option value="500">₹500</option>
-              </StyledSelect>
-            </FormControl>
-
-            <FormControl id="details.borewell" as="fieldset">
-              <FormLabel as="legend">Borewell</FormLabel>
-              <RadioGroup
-                value={formik.values.details.borewell}
-                onChange={(e) => {
-                  formik.handleChange(e);
-                }}
-              >
-                <HStack spacing="24px">
-                  <Radio bgColor="gray.300" colorScheme="teal" value="true">
-                    Yes
-                  </Radio>
-                  <Radio bgColor="gray.300" colorScheme="teal" value="false">
-                    No
-                  </Radio>
-                </HStack>
-              </RadioGroup>
+              />
+              <FormHelperText>Enter only main and cross</FormHelperText>
             </FormControl>
 
             <FormControl id="details.siteDimensions">
@@ -331,6 +265,105 @@ const AddMember = () => {
                 <option value="50x80">50x80</option>
               </StyledSelect>
             </FormControl>
+
+            <FormControl id="details.borewell" as="fieldset">
+              <FormLabel as="legend">Borewell</FormLabel>
+              <RadioGroup
+                value={formik.values.details.borewell}
+                onChange={(e) => {
+                  formik.setFieldValue("details.borewell", e);
+                }}
+              >
+                <HStack spacing="24px">
+                  <Radio bgColor="gray.300" colorScheme="teal" value="true">
+                    Yes
+                  </Radio>
+                  <Radio bgColor="gray.300" colorScheme="teal" value="false">
+                    No
+                  </Radio>
+                </HStack>
+              </RadioGroup>
+            </FormControl>
+
+            <FormControl id="details.land" as="fieldset">
+              <FormLabel as="legend">Land status</FormLabel>
+              <RadioGroup
+                value={formik.values.details.land}
+                onChange={(e) => {
+                  if (e === "vacant") {
+                    formik.setFieldValue("details.noOfFloors", "NA");
+                  }
+                  formik.setFieldValue("details.land", e);
+                }}
+              >
+                <HStack spacing="24px">
+                  <Radio bgColor="gray.300" colorScheme="teal" value="built">
+                    Built
+                  </Radio>
+                  <Radio bgColor="gray.300" colorScheme="teal" value="vacant">
+                    Vacant
+                  </Radio>
+                </HStack>
+              </RadioGroup>
+            </FormControl>
+
+            <FormControl
+              id="details.noOfFloors"
+              isDisabled={formik.values.details.land === "vacant"}
+            >
+              <StyledSelect
+                value={formik.values.details.noOfFloors}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                placeholder="Select Floor Count"
+              >
+                <option value="G">G</option>
+                <option value="G+1">G+1</option>
+                <option value="G+2">G+2</option>
+                <option value="G+3">G+3</option>
+                <option value="G+4">G+4</option>
+              </StyledSelect>
+            </FormControl>
+
+            <FormControl id="details.monthlyMaintenance" as="fieldset">
+              <FormLabel as="legend">Monthly Maintenance</FormLabel>
+              <RadioGroup
+                value={formik.values.details.monthlyMaintenance}
+                onChange={(e) => {
+                  if (e === "false") {
+                    formik.setFieldValue("details.maintenanceAmount", -1);
+                  }
+                  formik.setFieldValue("details.monthlyMaintenance", e);
+                }}
+              >
+                <HStack spacing="24px">
+                  <Radio bgColor="gray.300" colorScheme="teal" value="true">
+                    Yes
+                  </Radio>
+                  <Radio bgColor="gray.300" colorScheme="teal" value="false">
+                    No
+                  </Radio>
+                </HStack>
+              </RadioGroup>
+            </FormControl>
+
+            <FormControl
+              id="details.maintenanceAmount"
+              isDisabled={formik.values.details.monthlyMaintenance === "false"}
+            >
+              <StyledSelect
+                value={formik.values.details.maintenanceAmount}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                }}
+                placeholder="Select Maintenance Amount"
+              >
+                <option value="300">₹300</option>
+                <option value="500">₹500</option>
+              </StyledSelect>
+            </FormControl>
+
             <Button
               isLoading={formik.isSubmitting}
               colorScheme="teal"

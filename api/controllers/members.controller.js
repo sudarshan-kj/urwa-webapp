@@ -34,11 +34,17 @@ const schema = Joi.object({
     noOfFloors: Joi.string().when("land", {
       is: "built",
       then: Joi.string().valid("G", "G+1", "G+2", "G+3", "G+4").required(),
+      otherwise: Joi.string().equal("NA"),
     }),
     bloodGroup: Joi.string()
       .valid("A+", "B+", "AB+", "O+", "A-", "B-", "AB-", "O-")
       .required(),
-    maintenanceAmount: Joi.number().valid(300, 500).required(),
+    monthlyMaintenance: Joi.bool().required(),
+    maintenanceAmount: Joi.number().when("monthlyMaintenance", {
+      is: true,
+      then: Joi.number().valid(300, 500).required(),
+      otherwise: Joi.number().equal(-1),
+    }),
     borewell: Joi.bool().required(),
     siteDimensions: Joi.string().valid("30x40", "40x60", "50x80").required(),
     address: Joi.string().min(4).max(30).required(),
