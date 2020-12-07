@@ -12,6 +12,10 @@ membersRouter.delete("/:memberId", [
   ValidateMiddleware.hasPermission(permission.DELETE),
   MembersController.deleteMember,
 ]);
+membersRouter.patch(":/memberId", [
+  ValidateMiddleware.hasPermission(permission.UPDATE),
+  MembersController.updateMember,
+]);
 membersRouter.get("/health", [MembersController.health]);
 
 module.exports = membersRouter;

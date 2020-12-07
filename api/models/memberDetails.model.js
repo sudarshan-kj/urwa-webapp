@@ -48,3 +48,7 @@ exports.delete = (id) => {
     });
   });
 };
+
+exports.update = (memberId, newValues) => {
+  return MemberDetails.findOneAndUpdate({ memberId: memberId }, newValues);
+};
