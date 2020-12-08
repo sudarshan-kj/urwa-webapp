@@ -20,13 +20,20 @@ import config from "../../config";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 
+const authAxios = axios.create({
+  baseURL: config.API_ENDPOINT,
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
+
 const AddMember = () => {
   const history = useHistory();
   const toast = useToast();
 
   const createMember = (values, setSubmitting, resetForm) => {
-    axios
-      .post(`${config.API_ENDPOINT}/api/members/add`, values)
+    authAxios
+      .post("/api/members/add", values)
       .then((res) => {
         if (res.status === 201) {
           history.push("/admin/addMember");
