@@ -5,6 +5,7 @@ const permission = require("../config/permission.config");
 const membersRouter = express.Router();
 
 membersRouter.post("/add", [
+  ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.hasPermission(permission.CREATE),
   MembersController.createMember,
 ]);
@@ -12,7 +13,8 @@ membersRouter.delete("/:memberId", [
   ValidateMiddleware.hasPermission(permission.DELETE),
   MembersController.deleteMember,
 ]);
-membersRouter.patch(":/memberId", [
+membersRouter.patch("/:memberId", [
+  ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.hasPermission(permission.UPDATE),
   MembersController.updateMember,
 ]);

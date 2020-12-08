@@ -89,7 +89,38 @@ exports.createMember = (req, res) => {
     );
 };
 
-exports.updateMember = (req, res) => {};
+exports.updateMember = (req, res) => {
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).send({ error: error.details });
+  }
+  if (req.body.password) {
+    let salt = crypto.randomBytes(16).toString("base64");
+    let hash = crypto
+      .createHmac("sha512", salt)
+      .update(req.body.password)
+      .digest("base64");
+    req.body.password = salt + "$" + hash;
+  }
+  let toUpdateMemberId = req.params.memberId;
+  req.body.permissionLevel = 1;
+  req.body.revokeAccess = false;
+  MemberModel.update(toUpdateMemberId, req.body)
+    .then(() =>
+      res
+        .status(200)
+        .send({ msg: `User id: ${toUpdateMemberId} has been updated` })
+    )
+    .catch((err) => {
+      let errorMsg = err.message;
+      if (!errorMsg) {
+        errorMsg = "Someting went wrong";
+      }
+      return res.status(500).send({
+        errors: [{ type: "Internal error", message: errorMsg }],
+      });
+    });
+};
 
 exports.deleteMember = (req, res) => {
   MemberModel.delete(req.params.memberId)

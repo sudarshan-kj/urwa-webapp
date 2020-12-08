@@ -18,7 +18,7 @@ const opts = {
 
 let memberSchema = new Schema(
   {
-    siteNumber: { type: Number, index: { unique: true }, required: true },
+    siteNumber: { type: Number, unique: false, required: true },
     firstName: { type: String, unique: false, required: true },
     lastName: { type: String, unique: false, required: true },
     email: { type: String, index: { unique: true }, required: true },
@@ -56,4 +56,17 @@ exports.delete = (memberId) => {
 
 exports.findByEmail = (value) => {
   return Member.findOne({ email: value });
+};
+
+exports.update = (memberId, newValues) => {
+  let details = newValues.details;
+  delete newValues.details;
+  return Member.findByIdAndUpdate({ _id: memberId }, newValues).then(
+    (updatedMember) => {
+      if (!updatedMember) {
+        throw new Error("User not found");
+      }
+      return MemberDetailsModel.update(memberId, details);
+    }
+  );
 };
