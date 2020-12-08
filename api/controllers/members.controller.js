@@ -61,7 +61,6 @@ exports.createMember = (req, res) => {
     .createHmac("sha512", salt)
     .update(req.body.password)
     .digest("base64");
-
   const { error } = schema.validate(req.body);
   if (error) {
     return res.status(400).send({ error: error.details });

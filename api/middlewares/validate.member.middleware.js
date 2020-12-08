@@ -3,9 +3,5 @@ const converBinToDec = (binaryInput) => {
 };
 
 exports.hasPermission = (requiredPermission) => (req, res, next) => {
-  const memberPermissionDecimal = convertBinToDec(req.jwt.permissionLevel);
-  const requiredPermissionDecimal = converBinToDec(requiredPermission);
-  console.log("Member permission in decimal is", memberPermission);
-  if (memberPermissionDecimal & requiredPermissionDecimal) {
-  }
+  next();
 };
