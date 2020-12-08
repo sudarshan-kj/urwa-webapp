@@ -16,16 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
-import config from "../../config";
-import axios from "axios";
+import { authAxios } from "utils/Auth";
 import { useToast } from "@chakra-ui/react";
-
-const authAxios = axios.create({
-  baseURL: config.API_ENDPOINT,
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-});
 
 const AddMember = () => {
   const history = useHistory();
@@ -76,6 +68,7 @@ const AddMember = () => {
       lastName: "",
       email: "",
       password: "",
+      revokeAccess: false,
       details: {
         mobile: "",
         altContact: "",
