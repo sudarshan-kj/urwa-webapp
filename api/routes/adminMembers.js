@@ -1,4 +1,4 @@
-const MembersController = require("../controllers/members.controller");
+const AdminMembersController = require("../controllers/adminMember.controller");
 const ValidateMiddleware = require("../middlewares/validate.member.middleware");
 const express = require("express");
 const permission = require("../config/permission.config");
@@ -10,26 +10,15 @@ membersRouter.post("/add", [
     adminOnly: true,
     permission: permission.CREATE,
   }),
-  ValidateMiddleware.doesUserAlreadyExist,
-  MembersController.createMember,
+  AdminMembersController.createAdminMember,
 ]);
-membersRouter.delete("/:memberId", [
+membersRouter.delete("", [
   ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.hasPermission({
     adminOnly: true,
     permission: permission.DELETE,
   }),
-  MembersController.deleteMember,
+  AdminMembersController.deleteAdminMember,
 ]);
-membersRouter.patch("/:memberId", [
-  ValidateMiddleware.isValidJWTAccessToken,
-  ValidateMiddleware.hasPermission({
-    adminOnly: false,
-    permission: permission.UPDATE,
-  }),
-  ValidateMiddleware.doesUserAlreadyExist,
-  MembersController.updateMember,
-]);
-membersRouter.get("/health", [MembersController.health]);
 
 module.exports = membersRouter;

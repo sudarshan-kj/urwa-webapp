@@ -1,7 +1,7 @@
 module.exports = {
-  CREATE: "8", // 1000
-  READ: "4", //0100
-  UPDATE: "2", //0010
-  DELETE: "1", //0001
-  ALL: "F", //1111
+  CREATE: "0x08", // 1000
+  READ: "0x04", //0100
+  UPDATE: "0x02", //0010
+  DELETE: "0x01", //0001
+  ALL: "0x0F", //1111
 };

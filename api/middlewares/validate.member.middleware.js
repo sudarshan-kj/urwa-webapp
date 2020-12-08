@@ -1,13 +1,6 @@
 const jwt = require("jsonwebtoken");
 const tokenConfig = require("../config/token.config");
-
-const converBinToDec = (binaryInput) => {
-  return parseInt(binaryInput, 2).toString(10);
-};
-
-exports.hasPermission = (requiredPermission) => (req, res, next) => {
-  next();
-};
+const MemberModel = require("../models/member.model");
 
 exports.isValidJWTAccessToken = (req, res, next) => {
   let authHeader = req.headers.authorization;
@@ -30,8 +23,62 @@ exports.isValidJWTAccessToken = (req, res, next) => {
       }
     }
   } else {
-    res.status(401).send({
+    return res.status(401).send({
       error: [{ type: "Unauthenticated member", message: "No token found" }],
     });
   }
+};
+
+exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
+  const memberPermission = req.jwt.permissionLevel.split("-");
+  const selfPermission = memberPermission[1];
+  const adminPermission = memberPermission[0];
+  if (adminOnly) {
+    if (permission & adminPermission) {
+      return next();
+    } else {
+      return res.status(403).send({
+        error: [
+          {
+            type: "Unauthorized user",
+            messsage: `You do not have necessary permissions to perform operation: ${permission}`,
+          },
+        ],
+      });
+    }
+  } else {
+    if (permission & selfPermission || permission & adminPermission) {
+      return next();
+    } else {
+      return res.status(403).send({
+        error: [
+          {
+            type: "Unauthorized user",
+            messsage: `You do not have necessary permissions to perform operation: ${permission}`,
+          },
+        ],
+      });
+    }
+  }
+};
+
+exports.doesUserAlreadyExist = (req, res, next) => {
+  MemberModel.findByEmail(req.body.email)
+    .then((member) => {
+      if (member) {
+        return res.status(409).send({
+          error: [
+            { message: `User with email: ${req.body.email} already exists` },
+          ],
+        });
+      } else {
+        return next();
+      }
+    })
+    .catch((err) => {
+      console.err("Error occurred while checking if user already exists", err);
+      return res
+        .status(500)
+        .send({ error: [{ message: "Something went wrong" }] });
+    });
 };

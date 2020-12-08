@@ -6,7 +6,7 @@ const app = express();
 const log4j = require("log4js");
 const logger = log4j.getLogger();
 logger.level = "debug";
-const { AuthRoutes, MembersRoutes } = require("./routes");
+const { AuthRoutes, MembersRoutes, AdminMembersRoutes } = require("./routes");
 
 //Test app
 app.use(cors());
@@ -16,4 +16,5 @@ const apiRouter = express.Router();
 app.use("/api", apiRouter);
 apiRouter.use("/auth", AuthRoutes);
 apiRouter.use("/members", MembersRoutes);
+apiRouter.use("/adminMembers", AdminMembersRoutes);
 app.listen(port, () => logger.info(`Listening on port ${port}`));

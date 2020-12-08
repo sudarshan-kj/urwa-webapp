@@ -23,7 +23,7 @@ let memberSchema = new Schema(
     lastName: { type: String, unique: false, required: true },
     email: { type: String, index: { unique: true }, required: true },
     password: { type: String, unique: false, required: true },
-    permissionLevel: { type: Number, unique: false, required: true },
+    permissionLevel: { type: String, unique: false, required: true },
     revokeAccess: { type: Boolean, unique: false, required: true },
   },
   opts
@@ -69,4 +69,8 @@ exports.update = (memberId, newValues) => {
       return MemberDetailsModel.update(memberId, details);
     }
   );
+};
+
+exports.updateByEmailId = (email, newValues) => {
+  return Member.updateOne({ email: email }, newValues).exec();
 };

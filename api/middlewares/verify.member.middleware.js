@@ -11,7 +11,7 @@ exports.hasValidAuthFields = (req, res, next) => {
     if (!req.body.password) {
       errors.push("No password entered");
     } else {
-      next();
+      return next();
     }
   } else {
     errors.push("No valid credentials entered");

@@ -1,4 +1,5 @@
 const MemberModel = require("../models/member.model");
+const AdminMemberModel = require("../models/adminMember.model");
 const crypto = require("crypto");
 const logger = require("log4js").getLogger();
 const Joi = require("joi");
@@ -18,6 +19,7 @@ const schema = Joi.object({
     .pattern(/^[0-9]+$/)
     .required(),
   password: Joi.string().min(5).max(20).required(),
+  revokeAccess: Joi.bool().required(),
   details: Joi.object({
     mobile: Joi.string()
       .length(10)
@@ -65,28 +67,25 @@ exports.createMember = (req, res) => {
   if (error) {
     return res.status(400).send({ error: error.details });
   }
-  MemberModel.findByEmail(req.body.email)
-    .then((member) => {
-      if (member) {
-        return res.status(409).send({
-          error: [
-            { message: `User with email: ${req.body.email} already exists` },
-          ],
-        });
+  req.body.password = salt + "$" + hash;
+  AdminMemberModel.findByEmail(req.body.email)
+    .then((adminMember) => {
+      if (!adminMember) {
+        req.body.permissionLevel = "0x00-0x06";
       } else {
-        req.body.password = salt + "$" + hash;
-        req.body.permissionLevel = 1;
-        req.body.revokeAccess = false;
-        MemberModel.insert(req.body)
-          .then((result) => {
-            res.status(201).send({ id: result._id });
-          })
-          .catch((err) => res.status(400).send({ errors: err }));
+        req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
       }
+      MemberModel.insert(req.body)
+        .then((result) => {
+          res.status(201).send({ id: result._id });
+        })
+        .catch((err) => res.status(400).send({ errors: err }));
     })
-    .catch((err) =>
-      res.status(500).send({ error: [{ message: "Something went wrong" }] })
-    );
+    .catch((err) => {
+      return res
+        .status(500)
+        .send({ error: [{ message: "Somehting went wrong" }] });
+    });
 };
 
 exports.updateMember = (req, res) => {
@@ -103,8 +102,7 @@ exports.updateMember = (req, res) => {
     req.body.password = salt + "$" + hash;
   }
   let toUpdateMemberId = req.params.memberId;
-  req.body.permissionLevel = 1;
-  req.body.revokeAccess = false;
+  req.body.permissionLevel = setPermissionLevel(req.body.email);
   MemberModel.update(toUpdateMemberId, req.body)
     .then(() =>
       res
@@ -122,13 +120,14 @@ exports.updateMember = (req, res) => {
     });
 };
 
+//TODO: Delete admin member if any, when deleting this member
 exports.deleteMember = (req, res) => {
   MemberModel.delete(req.params.memberId)
-    .then((result) => {
-      return res
+    .then(() =>
+      res
         .status(200)
-        .send({ msg: `Deleted member with id: ${req.params.memberId}` });
-    })
+        .send({ msg: `Deleted member with id: ${req.params.memberId}` })
+    )
     .catch((err) => logger.error("Error occurred while deleting", err));
 };
 
