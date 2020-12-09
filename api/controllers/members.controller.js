@@ -159,6 +159,7 @@ exports.listAllMembers = (req, res) => {
 
 exports.getMember = (req, res) => {
   MemberModel.findById(req.params.memberId)
+    .populate("mDetails")
     .then((foundMember) => {
       if (req.query.details) {
         if (req.query.details === "true") {
