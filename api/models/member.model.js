@@ -9,8 +9,6 @@ const opts = {
     transform: function (doc, ret) {
       delete ret._id; //since id is added, this _id is not required
       delete ret.password;
-      delete ret.permissionLevel;
-      delete ret.revokeAccess;
       delete ret.createdAt;
       delete ret.updatedAt;
     },

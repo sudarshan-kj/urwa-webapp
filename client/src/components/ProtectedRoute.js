@@ -1,8 +1,9 @@
 import React from "react";
 import { Route, Redirect, useHistory } from "react-router-dom";
 import { isAuthenticated, logout } from "../utils/Auth";
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Heading } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { hasPermission } from "utils/Authz";
 
 const WithLogoutHeader = ({ component: Component }) => {
   const history = useHistory();
@@ -25,14 +26,37 @@ const WithLogoutHeader = ({ component: Component }) => {
   );
 };
 
-const ProtectedRoute = ({ path, component }) => {
-  return isAuthenticated() ? (
-    <Route to={path}>
-      <WithLogoutHeader component={component} />
-    </Route>
-  ) : (
-    <Redirect to="/login" />
+const ProtectedRoute = ({ path, component, adminOnly, permission }) => {
+  return (
+    <>
+      {isAuthenticated() ? (
+        <>
+          {hasPermission({ adminOnly, permission }) ? (
+            <Route to={path}>
+              <WithLogoutHeader component={component} />
+            </Route>
+          ) : (
+            <WithLogoutHeader component={Unauthorized} />
+          )}
+        </>
+      ) : (
+        <Redirect to="/login" />
+      )}
+    </>
   );
 };
+
+const Unauthorized = () => (
+  <Heading
+    color="white"
+    as="h1"
+    size="md"
+    p="4"
+    fontWeight="100"
+    textAlign="center"
+  >
+    Unauthorized
+  </Heading>
+);
 
 export default ProtectedRoute;

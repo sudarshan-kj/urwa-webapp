@@ -4,6 +4,7 @@ import Home from "components/Home";
 import { Route, Switch } from "react-router-dom";
 import ProtectedRoute from "components/ProtectedRoute";
 import AddMember from "components/Member/AddMember";
+import { permissions } from "utils/Authz";
 
 function App() {
   return (
@@ -15,7 +16,12 @@ function App() {
         <Route path="/login">
           <LoginPage />
         </Route>
-        <ProtectedRoute path="/admin/addMember" component={AddMember} />
+        <ProtectedRoute
+          adminOnly={true}
+          permission={permissions.CREATE}
+          path="/admin/addMember"
+          component={AddMember}
+        />
         <Route>
           <NotFound />
         </Route>

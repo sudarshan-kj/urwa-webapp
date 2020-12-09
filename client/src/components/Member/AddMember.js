@@ -18,6 +18,7 @@ import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import { authAxios } from "utils/Auth";
 import { useToast } from "@chakra-ui/react";
+import { hasPermission, permissions } from "utils/Authz";
 
 const AddMember = () => {
   const history = useHistory();

@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const isAuthenticated = () => {
   if (
-    localStorage.getItem("token") ||
+    localStorage.getItem("token") &&
     localStorage.getItem("token") !== "undefined"
   ) {
     return true;
