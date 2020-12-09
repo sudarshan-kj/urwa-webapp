@@ -36,30 +36,28 @@ exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
   if (adminOnly) {
     if (permission & adminPermission) {
       return next();
-    } else {
-      return res.status(403).send({
-        error: [
-          {
-            type: "Unauthorized user",
-            messsage: `You do not have necessary permissions to perform operation: ${permission}`,
-          },
-        ],
-      });
     }
   } else {
-    if (permission & selfPermission || permission & adminPermission) {
+    if (permission & adminPermission) {
       return next();
-    } else {
-      return res.status(403).send({
-        error: [
-          {
-            type: "Unauthorized user",
-            messsage: `You do not have necessary permissions to perform operation: ${permission}`,
-          },
-        ],
-      });
+    } else if (permission & selfPermission) {
+      if (req.params.memberId) {
+        if (req.jwt.memberId === req.params.memberId) {
+          return next();
+        }
+      } else {
+        return next();
+      }
     }
   }
+  return res.status(403).send({
+    error: [
+      {
+        type: "Unauthorized user",
+        messsage: `You do not have necessary permissions to perform operation: ${permission}`,
+      },
+    ],
+  });
 };
 
 exports.doesUserAlreadyExist = (req, res, next) => {
