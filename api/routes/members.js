@@ -13,6 +13,15 @@ membersRouter.get("/list", [
   MembersController.listAllMembers,
 ]);
 
+membersRouter.get("/:memberId", [
+  ValidateMiddleware.isValidJWTAccessToken,
+  ValidateMiddleware.hasPermission({
+    adminOnly: false,
+    permission: permission.READ,
+  }),
+  MembersController.getMember,
+]);
+
 membersRouter.post("/add", [
   ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.hasPermission({

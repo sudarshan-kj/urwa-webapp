@@ -7,6 +7,8 @@ const opts = {
     versionKey: false,
     transform: function (doc, ret) {
       delete ret._id;
+      delete ret.createdAt;
+      delete ret.updatedAt;
     },
   },
   timestamps: true,
@@ -51,4 +53,8 @@ exports.delete = (id) => {
 
 exports.update = (memberId, memberDetails) => {
   return MemberDetails.findOneAndUpdate({ memberId: memberId }, memberDetails);
+};
+
+exports.findByMemberId = (memberId) => {
+  return MemberDetails.findOne({ memberId: memberId });
 };

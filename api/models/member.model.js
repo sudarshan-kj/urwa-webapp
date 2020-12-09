@@ -27,6 +27,7 @@ let memberSchema = new Schema(
     password: { type: String, unique: false, required: true },
     permissionLevel: { type: String, unique: false, required: true },
     revokeAccess: { type: Boolean, unique: false, required: true },
+    mDetails: [{ type: Schema.Types.ObjectId, ref: "MemberDetails" }],
   },
   opts
 );
@@ -58,6 +59,10 @@ exports.delete = (memberId) => {
 
 exports.findByEmail = (value) => {
   return Member.findOne({ email: value });
+};
+
+exports.findById = (memberId) => {
+  return Member.findById({ _id: memberId });
 };
 
 exports.update = (memberId, newValues) => {

@@ -1,5 +1,6 @@
 const MemberModel = require("../models/member.model");
 const AdminMemberModel = require("../models/adminMember.model");
+const MemberDetailsModel = require("../models/memberDetails.model");
 const crypto = require("crypto");
 const logger = require("log4js").getLogger();
 const Joi = require("joi");
@@ -156,7 +157,33 @@ exports.listAllMembers = (req, res) => {
   }
 };
 
-exports.getMember = (req, res) => {};
+exports.getMember = (req, res) => {
+  MemberModel.findById(req.params.memberId)
+    .then((foundMember) => {
+      if (req.query.details) {
+        if (req.query.details === "true") {
+          MemberDetailsModel.findByMemberId(foundMember._id)
+            .then((memberDetails) => {
+              foundMember.mDetails.push(memberDetails);
+              return res.status(200).send(foundMember);
+            })
+            .catch((err) => res.status(500).send({ error: err }));
+        } else {
+          return res.status(400).send({
+            error: [
+              {
+                message:
+                  "Invalid value found for query param. Must be true or the query param must not be present",
+              },
+            ],
+          });
+        }
+      } else {
+        return res.status(200).send(foundMember);
+      }
+    })
+    .catch((err) => res.status(500).send({ error: [{ message: err }] }));
+};
 
 exports.health = (req, res) => {
   res.status(200).send({ msg: "ok" });
