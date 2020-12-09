@@ -4,6 +4,15 @@ const express = require("express");
 const permission = require("../config/permission.config");
 const membersRouter = express.Router();
 
+membersRouter.get("/list", [
+  ValidateMiddleware.isValidJWTAccessToken,
+  ValidateMiddleware.hasPermission({
+    adminOnly: true,
+    permission: permission.READ,
+  }),
+  MembersController.listAllMembers,
+]);
+
 membersRouter.post("/add", [
   ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.hasPermission({

@@ -131,7 +131,30 @@ exports.deleteMember = (req, res) => {
     .catch((err) => logger.error("Error occurred while deleting", err));
 };
 
-exports.listAllMembers = (req, res) => {};
+const validateNumber = (value) => {
+  if (!Number.isInteger(parseInt(value))) {
+    throw new Error("Invalid data provided");
+  }
+};
+
+exports.listAllMembers = (req, res) => {
+  if (req.query.page && req.query.limit) {
+    try {
+      let page = validateNumber(req.query.page);
+      let perPageLimit = validateNumber(req.query.limit);
+      perPageLimit = perPageLimit <= 25 ? perPageLimit : 25;
+      MemberModel.list(perPageLimit, page)
+        .then((users) => res.status(200).send(users))
+        .catch((err) => res.status(500).send({ error: [{ message: err }] }));
+    } catch (err) {
+      return res.status(400).send({ error: [{ message: err.message }] });
+    }
+  } else {
+    return res.status(400).send({
+      error: [{ message: "Missing 'limit' and/or 'page' query parameter" }],
+    });
+  }
+};
 
 exports.getMember = (req, res) => {};
 

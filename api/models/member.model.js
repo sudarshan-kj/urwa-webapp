@@ -4,13 +4,15 @@ const MemberDetailsModel = require("./memberDetails.model");
 let { Schema } = mongoose;
 const opts = {
   toJSON: {
-    virtuals: true,
+    virtuals: true, //this adds the "id" field
     versionKey: false,
     transform: function (doc, ret) {
-      delete ret._id;
+      delete ret._id; //since id is added, this _id is not required
       delete ret.password;
       delete ret.permissionLevel;
       delete ret.revokeAccess;
+      delete ret.createdAt;
+      delete ret.updatedAt;
     },
   },
   timestamps: true,
@@ -73,4 +75,16 @@ exports.update = (memberId, newValues) => {
 
 exports.updateByEmailId = (email, newValues) => {
   return Member.updateOne({ email: email }, newValues).exec();
+};
+
+exports.list = (perPage, page) => {
+  return new Promise((resolve, reject) => {
+    Member.find()
+      .limit(perPage)
+      .skip(perPage * page)
+      .exec((err, users) => {
+        if (err) reject(err);
+        else resolve(users);
+      });
+  });
 };
