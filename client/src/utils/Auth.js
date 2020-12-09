@@ -15,9 +15,10 @@ export const logout = () => {
   localStorage.setItem("token", "undefined");
 };
 
-export const authAxios = axios.create({
-  baseURL: config.API_ENDPOINT,
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-});
+export const authAxios = () =>
+  axios.create({
+    baseURL: config.API_ENDPOINT,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
