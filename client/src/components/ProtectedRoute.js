@@ -9,10 +9,13 @@ import {
   Heading,
   HStack,
   Icon,
+  Stack,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
-import { ArrowForChewardIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import { hasPermission } from "utils/Authz";
-import { Link } from "react-router-dom";
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { hasPermission, getUserName } from "utils/Authz";
+import { Link, useLocation } from "react-router-dom";
 import {
   Menu,
   MenuButton,
@@ -27,8 +30,20 @@ import {
 } from "@chakra-ui/react";
 import { ReactComponent as HomeIcon } from "assets/icons/home.svg";
 
-const WithLogoutHeader = ({ component: Component }) => {
+const getPath = (location, flip) => {
+  return location.pathname.includes("admin")
+    ? flip
+      ? "member"
+      : "admin"
+    : flip
+    ? "admin"
+    : "member";
+};
+
+const CommonHeader = ({ component: Component, unauthorized }) => {
   const history = useHistory();
+  const location = useLocation();
+
   return (
     <>
       <Flex
@@ -43,7 +58,7 @@ const WithLogoutHeader = ({ component: Component }) => {
       >
         <Box p="2">
           <HStack>
-            <Link to="/admin/home">
+            <Link to={`/${getPath(location, unauthorized)}/home`}>
               <Icon
                 as={HomeIcon}
                 w={6}
@@ -63,7 +78,9 @@ const WithLogoutHeader = ({ component: Component }) => {
                   isActive={isOpen}
                   as={Button}
                   rightIcon={<ChevronDownIcon />}
-                ></MenuButton>
+                >
+                  {getUserName()}
+                </MenuButton>
                 <MenuList>
                   <MenuItem>Profile</MenuItem>
                   <MenuItem
@@ -94,10 +111,10 @@ const ProtectedRoute = ({ path, component, adminOnly, permission }) => {
         <>
           {hasPermission({ adminOnly, permission }) ? (
             <Route to={path}>
-              <WithLogoutHeader component={component} />
+              <CommonHeader unauthorized={false} component={component} />
             </Route>
           ) : (
-            <WithLogoutHeader component={Unauthorized} />
+            <CommonHeader unauthorized={true} component={Unauthorized} />
           )}
         </>
       ) : (
@@ -107,17 +124,18 @@ const ProtectedRoute = ({ path, component, adminOnly, permission }) => {
   );
 };
 
-const Unauthorized = () => (
-  <Heading
-    color="white"
-    as="h1"
-    size="md"
-    p="4"
-    fontWeight="100"
-    textAlign="center"
-  >
-    Unauthorized
-  </Heading>
-);
+const Unauthorized = () => {
+  const location = useLocation();
+  return (
+    <VStack>
+      <Heading as="h1" size="md" p="4" fontWeight="100" textAlign="center">
+        403 Unauthorized
+      </Heading>
+      <Link to={`/${getPath(location, true)}/home`}>
+        <Text>Go to Home</Text>
+      </Link>
+    </VStack>
+  );
+};
 
 export default ProtectedRoute;

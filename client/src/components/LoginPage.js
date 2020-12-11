@@ -51,7 +51,7 @@ const LoginPage = () => {
           if (isAdmin()) {
             history.push("/admin/home");
           } else {
-            history.push("/home");
+            history.push("/member/home");
           }
           resetForm({ value: "" });
         }

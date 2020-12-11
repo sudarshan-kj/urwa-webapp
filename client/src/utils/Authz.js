@@ -22,6 +22,14 @@ export const hasPermission = ({ adminOnly, permission }) => {
   return false;
 };
 
+export const getUserName = () => {
+  if (isAuthenticated()) {
+    const decodedToken = jwt_decode(localStorage.getItem("token"));
+    return decodedToken.firstName;
+  }
+  return "Unknown";
+};
+
 export const isAdmin = () => {
   if (isAuthenticated()) {
     const decodedToken = jwt_decode(localStorage.getItem("token"));

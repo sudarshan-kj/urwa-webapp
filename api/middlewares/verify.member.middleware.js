@@ -38,7 +38,8 @@ exports.verifyUserAndPassword = (req, res, next) => {
             memberId: member._id,
             email: member.email,
             permissionLevel: member.permissionLevel,
-            name: member.firstName + " " + member.lastName,
+            firstName: member.firstName,
+            lastName: member.lastName,
           };
           return next();
         } else {

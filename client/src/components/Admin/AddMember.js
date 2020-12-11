@@ -91,10 +91,15 @@ const AddMember = () => {
   });
 
   return (
-    <Box bg="gray.200" w="60%" m="auto">
+    <Box bg="gray.200" w={{ base: "70%", md: "60%" }} m="auto">
       <Box>
         <form onSubmit={formik.handleSubmit}>
-          <VStack w="50%" m="auto" py="30px" spacing="40px">
+          <VStack
+            w={{ base: "100%", md: "50%" }}
+            m="auto"
+            py="30px"
+            spacing="40px"
+          >
             <Heading as="h1" size="md">
               Member Basic Info
             </Heading>
@@ -171,7 +176,12 @@ const AddMember = () => {
             </FormControl>
           </VStack>
 
-          <VStack w="50%" m="auto" py="30px" spacing="40px">
+          <VStack
+            w={{ base: "100%", md: "50%" }}
+            m="auto"
+            py="30px"
+            spacing="40px"
+          >
             <Heading as="h1" size="md">
               Member Details
             </Heading>
