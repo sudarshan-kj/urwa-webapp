@@ -4,18 +4,18 @@ import { isAuthenticated, logout } from "../utils/Auth";
 import {
   Flex,
   Box,
-  Spacer,
   Button,
   Heading,
   HStack,
   Icon,
-  Stack,
   Text,
   VStack,
+  Spacer,
+  Badge,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { hasPermission, getUserName } from "utils/Authz";
-import { Link, useLocation } from "react-router-dom";
+import { isAdmin, hasPermission, getUserName } from "utils/Authz";
+import { Link } from "react-router-dom";
 import {
   Menu,
   MenuButton,
@@ -30,19 +30,15 @@ import {
 } from "@chakra-ui/react";
 import { ReactComponent as HomeIcon } from "assets/icons/home.svg";
 
-const getPath = (location, flip) => {
-  return location.pathname.includes("admin")
-    ? flip
-      ? "member"
-      : "admin"
-    : flip
-    ? "admin"
-    : "member";
+const getPath = () => {
+  if (isAdmin()) {
+    return "admin";
+  }
+  return "member";
 };
 
-const CommonHeader = ({ component: Component, unauthorized }) => {
+const CommonHeader = ({ component: Component }) => {
   const history = useHistory();
-  const location = useLocation();
 
   return (
     <>
@@ -58,7 +54,7 @@ const CommonHeader = ({ component: Component, unauthorized }) => {
       >
         <Box p="2">
           <HStack>
-            <Link to={`/${getPath(location, unauthorized)}/home`}>
+            <Link to={`/${getPath()}/home`}>
               <Icon
                 as={HomeIcon}
                 w={6}
@@ -77,6 +73,7 @@ const CommonHeader = ({ component: Component, unauthorized }) => {
                 <MenuButton
                   isActive={isOpen}
                   as={Button}
+                  colorScheme="teal"
                   rightIcon={<ChevronDownIcon />}
                 >
                   {getUserName()}
@@ -100,6 +97,10 @@ const CommonHeader = ({ component: Component, unauthorized }) => {
       <Box height="100%" bg="gray.200" py={8}>
         <Component />
       </Box>
+
+      <Badge colorScheme="teal" pos="fixed" bottom={2} right={2} zIndex={999}>
+        {isAdmin() ? "Admin" : "Member"}
+      </Badge>
     </>
   );
 };
@@ -111,10 +112,10 @@ const ProtectedRoute = ({ path, component, adminOnly, permission }) => {
         <>
           {hasPermission({ adminOnly, permission }) ? (
             <Route to={path}>
-              <CommonHeader unauthorized={false} component={component} />
+              <CommonHeader component={component} />
             </Route>
           ) : (
-            <CommonHeader unauthorized={true} component={Unauthorized} />
+            <CommonHeader component={Unauthorized} />
           )}
         </>
       ) : (
@@ -125,13 +126,12 @@ const ProtectedRoute = ({ path, component, adminOnly, permission }) => {
 };
 
 const Unauthorized = () => {
-  const location = useLocation();
   return (
     <VStack>
       <Heading as="h1" size="md" p="4" fontWeight="100" textAlign="center">
         403 Unauthorized
       </Heading>
-      <Link to={`/${getPath(location, true)}/home`}>
+      <Link to={`/${getPath()}/home`}>
         <Text>Go to Home</Text>
       </Link>
     </VStack>

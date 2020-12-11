@@ -5,19 +5,20 @@ import {
   SimpleGrid,
   Text,
   Center,
-  VStack,
+  Badge,
   HStack,
   Icon,
 } from "@chakra-ui/react";
 import { AddIcon, ViewIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
+import PaymentCard from "components/PaymentCard";
 
 const AdminHome = () => {
   return (
     <>
       <Box h="80vh" m={8}>
         <Stack w="50%" m="auto" spacing={8}>
-          <SimpleGrid minChildWidth="120px" spacing="40px">
+          <SimpleGrid row={1} minChildWidth="160px" spacing="40px">
             <Link to="/admin/addMember">
               <Center
                 borderRadius="20px"
@@ -36,9 +37,7 @@ const AdminHome = () => {
                     w={{ base: 4, md: 6 }}
                     h={{ base: 4, md: 6 }}
                   />
-                  <Text fontSize={{ base: "xl", md: "2xl" }}>
-                    Add New Member
-                  </Text>
+                  <Text fontSize={{ base: "xl", md: "2xl" }}>Add Member</Text>
                 </HStack>
               </Center>
             </Link>
@@ -64,6 +63,7 @@ const AdminHome = () => {
                 </HStack>
               </Center>
             </Link>
+            <PaymentCard />
           </SimpleGrid>
         </Stack>
       </Box>

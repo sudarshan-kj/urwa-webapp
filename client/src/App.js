@@ -6,7 +6,7 @@ import ProtectedRoute from "components/ProtectedRoute";
 import { permissions } from "utils/Authz";
 import AdminHome from "components/Admin/AdminHome";
 import AddMember from "components/Admin/AddMember";
-import Home from "components/Member/MemberHome";
+import MemberHome from "components/Member/MemberHome";
 import ViewMembers from "components/Admin/ViewMembers";
 import PaymentPage from "components/Member/MemberPayment";
 
@@ -24,7 +24,7 @@ function App() {
           adminOnly={false}
           permission={permissions.READ}
           path="/member/home"
-          component={Home}
+          component={MemberHome}
         />
         <ProtectedRoute
           adminOnly={false}

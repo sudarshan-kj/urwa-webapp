@@ -1,21 +1,19 @@
-import { Heading, Text, Center, VStack } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Stack, Box, SimpleGrid } from "@chakra-ui/react";
+import PaymentCard from "components/PaymentCard";
 
-function Home() {
+const MemberHome = () => {
   return (
     <>
-      <Center height="80vh">
-        <VStack spacing={6}>
-          <Heading as="h1" size="md" p="4" fontWeight="100" textAlign="center">
-            Under Development
-          </Heading>
-          <Text>
-            <Link to="/member/payment">Click here to pay</Link>
-          </Text>
-        </VStack>
-      </Center>
+      <Box h="80vh" m={8}>
+        <Stack w="50%" m="auto" spacing={8}>
+          <SimpleGrid row={1} minChildWidth="160px" spacing="40px">
+            <PaymentCard />
+          </SimpleGrid>
+        </Stack>
+      </Box>
     </>
   );
-}
+};
 
-export default Home;
+export default MemberHome;
