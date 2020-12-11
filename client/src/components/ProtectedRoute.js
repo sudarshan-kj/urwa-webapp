@@ -43,6 +43,8 @@ const CommonHeader = ({ component: Component }) => {
   return (
     <>
       <Flex
+        h="80px"
+        align="center"
         pos="sticky"
         w="100%"
         bgColor="gray.700"
@@ -94,7 +96,7 @@ const CommonHeader = ({ component: Component }) => {
           </Menu>
         </Box>
       </Flex>
-      <Box height="100%" bg="gray.200" py={8}>
+      <Box bg="gray.200" py={8}>
         <Component />
       </Box>
 

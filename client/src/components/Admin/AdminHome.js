@@ -2,12 +2,14 @@ import React from "react";
 import {
   Stack,
   Box,
+  Flex,
   SimpleGrid,
   Text,
   Center,
   Badge,
   HStack,
   Icon,
+  Spacer,
 } from "@chakra-ui/react";
 import { AddIcon, ViewIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
@@ -16,11 +18,12 @@ import PaymentCard from "components/PaymentCard";
 const AdminHome = () => {
   return (
     <>
-      <Box h="80vh" m={8}>
-        <Stack w="50%" m="auto" spacing={8}>
+      <Box h={{ base: "100%", md: "80vh" }} m={8}>
+        <Stack w="80%" m="auto" spacing={8}>
           <SimpleGrid row={1} minChildWidth="160px" spacing="40px">
             <Link to="/admin/addMember">
               <Center
+                shadow="xl"
                 borderRadius="20px"
                 h="200px"
                 p={8}
@@ -30,19 +33,26 @@ const AdminHome = () => {
                   borderColor: "teal.300",
                 }}
               >
-                <HStack>
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  justify="center"
+                  align="center"
+                >
                   <Icon
                     as={AddIcon}
                     color="teal.300"
                     w={{ base: 4, md: 6 }}
                     h={{ base: 4, md: 6 }}
                   />
-                  <Text fontSize={{ base: "xl", md: "2xl" }}>Add Member</Text>
-                </HStack>
+                  <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
+                    Add Member
+                  </Text>
+                </Stack>
               </Center>
             </Link>
             <Link to="/admin/viewMembers">
               <Center
+                shadow="xl"
                 borderRadius="20px"
                 h="200px"
                 p={8}
@@ -52,15 +62,21 @@ const AdminHome = () => {
                   borderColor: "teal.200",
                 }}
               >
-                <HStack>
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  justify="center"
+                  align="center"
+                >
                   <Icon
                     as={ViewIcon}
                     color="teal.300"
                     w={{ base: 4, md: 6 }}
                     h={{ base: 4, md: 6 }}
                   />
-                  <Text fontSize={{ base: "xl", md: "2xl" }}>View Members</Text>
-                </HStack>
+                  <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
+                    View Members
+                  </Text>
+                </Stack>
               </Center>
             </Link>
             <PaymentCard />
