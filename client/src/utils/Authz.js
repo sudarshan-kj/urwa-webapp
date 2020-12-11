@@ -22,6 +22,17 @@ export const hasPermission = ({ adminOnly, permission }) => {
   return false;
 };
 
+export const isAdmin = () => {
+  if (isAuthenticated()) {
+    const decodedToken = jwt_decode(localStorage.getItem("token"));
+    const adminPermission = decodedToken.permissionLevel.split("-")[0];
+    if (adminPermission > 0) {
+      return true;
+    }
+  }
+  return false;
+};
+
 export const permissions = {
   CREATE: "0x08",
   READ: "0x04",

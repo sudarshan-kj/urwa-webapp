@@ -18,6 +18,7 @@ import Logo from "assets/logo.png";
 import axios from "axios";
 import config from "../config";
 import { useHistory } from "react-router-dom";
+import { isAdmin } from "utils/Authz";
 
 const MAX_USERNAME_LENGTH = 50;
 const MAX_PASSWORD_LENGTH = 30;
@@ -47,7 +48,11 @@ const LoginPage = () => {
       .then((response) => {
         if (response.status === 201) {
           localStorage.setItem("token", response.data.accessToken);
-          history.push("/admin/addMember");
+          if (isAdmin()) {
+            history.push("/admin/home");
+          } else {
+            history.push("/home");
+          }
           resetForm({ value: "" });
         }
       })
