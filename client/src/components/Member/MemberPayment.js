@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Center, Heading } from "@chakra-ui/react";
 import axios from "axios";
 import useScript from "hooks/useScript";
+import ReactDependentScript from "react-dependent-script";
 
 const MemberPayment = () => {
   const reqBody = {
@@ -21,7 +22,7 @@ const MemberPayment = () => {
   };
 
   function launchBolt() {
-    bolt.launch(reqBody, {
+    window.bolt.launch(reqBody, {
       responseHandler: function (BOLT) {
         console.log(BOLT.response.txnStatus);
         if (BOLT.response.txnStatus != "CANCEL") {
@@ -41,10 +42,18 @@ const MemberPayment = () => {
   };
 
   return (
-    <Center h="80vh">
-      <Heading>Due amount is Rs 300</Heading>
-      <Button onClick={() => launchBolt()}> Pay</Button>
-    </Center>
+    <ReactDependentScript
+      loadingComponent={<div>jQuery is loading...</div>}
+      scripts={[
+        "https://sboxcheckout-static.citruspay.com/bolt/run/bolt.min.js",
+      ]}
+    >
+      <Center h="80vh">
+        <Heading>Due amount is Rs 300</Heading>
+        <Button onClick={() => launchBolt()}> Pay</Button>
+      </Center>
+      <div>jQuery is loaded!</div>
+    </ReactDependentScript>
   );
 };
 
