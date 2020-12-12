@@ -44,9 +44,7 @@ const MemberPayment = () => {
   return (
     <ReactDependentScript
       loadingComponent={<div>jQuery is loading...</div>}
-      scripts={[
-        "https://sboxcheckout-static.citruspay.com/bolt/run/bolt.min.js",
-      ]}
+      scripts={["https://checkout-static.citruspay.com/bolt/run/bolt.min.js"]}
     >
       <Center h="80vh">
         <Heading>Due amount is Rs 300</Heading>
