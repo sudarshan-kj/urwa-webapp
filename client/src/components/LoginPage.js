@@ -57,10 +57,16 @@ const LoginPage = () => {
         }
       })
       .catch((err) => {
-        setFormError({
-          error: true,
-          msg: err.response.data.error,
-        });
+        if (err.response)
+          setFormError({
+            error: true,
+            msg: err.response.data.error,
+          });
+        else
+          setFormError({
+            error: true,
+            msg: "Something went wrong",
+          });
       })
       .finally(() => setSubmitting(false));
   };
