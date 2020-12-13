@@ -28,7 +28,8 @@ membersRouter.post("/add", [
     adminOnly: true,
     permission: permission.CREATE,
   }),
-  ValidateMiddleware.doesUserAlreadyExist,
+  ValidateMiddleware.doesUserEmailAlreadyExist,
+  ValidateMiddleware.doesSiteNumberAlreadyExist,
   MembersController.createMember,
 ]);
 membersRouter.delete("/:memberId", [
@@ -45,7 +46,8 @@ membersRouter.patch("/:memberId", [
     adminOnly: false,
     permission: permission.UPDATE,
   }),
-  ValidateMiddleware.doesUserAlreadyExist,
+  ValidateMiddleware.doesUserEmailAlreadyExist,
+  ValidateMiddleware.doesSiteNumberAlreadyExist,
   MembersController.updateMember,
 ]);
 membersRouter.get("/health", [MembersController.health]);

@@ -60,7 +60,7 @@ exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
   });
 };
 
-exports.doesUserAlreadyExist = (req, res, next) => {
+exports.doesUserEmailAlreadyExist = (req, res, next) => {
   MemberModel.findByEmail(req.body.email)
     .then((member) => {
       if (member) {
@@ -75,6 +75,32 @@ exports.doesUserAlreadyExist = (req, res, next) => {
     })
     .catch((err) => {
       console.err("Error occurred while checking if user already exists", err);
+      return res
+        .status(500)
+        .send({ error: [{ message: "Something went wrong" }] });
+    });
+};
+
+exports.doesSiteNumberAlreadyExist = (req, res, next) => {
+  MemberModel.findBySiteNumber(req.body.siteNumber)
+    .then((member) => {
+      if (member) {
+        return res.status(409).send({
+          error: [
+            {
+              message: `User with site number: ${req.body.siteNumber} already exists`,
+            },
+          ],
+        });
+      } else {
+        return next();
+      }
+    })
+    .catch((err) => {
+      console.err(
+        "Error occurred while checking if user with site number already exists",
+        err
+      );
       return res
         .status(500)
         .send({ error: [{ message: "Something went wrong" }] });

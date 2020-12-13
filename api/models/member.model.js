@@ -59,6 +59,10 @@ exports.findByEmail = (value) => {
   return Member.findOne({ email: value });
 };
 
+exports.findBySiteNumber = (value) => {
+  return Member.findOne({ siteNumber: value });
+};
+
 exports.findById = (memberId) => {
   return Member.findById({ _id: memberId });
 };
