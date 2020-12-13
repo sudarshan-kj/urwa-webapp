@@ -65,7 +65,7 @@ const LoginPage = () => {
         else
           setFormError({
             error: true,
-            msg: "Something went wrong",
+            msg: "Something went wrong. Please try again.",
           });
       })
       .finally(() => setSubmitting(false));
