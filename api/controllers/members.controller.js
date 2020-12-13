@@ -26,8 +26,8 @@ const schema = Joi.object({
       .length(10)
       .pattern(/^[0-9]+$/)
       .required(),
-    anniversary: Joi.string(),
-    dob: Joi.string(),
+    anniversary: Joi.date().allow(null, ""),
+    dob: Joi.date().allow(null, ""),
     altContact: Joi.string()
       .min(8)
       .max(14)
