@@ -202,7 +202,7 @@ const AddMember = () => {
               </NumberInput>
             </FormControl>
 
-            <FormControl id="details.dob" isRequired>
+            <FormControl id="details.dob">
               <FormLabel>Birthday</FormLabel>
               <Input
                 focusBorderColor="teal.400"
@@ -215,7 +215,7 @@ const AddMember = () => {
               />
             </FormControl>
 
-            <FormControl id="details.anniversary" isRequired>
+            <FormControl id="details.anniversary">
               <FormLabel>Anniversary Date</FormLabel>
               <Input
                 focusBorderColor="teal.400"
@@ -244,6 +244,7 @@ const AddMember = () => {
                 <option value="B-">B-</option>
                 <option value="AB-">AB-</option>
                 <option value="O-">O-</option>
+                <option value="UNKNOWN">UNKNOWN</option>
               </StyledSelect>
             </FormControl>
 
@@ -368,6 +369,7 @@ const AddMember = () => {
                 }}
                 placeholder="Select Maintenance Amount"
               >
+                <option value="100">₹100</option>
                 <option value="300">₹300</option>
                 <option value="500">₹500</option>
               </StyledSelect>

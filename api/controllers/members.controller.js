@@ -26,8 +26,8 @@ const schema = Joi.object({
       .length(10)
       .pattern(/^[0-9]+$/)
       .required(),
-    anniversary: Joi.date().required(),
-    dob: Joi.date().required(),
+    anniversary: Joi.date(),
+    dob: Joi.date(),
     altContact: Joi.string()
       .min(8)
       .max(14)
@@ -40,12 +40,12 @@ const schema = Joi.object({
       otherwise: Joi.string().equal("NA"),
     }),
     bloodGroup: Joi.string()
-      .valid("A+", "B+", "AB+", "O+", "A-", "B-", "AB-", "O-")
+      .valid("A+", "B+", "AB+", "O+", "A-", "B-", "AB-", "O-", "UNKNOWN")
       .required(),
     monthlyMaintenance: Joi.bool().required(),
     maintenanceAmount: Joi.number().when("monthlyMaintenance", {
       is: true,
-      then: Joi.number().valid(300, 500).required(),
+      then: Joi.number().valid(100, 300, 500).required(),
       otherwise: Joi.number().equal(-1),
     }),
     borewell: Joi.bool().required(),
@@ -183,6 +183,10 @@ exports.getMember = (req, res) => {
       }
     })
     .catch((err) => res.status(500).send({ error: [{ message: err }] }));
+};
+
+exports.handlePayment = (req, res) => {
+  res.status(200).send({ msg: "Payment successful" });
 };
 
 exports.health = (req, res) => {

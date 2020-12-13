@@ -8,7 +8,8 @@ import AdminHome from "components/Admin/AdminHome";
 import AddMember from "components/Admin/AddMember";
 import MemberHome from "components/Member/MemberHome";
 import ViewMembers from "components/Admin/ViewMembers";
-import PaymentPage from "components/Member/MemberPayment";
+import PaymentPage from "components/Member/Payment/MemberPayment";
+import PaymentStatus from "components/Member/Payment/PaymentStatus";
 
 function App() {
   return (
@@ -28,9 +29,15 @@ function App() {
         />
         <ProtectedRoute
           adminOnly={false}
-          permission={permissions.READ}
+          permission={permissions.UPDATE}
           path="/member/payment"
           component={PaymentPage}
+        />
+        <ProtectedRoute
+          adminOnly={false}
+          permission={permissions.READ}
+          path="/member/status/success"
+          component={PaymentStatus}
         />
 
         <ProtectedRoute
