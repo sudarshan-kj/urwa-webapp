@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 import { useToast } from "@chakra-ui/react";
 import AddMemberForm from "./AddMemberForm";
-import seedData from "seedData";
+import seedDataJSON from "seedData/addMember.json";
 
 const AddMember = () => {
   const history = useHistory();
@@ -48,7 +48,11 @@ const AddMember = () => {
   };
 
   return (
-    <AddMemberForm seedData={seedData.NEW_MEMBER} callBack={createMember} />
+    <AddMemberForm
+      seedData={seedDataJSON}
+      callBack={createMember}
+      buttonName="Submit"
+    />
   );
 };
 

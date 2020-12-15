@@ -101,14 +101,14 @@ const ProtectedRoute = ({
   component,
   adminOnly,
   permission,
-  children,
+  ...rest
 }) => {
   return (
     <>
       {isAuthenticated() ? (
         <>
           {hasPermission({ adminOnly, permission }) ? (
-            <Route to={path}>
+            <Route to={path} {...rest}>
               <CommonHeader component={component} />
             </Route>
           ) : (

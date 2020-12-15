@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon, Link } from "@chakra-ui/react";
+import { Link as DOMLink } from "react-router-dom";
 import { Tr, Td } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import AlertModal from "components/commons/AlertModal";
@@ -17,9 +18,13 @@ const MemberItem = ({ memberItem, handleDelete }) => {
         <Td>{memberItem.firstName}</Td>
         <Td>{memberItem.email}</Td>
         <Td>
-          <Link color="teal.500" href="#" _hover={{ color: "teal.300" }}>
-            <Icon as={EditIcon} />
-          </Link>
+          <DOMLink to={`/admin/updateMember/${memberItem.id}`} color="teal.500">
+            <Icon
+              as={EditIcon}
+              color="teal.500"
+              _hover={{ color: "teal.300" }}
+            />
+          </DOMLink>
         </Td>
         <Td>
           <Link

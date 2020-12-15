@@ -15,7 +15,7 @@ const AlertModal = ({ heading, callback, isOpen, setIsOpen }) => {
 
   return (
     <>
-      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef}>
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} isCentered>
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">

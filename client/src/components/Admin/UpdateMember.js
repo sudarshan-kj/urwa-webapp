@@ -1,30 +1,31 @@
 import React from "react";
-import { Heading, VStack } from "@chakra-ui/react";
-import {
-  FormControl,
-  FormLabel,
-  Box,
-  Input,
-  RadioGroup,
-  Radio,
-  HStack,
-  NumberInput,
-  FormHelperText,
-  NumberInputField,
-  Select,
-  Button,
-} from "@chakra-ui/react";
-import { useHistory } from "react-router-dom";
-import { useFormik } from "formik";
+import { useHistory, useParams } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 import { useToast } from "@chakra-ui/react";
 import AddMemberForm from "./AddMemberForm";
+import seedDataJSON from "seedData/addMember.json";
 
-const UpdateMember = ({ isUpdate, memberId, seedData }) => {
+const UpdateMember = () => {
+  const [seedData, setSeedData] = React.useState(seedDataJSON);
+  const { memberId } = useParams();
   const history = useHistory();
   const toast = useToast();
 
-  const updateMember = (values, memberId, setUpdating) => {
+  React.useEffect(() => {
+    console.log("Calling useEffect");
+
+    authAxios()
+      .get(`/api/members/${memberId}?details=true`)
+      .then((result) => {
+        const details = result.data.mDetails[0];
+        const newObject = { ...result.data };
+        delete newObject.mDetails;
+        newObject.details = details;
+        setSeedData(newObject);
+      });
+  }, []);
+
+  const updateMember = (values, setUpdating, resetForm) => {
     authAxios()
       .patch(`/api/members/${memberId}`, values)
       .then((res) => {
@@ -60,7 +61,15 @@ const UpdateMember = ({ isUpdate, memberId, seedData }) => {
       })
       .finally(() => setUpdating(false));
   };
-  return <AddMemberForm />;
+  return (
+    <>
+      <AddMemberForm
+        seedData={seedData}
+        callBack={updateMember}
+        buttonName="Update"
+      />
+    </>
+  );
 };
 
 export default UpdateMember;

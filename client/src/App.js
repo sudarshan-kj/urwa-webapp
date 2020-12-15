@@ -10,6 +10,7 @@ import MemberHome from "components/Member/MemberHome";
 import MemberTable from "components/Admin/ViewMembers/MemberTable";
 import PaymentPage from "components/Member/Payment/MemberPayment";
 import PaymentStatus from "components/Member/Payment/PaymentStatus";
+import UpdateMember from "components/Admin/UpdateMember";
 
 function App() {
   return (
@@ -52,6 +53,13 @@ function App() {
           path="/admin/addMember"
           component={AddMember}
         />
+        <ProtectedRoute
+          adminOnly={true}
+          permission={permissions.CREATE}
+          path="/admin/updateMember/:memberId"
+          component={UpdateMember}
+        />
+
         <ProtectedRoute
           adminOnly={true}
           permission={permissions.READ}
