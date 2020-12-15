@@ -73,7 +73,7 @@ const MemberPayment = () => {
 
   return (
     <ReactDependentScript
-      loadingComponent={<div>jQuery is loading...</div>}
+      loadingComponent={<div>Payment page loading...</div>}
       scripts={["https://checkout-static.citruspay.com/bolt/run/bolt.min.js"]}
     >
       <Center h="80vh">
