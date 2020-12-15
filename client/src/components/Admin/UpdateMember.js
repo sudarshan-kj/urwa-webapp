@@ -12,8 +12,6 @@ const UpdateMember = () => {
   const toast = useToast();
 
   React.useEffect(() => {
-    console.log("Calling useEffect");
-
     authAxios()
       .get(`/api/members/${memberId}?details=true`)
       .then((result) => {
