@@ -7,7 +7,7 @@ import { permissions } from "utils/Authz";
 import AdminHome from "components/Admin/AdminHome";
 import AddMember from "components/Admin/AddMember";
 import MemberHome from "components/Member/MemberHome";
-import ViewMembers from "components/Admin/ViewMembers";
+import MemberTable from "components/Admin/ViewMembers/MemberTable";
 import PaymentPage from "components/Member/Payment/MemberPayment";
 import PaymentStatus from "components/Member/Payment/PaymentStatus";
 
@@ -56,7 +56,7 @@ function App() {
           adminOnly={true}
           permission={permissions.READ}
           path="/admin/viewMembers"
-          component={ViewMembers}
+          component={MemberTable}
         />
         <Route>
           <NotFound />

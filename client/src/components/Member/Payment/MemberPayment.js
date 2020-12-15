@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Center, Heading, useToast } from "@chakra-ui/react";
+import { Button, Center, Heading, useToast, Spinner } from "@chakra-ui/react";
 import ReactDependentScript from "react-dependent-script";
 import config from "../../../config";
 import { useHistory } from "react-router-dom";
@@ -73,7 +73,18 @@ const MemberPayment = () => {
 
   return (
     <ReactDependentScript
-      loadingComponent={<div>Payment page loading...</div>}
+      loadingComponent={
+        <Center>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="teal.500"
+            size="xl"
+          />
+          Payment page loading...
+        </Center>
+      }
       scripts={["https://checkout-static.citruspay.com/bolt/run/bolt.min.js"]}
     >
       <Center h="80vh">
