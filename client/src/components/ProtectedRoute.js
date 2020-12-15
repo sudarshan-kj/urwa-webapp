@@ -16,18 +16,7 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { isAdmin, hasPermission, getUserName } from "utils/Authz";
 import { Link } from "react-router-dom";
-import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuIcon,
-  MenuCommand,
-  MenuDivider,
-} from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { ReactComponent as HomeIcon } from "assets/icons/home.svg";
 
 const getPath = () => {
@@ -107,7 +96,13 @@ const CommonHeader = ({ component: Component }) => {
   );
 };
 
-const ProtectedRoute = ({ path, component, adminOnly, permission }) => {
+const ProtectedRoute = ({
+  path,
+  component,
+  adminOnly,
+  permission,
+  children,
+}) => {
   return (
     <>
       {isAuthenticated() ? (

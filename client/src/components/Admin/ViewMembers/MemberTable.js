@@ -1,22 +1,20 @@
 import React from "react";
-import { Box, Spinner, Center } from "@chakra-ui/react";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-} from "@chakra-ui/react";
+import { Spinner, Center, useToast } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, TableCaption } from "@chakra-ui/react";
+import MemberItem from "./MemberItem";
 import { sortBy } from "lodash";
 import { authAxios } from "utils/Auth";
-import config from "../../../config";
 
 const membersTableReducer = (state, action) => {
   switch (action.type) {
     case "MEMBERS_FETCH_SUCCESS":
       return { ...state, data: action.payload, isLoading: false };
+    case "MEMBER_DELETE":
+      return {
+        ...state,
+        data: state.data.filter((item) => action.payload.id !== item.id),
+      };
+
     case "MEMBERS_FETCH_INIT":
       return { ...state, isLoading: true, isError: false };
     case "MEMBERS_FETCH_FAILED":
@@ -42,6 +40,34 @@ const MemberTable = () => {
     }
   );
 
+  const toast = useToast();
+  const handleDelete = (memberItem) => {
+    authAxios()
+      .delete(`/api/members/${memberItem.id}`)
+      .then(() => {
+        dispatchMembersList({
+          type: "MEMBER_DELETE",
+          payload: { id: memberItem.id },
+        });
+        toast({
+          title: "Member deleted",
+          description: `${memberItem.firstName} has been deleted`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch(() => {
+        toast({
+          title: "Delete failed",
+          description: `Failed to delete ${memberItem.firstName}`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   const fetchMembers = React.useCallback(async () => {
     dispatchMembersList({
       type: "MEMBERS_FETCH_INIT",
@@ -49,7 +75,7 @@ const MemberTable = () => {
     });
     try {
       const response = await authAxios().get(
-        `${config.API_ENDPOINT}/api/members/list?page=0&limit=20`
+        "/api/members/list?page=0&limit=20"
       );
       if (response.status === 200) {
         dispatchMembersList({
@@ -134,28 +160,16 @@ const MemberTable = () => {
           </Thead>
           <Tbody>
             {membersList.data.map((memberItem) => (
-              <MemberItem key={memberItem.id} memberItem={memberItem} />
+              <MemberItem
+                key={memberItem.id}
+                memberItem={memberItem}
+                handleDelete={handleDelete}
+              />
             ))}
           </Tbody>
         </Table>
       )}
     </Center>
-  );
-};
-
-const MemberItem = ({ memberItem }) => {
-  return (
-    <Tr>
-      <Td>{memberItem.siteNumber}</Td>
-      <Td>{memberItem.firstName}</Td>
-      <Td>{memberItem.email}</Td>
-      <Td>
-        <button>Edit</button>
-      </Td>
-      <Td>
-        <button>Delete</button>
-      </Td>
-    </Tr>
   );
 };
 
