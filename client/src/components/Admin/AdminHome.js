@@ -1,16 +1,5 @@
 import React from "react";
-import {
-  Stack,
-  Box,
-  Flex,
-  SimpleGrid,
-  Text,
-  Center,
-  Badge,
-  HStack,
-  Icon,
-  Spacer,
-} from "@chakra-ui/react";
+import { Stack, Box, SimpleGrid, Text, Center, Icon } from "@chakra-ui/react";
 import { AddIcon, ViewIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import PaymentCard from "components/PaymentCard";

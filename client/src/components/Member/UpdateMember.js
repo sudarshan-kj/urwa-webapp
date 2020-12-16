@@ -21,7 +21,7 @@ const UpdateMember = () => {
         newObject.details = details;
         setSeedData(newObject);
       });
-  }, []);
+  }, [memberId]);
 
   const updateMember = (values, setUpdating, resetForm) => {
     authAxios()
