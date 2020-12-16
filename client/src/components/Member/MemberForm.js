@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 
-const AddMemberForm = ({ seedData, callBack, buttonName }) => {
+const MemberForm = ({ seedData, callBack, buttonName }) => {
   const formik = useFormik({
     initialValues: {
       ...seedData,
@@ -346,4 +346,4 @@ const StyledSelect = ({ placeholder, children, ...rest }) => {
   );
 };
 
-export default AddMemberForm;
+export default MemberForm;

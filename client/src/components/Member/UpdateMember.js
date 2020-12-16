@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 import { useToast } from "@chakra-ui/react";
-import AddMemberForm from "./AddMemberForm";
+import MemberForm from "components/Member/MemberForm";
 import seedDataJSON from "seedData/addMember.json";
 
 const UpdateMember = () => {
@@ -61,7 +61,7 @@ const UpdateMember = () => {
   };
   return (
     <>
-      <AddMemberForm
+      <MemberForm
         seedData={seedData}
         callBack={updateMember}
         buttonName="Update"

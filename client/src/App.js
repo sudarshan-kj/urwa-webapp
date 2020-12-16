@@ -10,7 +10,7 @@ import MemberHome from "components/Member/MemberHome";
 import MemberTable from "components/Admin/ViewMembers/MemberTable";
 import PaymentPage from "components/Member/Payment/MemberPayment";
 import PaymentStatus from "components/Member/Payment/PaymentStatus";
-import UpdateMember from "components/Admin/UpdateMember";
+import UpdateMember from "components/Member/UpdateMember";
 
 function App() {
   return (
