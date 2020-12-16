@@ -21,10 +21,12 @@ const UpdateMember = () => {
         const newObject = { ...result.data };
         delete newObject.mDetails;
         newObject.details = details;
-        newObject.details.dob = newObject.details.dob.split("T")[0];
-        newObject.details.anniversary = newObject.details.anniversary.split(
-          "T"
-        )[0];
+        if (newObject.details.dob)
+          newObject.details.dob = newObject.details.dob.split("T")[0];
+        if (newObject.details.anniversary)
+          newObject.details.anniversary = newObject.details.anniversary.split(
+            "T"
+          )[0];
         delete newObject.permissionLevel;
         delete newObject.id;
         newObject.password = "";
