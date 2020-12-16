@@ -46,6 +46,7 @@ membersRouter.patch("/:memberId", [
     adminOnly: false,
     permission: permission.UPDATE,
   }),
+  ValidateMiddleware.isValidMemberId,
   ValidateMiddleware.doesUserEmailAlreadyExist,
   ValidateMiddleware.doesSiteNumberAlreadyExist,
   MembersController.updateMember,

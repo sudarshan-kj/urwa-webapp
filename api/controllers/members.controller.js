@@ -90,11 +90,14 @@ exports.createMember = (req, res) => {
 };
 
 exports.updateMember = (req, res) => {
+  if (!req.body.password) {
+    req.body.password =
+      req.body.siteNumber + req.body.firstName.toLowerCase().replace(/\s/g, "");
+  }
   const { error } = schema.validate(req.body);
   if (error) {
     return res.status(400).send({ error: error.details });
-  }
-  if (req.body.password) {
+  } else {
     let salt = crypto.randomBytes(16).toString("base64");
     let hash = crypto
       .createHmac("sha512", salt)
@@ -103,7 +106,6 @@ exports.updateMember = (req, res) => {
     req.body.password = salt + "$" + hash;
   }
   let toUpdateMemberId = req.params.memberId;
-  req.body.permissionLevel = setPermissionLevel(req.body.email);
   MemberModel.update(toUpdateMemberId, req.body)
     .then(() =>
       res
@@ -113,7 +115,7 @@ exports.updateMember = (req, res) => {
     .catch((err) => {
       let errorMsg = err.message;
       if (!errorMsg) {
-        errorMsg = "Someting went wrong";
+        errorMsg = "Something went wrong";
       }
       return res.status(500).send({
         errors: [{ type: "Internal error", message: errorMsg }],
@@ -157,6 +159,13 @@ exports.listAllMembers = (req, res) => {
   }
 };
 
+function replacer(key, value) {
+  if (typeof value === "boolean" || typeof value === "number") {
+    return String(value);
+  }
+  return value;
+}
+
 exports.getMember = (req, res) => {
   MemberModel.findById(req.params.memberId)
     .then((foundMember) => {
@@ -165,7 +174,10 @@ exports.getMember = (req, res) => {
           MemberDetailsModel.findByMemberId(foundMember._id)
             .then((memberDetails) => {
               foundMember.mDetails.push(memberDetails);
-              return res.status(200).send(foundMember);
+              const jsonString = JSON.parse(
+                JSON.stringify(foundMember, replacer)
+              );
+              return res.status(200).send(jsonString);
             })
             .catch((err) => res.status(500).send({ error: err }));
         } else {

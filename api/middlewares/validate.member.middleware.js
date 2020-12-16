@@ -60,49 +60,65 @@ exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
   });
 };
 
-exports.doesUserEmailAlreadyExist = (req, res, next) => {
-  MemberModel.findByEmail(req.body.email)
-    .then((member) => {
-      if (member) {
-        return res.status(409).send({
-          error: [
-            { message: `User with email: ${req.body.email} already exists` },
-          ],
-        });
-      } else {
-        return next();
-      }
-    })
-    .catch((err) => {
-      console.err("Error occurred while checking if user already exists", err);
-      return res
-        .status(500)
-        .send({ error: [{ message: "Something went wrong" }] });
+exports.isValidMemberId = async (req, res, next) => {
+  try {
+    await MemberModel.findById(req.params.memberId);
+    return next();
+  } catch {
+    return res.status(400).send({
+      error: [{ message: `Invalid member id` }],
     });
+  }
 };
 
-exports.doesSiteNumberAlreadyExist = (req, res, next) => {
-  MemberModel.findBySiteNumber(req.body.siteNumber)
-    .then((member) => {
-      if (member) {
-        return res.status(409).send({
-          error: [
-            {
-              message: `User with site number: ${req.body.siteNumber} already exists`,
-            },
-          ],
-        });
-      } else {
+exports.doesUserEmailAlreadyExist = async (req, res, next) => {
+  try {
+    const foundMember = await MemberModel.findByEmail(req.body.email);
+    if (foundMember) {
+      const requestingMember = await MemberModel.findById(req.params.memberId);
+      if (requestingMember.email === foundMember.email) {
         return next();
       }
-    })
-    .catch((err) => {
-      console.err(
-        "Error occurred while checking if user with site number already exists",
-        err
-      );
-      return res
-        .status(500)
-        .send({ error: [{ message: "Something went wrong" }] });
+      return res.status(409).send({
+        error: [
+          {
+            message: `User with email: ${req.body.email} already exists`,
+          },
+        ],
+      });
+    } else {
+      return next();
+    }
+  } catch (err) {
+    console.error("Error while checking if user exists", err);
+    return res.status(500).send({
+      error: [{ message: `Something went wrong` }],
     });
+  }
+};
+
+exports.doesSiteNumberAlreadyExist = async (req, res, next) => {
+  try {
+    const foundMember = await MemberModel.findBySiteNumber(req.body.siteNumber);
+    if (foundMember) {
+      const requestingMember = await MemberModel.findById(req.params.memberId);
+      if (requestingMember.siteNumber === foundMember.siteNumber) {
+        return next();
+      }
+      return res.status(409).send({
+        error: [
+          {
+            message: `User with site number: ${req.body.siteNumber} already exists`,
+          },
+        ],
+      });
+    } else {
+      return next();
+    }
+  } catch (err) {
+    console.error("Error while checking if user exists", err);
+    return res.status(500).send({
+      error: [{ message: `Something went wrong` }],
+    });
+  }
 };

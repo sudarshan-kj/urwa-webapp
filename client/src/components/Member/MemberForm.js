@@ -26,7 +26,6 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
     },
     enableReinitialize: true,
   });
-  console.log("Formik is", formik);
   return (
     <>
       <Box bg="gray.200" w={{ base: "70%", md: "60%" }} m="auto">
@@ -75,6 +74,19 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   bg="gray.100"
                   type="email"
                   value={formik.values.email}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                  }}
+                />
+              </FormControl>
+
+              <FormControl id="password">
+                <FormLabel>Password</FormLabel>
+                <Input
+                  focusBorderColor="teal.400"
+                  bg="gray.100"
+                  type="password"
+                  value={formik.values.password}
                   onChange={(e) => {
                     formik.handleChange(e);
                   }}
