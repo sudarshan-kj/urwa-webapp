@@ -92,7 +92,7 @@ const MemberTable = () => {
     } catch {
       dispatchMembersList({
         type: "MEMBERS_FETCH_FAILED",
-        message: "Something went wrong",
+        message: "Something went wrong while fetching members list",
       });
     }
   }, []);

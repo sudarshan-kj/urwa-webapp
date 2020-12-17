@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const tokenConfig = require("../config/token.config");
 const MemberModel = require("../models/member.model");
+const MemberDetailsModel = require("../models/memberDetails.model");
 
 exports.isValidJWTAccessToken = (req, res, next) => {
   let authHeader = req.headers.authorization;
@@ -60,19 +61,21 @@ exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
   });
 };
 
-exports.canNotUpdateFields = async (req, res, next) => {
-  let memberDetails;
+exports.hasNoPermissionToUpdateField = async (req, res, next) => {
+  const [noPermissionToUpdate] = req.jwt;
   try {
-    memberDetails = await MemberDetailsModel.findByMemberId(
+    let memberDetails = await MemberDetailsModel.findByMemberId(
       req.params.memberId
     );
-    req.body.details.monthlyMaintenance = memberDetails.monthlyMaintenance;
-    req.body.details.maintenanceAmount = memberDetails.maintenanceAmount;
-  } catch (err) {
-    console.error("Something went wrong while updating the member:", err);
-    return res
-      .status(500)
-      .send({ error: [{ message: "Something went wrong" }] });
+    noPermissionToUpdate.forEach((element) => {
+      req.body.details[`${element}`] = memberDetails[`${element}`];
+    });
+  } catch {
+    return res.status(500).send({
+      error: [
+        { message: "Something went wrong while checking field permission" },
+      ],
+    });
   }
 };
 
@@ -113,7 +116,11 @@ exports.doesUserEmailAlreadyExist = async (req, res, next) => {
   } catch (err) {
     console.error("Error while checking if email already exists", err);
     return res.status(500).send({
-      error: [{ message: `Something went wrong` }],
+      error: [
+        {
+          message: `Something went wrong while checking if email already exists`,
+        },
+      ],
     });
   }
 };
@@ -143,7 +150,11 @@ exports.doesSiteNumberAlreadyExist = async (req, res, next) => {
   } catch (err) {
     console.error("Error while checking if site number already exists", err);
     return res.status(500).send({
-      error: [{ message: `Something went wrong` }],
+      error: [
+        {
+          message: `Something went wrong while checking if site already exists`,
+        },
+      ],
     });
   }
 };

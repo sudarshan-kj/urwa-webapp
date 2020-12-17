@@ -49,6 +49,11 @@ exports.verifyUserAndPassword = (req, res, next) => {
     })
     .catch((err) => {
       console.log("Error occurred", err);
-      res.status(500).send({ error: "Something went wrong. Try again." });
+      res
+        .status(500)
+        .send({
+          error:
+            "Something went wrong while verifying user and password. Try again.",
+        });
     });
 };

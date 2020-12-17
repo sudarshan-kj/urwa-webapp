@@ -83,9 +83,9 @@ exports.createMember = (req, res) => {
         .catch((err) => res.status(400).send({ errors: err }));
     })
     .catch((err) => {
-      return res
-        .status(500)
-        .send({ error: [{ message: "Something went wrong" }] });
+      return res.status(500).send({
+        error: [{ message: "Something went wrong while creating member" }],
+      });
     });
 };
 
@@ -115,7 +115,7 @@ exports.updateMember = async (req, res) => {
     .catch((err) => {
       let errorMsg = err.message;
       if (!errorMsg) {
-        errorMsg = "Something went wrong";
+        errorMsg = "Something went wrong while updating member";
       }
       return res.status(500).send({
         errors: [{ type: "Internal error", message: errorMsg }],

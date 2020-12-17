@@ -61,7 +61,7 @@ const UpdateMember = () => {
         }
       })
       .catch((err) => {
-        let errorMsg = "Something went wrong";
+        let errorMsg = "CMSG: Something went wrong";
         if (err.response) {
           errorMsg = err.response.data.error[0].message;
         }

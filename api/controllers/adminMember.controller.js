@@ -22,13 +22,22 @@ exports.createAdminMember = (req, res) => {
       })
         .then(() => res.status(201).send({ msg: "Admin member created" }))
         .catch((err) =>
-          res
-            .status(500)
-            .send({ error: [{ message: "Something went wrong", err }] })
+          res.status(500).send({
+            error: [
+              {
+                message: "Something went wrong while creating new admin member",
+                err,
+              },
+            ],
+          })
         );
     })
     .catch(() =>
-      res.status(500).send({ error: [{ message: "Something went wrong" }] })
+      res.status(500).send({
+        error: [
+          { message: "Something went wrong while creating new admin member" },
+        ],
+      })
     );
 };
 
@@ -40,12 +49,21 @@ exports.deleteAdminMember = (req, res) => {
       })
         .then(() => res.status(200).send({ msg: "ok" }))
         .catch((err) =>
-          res
-            .status(500)
-            .send({ error: [{ message: "Something went wrong", err }] })
+          res.status(500).send({
+            error: [
+              {
+                message: "Something went wrong while deleting admin member",
+                err,
+              },
+            ],
+          })
         );
     })
     .catch(() =>
-      res.status(500).send({ error: [{ message: "Something went wrong" }] })
+      res.status(500).send({
+        error: [
+          { message: "Something went wrong while deleting admin member" },
+        ],
+      })
     );
 };
