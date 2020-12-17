@@ -72,6 +72,7 @@ exports.isValidMemberId = async (req, res, next) => {
 };
 
 exports.doesUserEmailAlreadyExist = async (req, res, next) => {
+  req.body.email = req.body.email.toLowerCase();
   try {
     const foundMember = await MemberModel.findByEmail(req.body.email);
     if (foundMember) {

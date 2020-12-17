@@ -19,7 +19,7 @@ const schema = Joi.object({
     .max(5)
     .pattern(/^[0-9]+$/)
     .required(),
-  password: Joi.string().min(5).max(20).required(),
+  password: Joi.string().min(5).max(25).allow(null, ""),
   revokeAccess: Joi.bool().required(),
   details: Joi.object({
     mobile: Joi.string()
@@ -55,6 +55,10 @@ const schema = Joi.object({
 });
 
 exports.createMember = (req, res) => {
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).send({ error: error.details });
+  }
   if (!req.body.password) {
     req.body.password =
       req.body.siteNumber + req.body.firstName.toLowerCase().replace(/\s/g, "");
@@ -64,10 +68,6 @@ exports.createMember = (req, res) => {
     .createHmac("sha512", salt)
     .update(req.body.password)
     .digest("base64");
-  const { error } = schema.validate(req.body);
-  if (error) {
-    return res.status(400).send({ error: error.details });
-  }
   req.body.password = salt + "$" + hash;
   AdminMemberModel.findByEmail(req.body.email)
     .then((adminMember) => {
@@ -85,25 +85,26 @@ exports.createMember = (req, res) => {
     .catch((err) => {
       return res
         .status(500)
-        .send({ error: [{ message: "Somehting went wrong" }] });
+        .send({ error: [{ message: "Something went wrong" }] });
     });
 };
 
-exports.updateMember = (req, res) => {
-  if (!req.body.password) {
-    req.body.password =
-      req.body.siteNumber + req.body.firstName.toLowerCase().replace(/\s/g, "");
-  }
+exports.updateMember = async (req, res) => {
   const { error } = schema.validate(req.body);
   if (error) {
     return res.status(400).send({ error: error.details });
   } else {
-    let salt = crypto.randomBytes(16).toString("base64");
-    let hash = crypto
-      .createHmac("sha512", salt)
-      .update(req.body.password)
-      .digest("base64");
-    req.body.password = salt + "$" + hash;
+    if (req.body.password) {
+      console.log(" I a m inside");
+      let salt = crypto.randomBytes(16).toString("base64");
+      let hash = crypto
+        .createHmac("sha512", salt)
+        .update(req.body.password)
+        .digest("base64");
+      req.body.password = salt + "$" + hash;
+    } else {
+      delete req.body.password;
+    }
   }
   let toUpdateMemberId = req.params.memberId;
   MemberModel.update(toUpdateMemberId, req.body)
