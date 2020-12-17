@@ -42,11 +42,12 @@ membersRouter.delete("/:memberId", [
 ]);
 membersRouter.patch("/:memberId", [
   ValidateMiddleware.isValidJWTAccessToken,
+  ValidateMiddleware.isValidMemberId,
   ValidateMiddleware.hasPermission({
     adminOnly: false,
     permission: permission.UPDATE,
   }),
-  ValidateMiddleware.isValidMemberId,
+  ValidateMiddleware.checkFieldPermissionToUpdate,
   ValidateMiddleware.doesUserEmailAlreadyExist,
   ValidateMiddleware.doesSiteNumberAlreadyExist,
   MembersController.updateMember,

@@ -24,6 +24,7 @@ let memberSchema = new Schema(
     email: { type: String, index: { unique: true }, required: true },
     password: { type: String, unique: false, required: true },
     permissionLevel: { type: String, unique: false, required: true },
+    npuf: { type: Array, unique: false, required: true },
     revokeAccess: { type: Boolean, unique: false, required: true },
     mDetails: [{ type: Schema.Types.ObjectId, ref: "MemberDetails" }],
   },

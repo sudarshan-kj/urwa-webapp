@@ -29,6 +29,7 @@ const UpdateMember = () => {
           )[0];
         delete newObject.permissionLevel;
         delete newObject.id;
+        delete newObject.npuf;
         newObject.password = "";
         console.log(newObject);
         setSeedData(newObject);

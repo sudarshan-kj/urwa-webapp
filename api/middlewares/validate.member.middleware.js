@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 const tokenConfig = require("../config/token.config");
 const MemberModel = require("../models/member.model");
 const MemberDetailsModel = require("../models/memberDetails.model");
+const log4j = require("log4js");
+const logger = log4j.getLogger();
+logger.level = "debug";
 
 exports.isValidJWTAccessToken = (req, res, next) => {
   let authHeader = req.headers.authorization;
@@ -61,21 +64,29 @@ exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
   });
 };
 
-exports.hasNoPermissionToUpdateField = async (req, res, next) => {
-  const [noPermissionToUpdate] = req.jwt;
-  try {
-    let memberDetails = await MemberDetailsModel.findByMemberId(
-      req.params.memberId
-    );
-    noPermissionToUpdate.forEach((element) => {
-      req.body.details[`${element}`] = memberDetails[`${element}`];
-    });
-  } catch {
-    return res.status(500).send({
-      error: [
-        { message: "Something went wrong while checking field permission" },
-      ],
-    });
+exports.checkFieldPermissionToUpdate = async (req, res, next) => {
+  const noPermissionToUpdateFields = req.jwt.npuf;
+  if (noPermissionToUpdateFields && noPermissionToUpdateFields.length) {
+    try {
+      let member = await MemberModel.findById(req.params.memberId);
+      let memberDetails = await MemberDetailsModel.findByMemberId(
+        req.params.memberId
+      );
+      noPermissionToUpdateFields.forEach((element) => {
+        logger.debug(`Auto updating field ${element}`);
+        if (element === "email") req.body.email = member.email;
+        else req.body.details[`${element}`] = memberDetails[`${element}`];
+      });
+      return next();
+    } catch {
+      return res.status(500).send({
+        error: [
+          { message: "Something went wrong while checking field permission" },
+        ],
+      });
+    }
+  } else {
+    return next();
   }
 };
 
@@ -84,6 +95,7 @@ exports.isValidMemberId = async (req, res, next) => {
     await MemberModel.findById(req.params.memberId);
     return next();
   } catch {
+    logger.error(`Invalid member id: ${req.params.memberId}`);
     return res.status(400).send({
       error: [{ message: `Invalid member id` }],
     });

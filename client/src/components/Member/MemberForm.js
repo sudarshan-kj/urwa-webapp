@@ -15,11 +15,14 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { isAdmin } from "utils/Authz";
+import { getMemberDetails } from "utils/Authz";
 
-const isAdminUser = isAdmin();
+function isDisabled(array, field) {
+  return array.some((ele) => ele === field);
+}
 
 const MemberForm = ({ seedData, callBack, buttonName }) => {
+  const npuf = getMemberDetails().npuf;
   const formik = useFormik({
     initialValues: {
       ...seedData,
@@ -70,7 +73,11 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 />
               </FormControl>
 
-              <FormControl id="email" isRequired isDisabled={!isAdminUser}>
+              <FormControl
+                id="email"
+                isRequired
+                isDisabled={isDisabled(npuf, "email")}
+              >
                 <FormLabel>Email address</FormLabel>
                 <Input
                   focusBorderColor="teal.400"
@@ -312,7 +319,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
               <FormControl
                 id="details.monthlyMaintenance"
                 as="fieldset"
-                isDisabled={!isAdminUser}
+                isDisabled={isDisabled(npuf, "monthlyMaintenance")}
               >
                 <FormLabel as="legend">Monthly Maintenance</FormLabel>
                 <RadioGroup
@@ -339,7 +346,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 id="details.maintenanceAmount"
                 isDisabled={
                   formik.values.details.monthlyMaintenance === "false" ||
-                  !isAdminUser
+                  isDisabled(npuf, "maintenanceAmount")
                 }
               >
                 <StyledSelect

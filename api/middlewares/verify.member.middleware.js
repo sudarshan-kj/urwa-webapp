@@ -38,6 +38,7 @@ exports.verifyUserAndPassword = (req, res, next) => {
             memberId: member._id,
             email: member.email,
             permissionLevel: member.permissionLevel,
+            npuf: member.npuf,
             firstName: member.firstName,
             lastName: member.lastName,
           };
@@ -49,11 +50,9 @@ exports.verifyUserAndPassword = (req, res, next) => {
     })
     .catch((err) => {
       console.log("Error occurred", err);
-      res
-        .status(500)
-        .send({
-          error:
-            "Something went wrong while verifying user and password. Try again.",
-        });
+      res.status(500).send({
+        error:
+          "Something went wrong while verifying user and password. Try again.",
+      });
     });
 };

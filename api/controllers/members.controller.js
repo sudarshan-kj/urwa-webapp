@@ -73,8 +73,10 @@ exports.createMember = (req, res) => {
     .then((adminMember) => {
       if (!adminMember) {
         req.body.permissionLevel = "0x00-0x06";
+        req.body.npuf = ["email", "monthlyMaintenance", "maintenanceAmount"];
       } else {
         req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
+        req.body.npuf = [];
       }
       MemberModel.insert(req.body)
         .then((result) => {
