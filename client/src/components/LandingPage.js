@@ -25,7 +25,7 @@ function LandingPage() {
             </Link>
           </Box>
           <Text
-            p="8"
+            p="4"
             textAlign="center"
             bg="gray.800"
             pos="absolute"

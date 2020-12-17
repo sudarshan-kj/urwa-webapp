@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import Logo from "assets/logo.png";
 import axios from "axios";
 import config from "../config";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { isAdmin } from "utils/Authz";
 
 const MAX_USERNAME_LENGTH = 50;
@@ -94,12 +94,14 @@ const LoginPage = () => {
           <Box>
             <Box>
               <Center flexShrink={0} p={8}>
-                <Image
-                  boxSize="100px"
-                  objectFit="cover"
-                  src={Logo}
-                  alt="URWA Logo"
-                />
+                <Link to="/">
+                  <Image
+                    boxSize="100px"
+                    objectFit="cover"
+                    src={Logo}
+                    alt="URWA Logo"
+                  />
+                </Link>
               </Center>
               <Center>
                 <Heading textAlign="center" as="p" size="md">
