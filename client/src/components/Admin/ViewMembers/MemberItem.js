@@ -18,7 +18,10 @@ const MemberItem = ({ memberItem, handleDelete }) => {
         <Td>{memberItem.firstName}</Td>
         <Td>{memberItem.email}</Td>
         <Td>
-          <DOMLink to={`/admin/updateMember/${memberItem.id}`} color="teal.500">
+          <DOMLink
+            to={`/member/updateMember/${memberItem.id}`}
+            color="teal.500"
+          >
             <Icon
               as={EditIcon}
               color="teal.500"

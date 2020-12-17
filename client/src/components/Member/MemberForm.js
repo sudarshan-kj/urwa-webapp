@@ -91,6 +91,17 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     formik.handleChange(e);
                   }}
                 />
+                {buttonName === "Submit" ? (
+                  <FormHelperText>
+                    Leave this field blank will set the password to
+                    [siteNumber][firstName]
+                  </FormHelperText>
+                ) : (
+                  <FormHelperText>
+                    Leaving this field blank will have the same previous
+                    password
+                  </FormHelperText>
+                )}
               </FormControl>
 
               <FormControl isRequired>

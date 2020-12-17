@@ -40,7 +40,12 @@ function App() {
           path="/member/status/success"
           component={PaymentStatus}
         />
-
+        <ProtectedRoute
+          adminOnly={false}
+          permission={permissions.UPDATE}
+          path="/member/updateMember/:memberId"
+          component={UpdateMember}
+        />
         <ProtectedRoute
           adminOnly={true}
           permission={permissions.READ}
@@ -53,13 +58,6 @@ function App() {
           path="/admin/addMember"
           component={AddMember}
         />
-        <ProtectedRoute
-          adminOnly={true}
-          permission={permissions.CREATE}
-          path="/admin/updateMember/:memberId"
-          component={UpdateMember}
-        />
-
         <ProtectedRoute
           adminOnly={true}
           permission={permissions.READ}

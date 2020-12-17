@@ -95,7 +95,6 @@ exports.updateMember = async (req, res) => {
     return res.status(400).send({ error: error.details });
   } else {
     if (req.body.password) {
-      console.log(" I a m inside");
       let salt = crypto.randomBytes(16).toString("base64");
       let hash = crypto
         .createHmac("sha512", salt)
