@@ -1,6 +1,6 @@
 import LoginPage from "components/LoginPage";
 import NotFound from "components/NotFound";
-import TestPage from "components/TestPage";
+import LandingPage from "components/LandingPage";
 import { Route, Switch } from "react-router-dom";
 import ProtectedRoute from "components/ProtectedRoute";
 import { permissions } from "utils/Authz";
@@ -17,7 +17,7 @@ function App() {
     <div className="App">
       <Switch>
         <Route exact path={["/", "/test"]}>
-          <TestPage />
+          <LandingPage />
         </Route>
         <Route path="/login">
           <LoginPage />
