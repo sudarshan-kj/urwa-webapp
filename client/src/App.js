@@ -43,7 +43,7 @@ function App() {
         <ProtectedRoute
           adminOnly={false}
           permission={permissions.UPDATE}
-          path="/member/updateMember/:memberId"
+          path="/member/profile/:memberId"
           component={UpdateMember}
         />
         <ProtectedRoute

@@ -62,9 +62,11 @@ const UpdateMember = () => {
       })
       .catch((err) => {
         let errorMsg = "Something went wrong";
-        if (err.response) errorMsg = err.response.data.error[0].message;
+        if (err.response) {
+          errorMsg = err.response.data.error[0].message;
+        }
         toast({
-          title: "Account was not update",
+          title: "Account was not updated",
           description: `${errorMsg}`,
           status: "error",
           duration: 3000,

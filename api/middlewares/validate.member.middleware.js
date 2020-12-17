@@ -54,10 +54,26 @@ exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
     error: [
       {
         type: "Unauthorized user",
-        messsage: `You do not have necessary permissions to perform operation: ${permission}`,
+        message: `You do not have necessary permissions to perform operation: ${permission}`,
       },
     ],
   });
+};
+
+exports.canNotUpdateFields = async (req, res, next) => {
+  let memberDetails;
+  try {
+    memberDetails = await MemberDetailsModel.findByMemberId(
+      req.params.memberId
+    );
+    req.body.details.monthlyMaintenance = memberDetails.monthlyMaintenance;
+    req.body.details.maintenanceAmount = memberDetails.maintenanceAmount;
+  } catch (err) {
+    console.error("Something went wrong while updating the member:", err);
+    return res
+      .status(500)
+      .send({ error: [{ message: "Something went wrong" }] });
+  }
 };
 
 exports.isValidMemberId = async (req, res, next) => {

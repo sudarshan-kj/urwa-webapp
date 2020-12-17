@@ -14,7 +14,7 @@ import {
   Badge,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { isAdmin, hasPermission, getUserName } from "utils/Authz";
+import { isAdmin, hasPermission, getMemberDetails } from "utils/Authz";
 import { Link } from "react-router-dom";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { ReactComponent as HomeIcon } from "assets/icons/home.svg";
@@ -67,10 +67,25 @@ const CommonHeader = ({ component: Component }) => {
                   colorScheme="teal"
                   rightIcon={<ChevronDownIcon />}
                 >
-                  {getUserName()}
+                  {getMemberDetails().firstName}
                 </MenuButton>
                 <MenuList>
-                  <MenuItem>Profile</MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      history.push(`/${getPath()}/home`);
+                    }}
+                  >
+                    Home
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      history.push(
+                        `/member/profile/${getMemberDetails().memberId}`
+                      );
+                    }}
+                  >
+                    Profile
+                  </MenuItem>
                   <MenuItem
                     onClick={() => {
                       logout();

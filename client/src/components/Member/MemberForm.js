@@ -15,6 +15,9 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
+import { isAdmin } from "utils/Authz";
+
+const isAdminUser = isAdmin();
 
 const MemberForm = ({ seedData, callBack, buttonName }) => {
   const formik = useFormik({
@@ -67,7 +70,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 />
               </FormControl>
 
-              <FormControl id="email" isRequired>
+              <FormControl id="email" isRequired isDisabled={!isAdminUser}>
                 <FormLabel>Email address</FormLabel>
                 <Input
                   focusBorderColor="teal.400"
@@ -78,6 +81,15 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     formik.handleChange(e);
                   }}
                 />
+                {buttonName === "Submit" ? (
+                  <FormHelperText>
+                    Email address is the User ID for member login
+                  </FormHelperText>
+                ) : (
+                  <FormHelperText>
+                    Updated email address will be the new User ID for member
+                  </FormHelperText>
+                )}
               </FormControl>
 
               <FormControl id="password">
@@ -93,7 +105,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 />
                 {buttonName === "Submit" ? (
                   <FormHelperText>
-                    Leave this field blank will set the password to
+                    Leaving this field blank will set the password to
                     [siteNumber][firstName]
                   </FormHelperText>
                 ) : (
@@ -297,7 +309,11 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 </StyledSelect>
               </FormControl>
 
-              <FormControl id="details.monthlyMaintenance" as="fieldset">
+              <FormControl
+                id="details.monthlyMaintenance"
+                as="fieldset"
+                isDisabled={!isAdminUser}
+              >
                 <FormLabel as="legend">Monthly Maintenance</FormLabel>
                 <RadioGroup
                   value={formik.values.details.monthlyMaintenance}
@@ -322,7 +338,8 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
               <FormControl
                 id="details.maintenanceAmount"
                 isDisabled={
-                  formik.values.details.monthlyMaintenance === "false"
+                  formik.values.details.monthlyMaintenance === "false" ||
+                  !isAdminUser
                 }
               >
                 <StyledSelect

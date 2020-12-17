@@ -152,6 +152,7 @@ const MemberTable = () => {
           <Thead>
             <Tr>
               <Th>Site Number</Th>
+              <Th>Member ID</Th>
               <Th>Name</Th>
               <Th>Email</Th>
               <Th>Edit</Th>
