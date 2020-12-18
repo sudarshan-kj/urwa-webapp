@@ -2,11 +2,16 @@ import React from "react";
 import {
   Button,
   Center,
-  Heading,
   useToast,
   Spinner,
   VStack,
+  Box,
+  SimpleGrid,
+  Stack,
+  Badge,
+  Text,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import ReactDependentScript from "react-dependent-script";
 import config from "../../../config";
 import { useHistory } from "react-router-dom";
@@ -78,6 +83,45 @@ const MemberPayment = () => {
     });
   }
 
+  const paymentDataArray = [
+    {
+      link: "#",
+      textContent: "January 2021",
+      paidStatus: "PAID",
+      colorScheme: "green",
+    },
+    {
+      link: "#",
+      textContent: "February 2021",
+      paidStatus: "PAID",
+      colorScheme: "green",
+    },
+    {
+      link: "#",
+      textContent: "March 2021",
+      paidStatus: "PAID",
+      colorScheme: "green",
+    },
+    {
+      link: "#",
+      textContent: "April 2021",
+      paidStatus: "OVERDUE",
+      colorScheme: "red",
+    },
+    {
+      link: "#",
+      textContent: "May 2021",
+      paidStatus: "OVERDUE",
+      colorScheme: "red",
+    },
+    {
+      link: "#",
+      textContent: "June 2021",
+      paidStatus: "DUE",
+      colorScheme: "orange",
+    },
+  ];
+
   return (
     <ReactDependentScript
       loadingComponent={
@@ -94,12 +138,59 @@ const MemberPayment = () => {
       }
       scripts={["https://checkout-static.citruspay.com/bolt/run/bolt.min.js"]}
     >
-      <Center h="80vh">
+      {/* <Center h="80vh">
         <Heading>Due amount is Rs 300</Heading>
         <Button onClick={() => launchBolt()}> Pay</Button>
-      </Center>
+      </Center> */}
+      <Box h={{ base: "100%", md: "80vh" }} m={8}>
+        <Stack w="80%" m="auto" spacing={8}>
+          <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
+            {paymentDataArray.map((card) => (
+              <SimpleCard
+                link={card.link}
+                textContent={card.textContent}
+                paidStatus={card.paidStatus}
+                colorScheme={card.colorScheme}
+              />
+            ))}
+          </SimpleGrid>
+        </Stack>
+      </Box>
     </ReactDependentScript>
   );
 };
+
+const SimpleCard = ({ link, textContent, paidStatus, colorScheme }) => (
+  <Link to={link}>
+    <Center
+      shadow="xl"
+      borderRadius="20px"
+      h="200px"
+      p={8}
+      bg="gray.100"
+      _hover={{
+        border: "2px solid",
+        borderColor: "teal.300",
+      }}
+    >
+      <Stack
+        direction={{ base: "column", md: "column" }}
+        justify="center"
+        align="center"
+        spacing={4}
+      >
+        <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
+          {textContent}
+        </Text>
+        <Badge colorScheme={colorScheme}>{paidStatus}</Badge>
+        {paidStatus.includes("DUE") ? (
+          <Button colorScheme="teal">Pay Now</Button>
+        ) : (
+          <></>
+        )}
+      </Stack>
+    </Center>
+  </Link>
+);
 
 export default MemberPayment;
