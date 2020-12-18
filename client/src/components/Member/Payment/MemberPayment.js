@@ -151,6 +151,7 @@ const MemberPayment = () => {
                 textContent={card.textContent}
                 paidStatus={card.paidStatus}
                 colorScheme={card.colorScheme}
+                launchBolt={launchBolt}
               />
             ))}
           </SimpleGrid>
@@ -160,7 +161,13 @@ const MemberPayment = () => {
   );
 };
 
-const SimpleCard = ({ link, textContent, paidStatus, colorScheme }) => (
+const SimpleCard = ({
+  link,
+  textContent,
+  paidStatus,
+  colorScheme,
+  launchBolt,
+}) => (
   <Link to={link}>
     <Center
       shadow="xl"
@@ -184,7 +191,9 @@ const SimpleCard = ({ link, textContent, paidStatus, colorScheme }) => (
         </Text>
         <Badge colorScheme={colorScheme}>{paidStatus}</Badge>
         {paidStatus.includes("DUE") ? (
-          <Button colorScheme="teal">Pay Now</Button>
+          <Button onClick={() => launchBolt()} colorScheme="teal">
+            Pay Now
+          </Button>
         ) : (
           <></>
         )}

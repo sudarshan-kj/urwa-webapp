@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack, Box, SimpleGrid } from "@chakra-ui/react";
-import { AddIcon, ViewIcon } from "@chakra-ui/icons";
+import { AddIcon, ViewIcon, SunIcon } from "@chakra-ui/icons";
 import SimpleCard from "components/commons/SimpleHomeCard";
 
 import { ReactComponent as CreditCardIcon } from "assets/icons/credit-card.svg";
@@ -20,6 +20,11 @@ const gridDataArray = [
     link: "/member/payment",
     icon: CreditCardIcon,
     textContent: "My Payments",
+  },
+  {
+    link: "#",
+    icon: SunIcon,
+    textContent: "Donations",
   },
 ];
 
