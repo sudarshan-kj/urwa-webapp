@@ -54,13 +54,22 @@ membersRouter.patch("/:memberId", [
 ]);
 membersRouter.get("/health", [MembersController.health]);
 
+membersRouter.get("/:memberId/payment", [
+  ValidateMiddleware.isValidJWTAccessToken,
+  ValidateMiddleware.hasPermission({
+    adminOnly: false,
+    permission: permission.UPDATE,
+  }),
+  MembersController.generateHash,
+]);
+
 membersRouter.post("/:memberId/payment", [
   ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.hasPermission({
     adminOnly: false,
     permission: permission.UPDATE,
   }),
-  MembersController.handlePayment,
+  MembersController.verifyHash,
 ]);
 
 module.exports = membersRouter;
