@@ -1,9 +1,9 @@
 import React from "react";
-import { Stack, Box, SimpleGrid } from "@chakra-ui/react";
+import { Stack, Box, SimpleGrid, Text } from "@chakra-ui/react";
 import { AddIcon, ViewIcon, SunIcon } from "@chakra-ui/icons";
 import SimpleCard from "components/commons/SimpleHomeCard";
-
 import { ReactComponent as CreditCardIcon } from "assets/icons/credit-card.svg";
+import { authAxios } from "utils/Auth";
 
 const gridDataArray = [
   {
@@ -29,10 +29,19 @@ const gridDataArray = [
 ];
 
 const AdminHome = () => {
+  const [memberCount, setMemberCount] = React.useState("");
+  React.useEffect(() => {
+    authAxios()
+      .get("/api/members/count")
+      .then((result) => setMemberCount(result.data.memberCount))
+      .catch((err) => console.error("Could not fetch member count"));
+  }, []);
+
   return (
     <>
       <Box h={{ base: "100%", md: "80vh" }} m={8}>
         <Stack w="80%" m="auto" spacing={8}>
+          <Text fontSize="md">Total Registered Members: {memberCount}</Text>
           <SimpleGrid row={1} minChildWidth="160px" spacing="40px">
             {gridDataArray.map((card) => (
               <SimpleCard

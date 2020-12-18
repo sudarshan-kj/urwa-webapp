@@ -18,11 +18,13 @@ const schema = Joi.object({
     .min(2)
     .max(5)
     .pattern(/^[0-9]+$/)
-    .required(),
+    .required()
+    .allow("0"),
   password: Joi.string().min(5).max(25).allow(null, ""),
   revokeAccess: Joi.bool().required(),
   details: Joi.object({
     mobile: Joi.string()
+      .allow("0")
       .length(10)
       .pattern(/^[0-9]+$/)
       .required(),
@@ -32,7 +34,8 @@ const schema = Joi.object({
       .min(8)
       .max(14)
       .pattern(/^[0-9]+$/)
-      .required(),
+      .required()
+      .allow("0"),
     land: Joi.string().valid("vacant", "built").required(),
     noOfFloors: Joi.string().when("land", {
       is: "built",
@@ -275,5 +278,18 @@ exports.verifyHash = (req, res) => {
 };
 
 exports.health = (req, res) => {
-  res.status(200).send({ msg: "ok" });
+  return res.status(200).send({ msg: "ok" });
+};
+
+exports.memberCount = async (req, res) => {
+  try {
+    const memberCount = await MemberModel.getMemberCount();
+    return res.status(200).send({ memberCount });
+  } catch (err) {
+    return res.status(500).send({
+      error: [
+        { message: "Something went wrong while fetching member count" + err },
+      ],
+    });
+  }
 };

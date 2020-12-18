@@ -4,6 +4,12 @@ const express = require("express");
 const permission = require("../config/permission.config");
 const membersRouter = express.Router();
 
+membersRouter.get("/health", [MembersController.health]);
+membersRouter.get("/count", [
+  ValidateMiddleware.isValidJWTAccessToken,
+  MembersController.memberCount,
+]);
+
 membersRouter.get("/list", [
   ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.hasPermission({
@@ -52,7 +58,6 @@ membersRouter.patch("/:memberId", [
   ValidateMiddleware.doesSiteNumberAlreadyExist,
   MembersController.updateMember,
 ]);
-membersRouter.get("/health", [MembersController.health]);
 
 membersRouter.get("/:memberId/payment", [
   ValidateMiddleware.isValidJWTAccessToken,

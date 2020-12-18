@@ -96,3 +96,7 @@ exports.list = (perPage, page) => {
       });
   });
 };
+
+exports.getMemberCount = () => {
+  return Member.count();
+};
