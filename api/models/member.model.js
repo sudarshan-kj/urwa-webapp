@@ -98,5 +98,5 @@ exports.list = (perPage, page) => {
 };
 
 exports.getMemberCount = () => {
-  return Member.count();
+  return Member.countDocuments();
 };

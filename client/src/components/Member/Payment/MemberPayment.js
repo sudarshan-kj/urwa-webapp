@@ -23,14 +23,13 @@ const MemberPayment = () => {
   const toast = useToast();
 
   const reqBody = {
-    txnid: "ORD680",
+    txnid: "MEMBERID",
     hash: hash,
     amount: 1,
     firstname: "Test",
     email: "test@gmail.com",
     phone: "9686678568",
     productinfo: "P01,P02",
-    udf5: "BOLT_KIT_NODE_JS",
     surl: "https://www.google.com",
     furl: "https://www.bing.com",
     service_provider: "payu_paisa",
