@@ -18,14 +18,13 @@ import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 
 const MemberPayment = () => {
+  const [hash, setHash] = React.useState();
   const history = useHistory();
   const toast = useToast();
 
   const reqBody = {
-    key: "Uc6eLUa1",
     txnid: "ORD680",
-    hash:
-      "69e6ea0f911d77eb9b597c75866cb3a44195b97cc44a89dab447b3cd5eaa175f648b4f5fe7594ea5058373ae3eb53c698aae601ac8cd3f422f31424a85ca5633",
+    hash: hash,
     amount: 1,
     firstname: "Test",
     email: "test@gmail.com",
@@ -36,6 +35,12 @@ const MemberPayment = () => {
     furl: "https://www.bing.com",
     service_provider: "payu_paisa",
   };
+
+  React.useEffect(() => {
+    authAxios()
+      .post("/api/payments/hash/generate", reqBody)
+      .then((response) => console.log("Response is", response.data));
+  }, []);
 
   const contactServer = () => {
     authAxios()
