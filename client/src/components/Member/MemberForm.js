@@ -256,7 +256,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 </StyledSelect>
               </FormControl>
 
-              <FormControl id="details.borewell" as="fieldset">
+              <FormControl as="fieldset">
                 <FormLabel as="legend">Borewell</FormLabel>
                 <RadioGroup
                   value={formik.values.details.borewell}
@@ -265,17 +265,27 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   }}
                 >
                   <HStack spacing="24px">
-                    <Radio bgColor="gray.300" colorScheme="teal" value="true">
+                    <Radio
+                      id="borewell_true"
+                      bgColor="gray.300"
+                      colorScheme="teal"
+                      value="true"
+                    >
                       Yes
                     </Radio>
-                    <Radio bgColor="gray.300" colorScheme="teal" value="false">
+                    <Radio
+                      id="borewell_false"
+                      bgColor="gray.300"
+                      colorScheme="teal"
+                      value="false"
+                    >
                       No
                     </Radio>
                   </HStack>
                 </RadioGroup>
               </FormControl>
 
-              <FormControl id="details.land" as="fieldset">
+              <FormControl as="fieldset">
                 <FormLabel as="legend">Land status</FormLabel>
                 <RadioGroup
                   value={formik.values.details.land}
@@ -287,10 +297,20 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   }}
                 >
                   <HStack spacing="24px">
-                    <Radio bgColor="gray.300" colorScheme="teal" value="built">
+                    <Radio
+                      id="land_built"
+                      bgColor="gray.300"
+                      colorScheme="teal"
+                      value="built"
+                    >
                       Built
                     </Radio>
-                    <Radio bgColor="gray.300" colorScheme="teal" value="vacant">
+                    <Radio
+                      id="land_vacant"
+                      bgColor="gray.300"
+                      colorScheme="teal"
+                      value="vacant"
+                    >
                       Vacant
                     </Radio>
                   </HStack>
@@ -317,7 +337,6 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
               </FormControl>
 
               <FormControl
-                id="details.monthlyMaintenance"
                 as="fieldset"
                 isDisabled={isDisabled(npuf, "monthlyMaintenance")}
               >
@@ -332,10 +351,20 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   }}
                 >
                   <HStack spacing="24px">
-                    <Radio bgColor="gray.300" colorScheme="teal" value="true">
+                    <Radio
+                      id="monthlyMaintenance_true"
+                      bgColor="gray.300"
+                      colorScheme="teal"
+                      value="true"
+                    >
                       Yes
                     </Radio>
-                    <Radio bgColor="gray.300" colorScheme="teal" value="false">
+                    <Radio
+                      id="monthlyMaintenance_false"
+                      bgColor="gray.300"
+                      colorScheme="teal"
+                      value="false"
+                    >
                       No
                     </Radio>
                   </HStack>
