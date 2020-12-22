@@ -18,35 +18,25 @@ import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 
 const MemberPayment = () => {
-  const [hash, setHash] = React.useState();
+  const [reqBodyBolt, setReqBodyBolt] = React.useState({});
+  const [isPayButtonActive, setPayButtonActive] = React.useState(false);
   const history = useHistory();
   const toast = useToast();
 
-  const reqBody = {
-    txnid: "MEMBERID",
-    hash: hash,
-    amount: 1,
-    firstname: "Test",
-    email: "test@gmail.com",
-    phone: "9686678568",
-    productinfo: "P01,P02",
-    surl: "https://www.google.com",
-    furl: "https://www.bing.com",
-    service_provider: "payu_paisa",
-  };
-
   React.useEffect(() => {
     authAxios()
-      .post("/api/payments/hash/generate", reqBody)
-      .then((response) => console.log("Response is", response.data));
+      .post("/api/payments/hash/generate", {})
+      .then((response) => {
+        setPayButtonActive(true);
+        setReqBodyBolt({
+          ...response.data,
+        });
+      });
   }, []);
 
   const contactServer = () => {
     authAxios()
-      .post(
-        `${config.API_ENDPOINT}/api/members/5fd0724838599421a8daf8f1/payment`,
-        reqBody
-      )
+      .post("/api/payments/hash/verify", reqBodyBolt)
       .then((result) => {
         if (result.status === 200) {
           history.push("/member/status/success?status=success");
@@ -67,7 +57,8 @@ const MemberPayment = () => {
   };
 
   function launchBolt() {
-    window.bolt.launch(reqBody, {
+    console.log("Body req to bolt is", reqBodyBolt);
+    window.bolt.launch(reqBodyBolt, {
       responseHandler: function (BOLT) {
         if (BOLT.response.txnStatus === "SUCCESS") {
           contactServer();
@@ -75,6 +66,14 @@ const MemberPayment = () => {
           toast({
             title: "User cancelled transaction",
             description: "User cancelled transaction.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Transaction failed",
+            description: "Please try again",
             status: "error",
             duration: 3000,
             isClosable: true,
@@ -89,36 +88,42 @@ const MemberPayment = () => {
 
   const paymentDataArray = [
     {
+      index: 1,
       link: "#",
       textContent: "January 2021",
       paidStatus: "PAID",
       colorScheme: "green",
     },
     {
+      index: 2,
       link: "#",
       textContent: "February 2021",
       paidStatus: "PAID",
       colorScheme: "green",
     },
     {
+      index: 3,
       link: "#",
       textContent: "March 2021",
       paidStatus: "PAID",
       colorScheme: "green",
     },
     {
+      index: 4,
       link: "#",
       textContent: "April 2021",
       paidStatus: "OVERDUE",
       colorScheme: "red",
     },
     {
+      index: 5,
       link: "#",
       textContent: "May 2021",
       paidStatus: "OVERDUE",
       colorScheme: "red",
     },
     {
+      index: 6,
       link: "#",
       textContent: "June 2021",
       paidStatus: "DUE",
@@ -151,11 +156,13 @@ const MemberPayment = () => {
           <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
             {paymentDataArray.map((card) => (
               <SimpleCard
+                key={card.index}
                 link={card.link}
                 textContent={card.textContent}
                 paidStatus={card.paidStatus}
                 colorScheme={card.colorScheme}
                 launchBolt={launchBolt}
+                isPayButtonActive={isPayButtonActive}
               />
             ))}
           </SimpleGrid>
@@ -171,6 +178,7 @@ const SimpleCard = ({
   paidStatus,
   colorScheme,
   launchBolt,
+  isPayButtonActive,
 }) => (
   <Link to={link}>
     <Center
@@ -195,7 +203,11 @@ const SimpleCard = ({
         </Text>
         <Badge colorScheme={colorScheme}>{paidStatus}</Badge>
         {paidStatus.includes("DUE") ? (
-          <Button onClick={() => launchBolt()} colorScheme="teal">
+          <Button
+            isDisabled={!isPayButtonActive}
+            onClick={() => launchBolt()}
+            colorScheme="teal"
+          >
             Pay Now
           </Button>
         ) : (

@@ -10,30 +10,51 @@ exports.payAmount = (req, res) => {
 };
 
 exports.generateHash = (req, res) => {
-  const payu_key = process.env.PAYU_KEY;
+  const key = process.env.PAYU_KEY;
   const payu_salt = process.env.PAYU_SALT;
-  let udf5 = "URWA_PAYMENT_UDF5";
-  udf5 = "BOLT_KIT_NODE_JS";
+  const txnid = "ORD-" + Math.floor(Math.random() * 10000) + "-" + Date.now();
+  const amount = 1;
+  const productinfo = "URWA_SUBSCRIPTION";
+  const udf5 = "URWA_PAYMENT_UDF5";
+  const firstname = "Sudarshan";
+  const email = "kjsudi@gmail.com";
+  const surl = "https://google.com";
+  const furl = "https://google.com";
+  const phone = "9686678568";
   let cryp = crypto.createHash("sha512");
   let text =
-    payu_key +
+    key +
     "|" +
-    req.body.txnid +
+    txnid +
     "|" +
-    req.body.amount +
+    amount +
     "|" +
-    req.body.productinfo +
+    productinfo +
     "|" +
-    req.body.firstname +
+    firstname +
     "|" +
-    req.body.email +
+    email +
     "|||||" +
     udf5 +
     "||||||" +
     payu_salt;
   cryp.update(text);
   let hash = cryp.digest("hex");
-  return res.status(200).send({ hash });
+  return res.status(200).send({
+    key,
+    txnid,
+    amount,
+    productinfo,
+    firstname,
+    hash,
+    email,
+    phone,
+    udf5,
+    txnid,
+    surl,
+    furl,
+    service_provider: "pay_paisa",
+  });
 };
 
 exports.verifyHash = (req, res) => {
