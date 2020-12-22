@@ -58,7 +58,6 @@ const MemberPayment = () => {
   };
 
   function launchBolt() {
-    console.log("Body req to bolt is", reqBodyBolt);
     window.bolt.launch(reqBodyBolt, {
       responseHandler: function (BOLT) {
         if (BOLT.response.txnStatus === "SUCCESS") {

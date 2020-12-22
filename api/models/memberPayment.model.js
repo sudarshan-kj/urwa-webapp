@@ -18,9 +18,10 @@ const opts = {
 let memberPaymentSchema = new Schema(
   {
     memberId: { type: Schema.Types.ObjectId, ref: "Member" },
-    toPayForMonthYear: String,
-    lastPaidForMonthYear: Array,
-    transactionDetails: [
+    dueFor: Date,
+    overdueFor: [{ type: Schema.Types.Date }],
+    lastPaidFor: Date,
+    prevTransactionDetails: [
       { type: Schema.Types.ObjectId, ref: "PaymentTransaction" },
     ],
   },

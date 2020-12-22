@@ -179,6 +179,7 @@ exports.getMember = (req, res) => {
           MemberDetailsModel.findByMemberId(foundMember._id)
             .then((memberDetails) => {
               foundMember.mDetails.push(memberDetails);
+              // this is done so that all json values 'appear' as strings so that the client can handle them wells
               const jsonString = JSON.parse(
                 JSON.stringify(foundMember, replacer)
               );
