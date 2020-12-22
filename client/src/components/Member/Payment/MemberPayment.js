@@ -16,6 +16,7 @@ import ReactDependentScript from "react-dependent-script";
 import config from "../../../config";
 import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
+import { getMemberDetails } from "utils/Authz";
 
 const MemberPayment = () => {
   const [reqBodyBolt, setReqBodyBolt] = React.useState({});
@@ -25,7 +26,7 @@ const MemberPayment = () => {
 
   React.useEffect(() => {
     authAxios()
-      .post("/api/payments/hash/generate", {})
+      .post(`/api/payments/hash/generate/${getMemberDetails().memberId}`, {})
       .then((response) => {
         setPayButtonActive(true);
         setReqBodyBolt({

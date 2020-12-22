@@ -1,4 +1,5 @@
 const MemberModel = require("../models/member.model");
+const MemberDetailsModel = require("../models/memberDetails.model");
 const PaymentTransactionModel = require("../models/paymentTransaction.model");
 const crypto = require("crypto");
 const logger = require("log4js").getLogger();
@@ -9,18 +10,26 @@ exports.payAmount = (req, res) => {
   res.status(200).send({ message: "Payment is successful" });
 };
 
-exports.generateHash = (req, res) => {
+exports.generateHash = async (req, res) => {
+  const memberId = req.params.memberId;
   const key = process.env.PAYU_KEY;
   const payu_salt = process.env.PAYU_SALT;
   const txnid = "ORD-" + Math.floor(Math.random() * 10000) + "-" + Date.now();
-  const amount = 1;
+  let email, amount, phone, firstname;
+
+  try {
+    const member = await MemberModel.findById(memberId);
+    const memberDetails = await MemberDetailsModel.findByMemberId(memberId);
+    email = member.email;
+    amount = memberDetails.maintenanceAmount / 1000;
+    phone = memberDetails.mobile;
+    firstname = member.firstName + "/" + member.lastName;
+  } catch {}
+
   const productinfo = "URWA_SUBSCRIPTION";
   const udf5 = "URWA_PAYMENT_UDF5";
-  const firstname = "Sudarshan";
-  const email = "kjsudi@gmail.com";
   const surl = "https://google.com";
   const furl = "https://google.com";
-  const phone = "9686678568";
   let cryp = crypto.createHash("sha512");
   let text =
     key +
@@ -53,7 +62,7 @@ exports.generateHash = (req, res) => {
     txnid,
     surl,
     furl,
-    service_provider: "pay_paisa",
+    service_provider: "payu_paisa",
   });
 };
 
