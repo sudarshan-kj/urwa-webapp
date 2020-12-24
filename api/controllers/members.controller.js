@@ -1,6 +1,7 @@
 const MemberModel = require("../models/member.model");
 const AdminMemberModel = require("../models/adminMember.model");
 const MemberDetailsModel = require("../models/memberDetails.model");
+const MemberPaymentModel = require("../models/memberPayment.model");
 const crypto = require("crypto");
 const logger = require("log4js").getLogger();
 const Joi = require("joi");
@@ -56,6 +57,8 @@ const schema = Joi.object({
     address: Joi.string().min(4).max(30).required(),
   }),
 });
+
+////////////////MEMBER CRUD OPERATIONS START//////////////////////
 
 exports.createMember = (req, res) => {
   const { error } = schema.validate(req.body);
@@ -203,9 +206,9 @@ exports.getMember = (req, res) => {
     .catch((err) => res.status(500).send({ error: [{ message: err }] }));
 };
 
-exports.handlePayment = (req, res) => {
-  res.status(200).send({ msg: "Payment successful" });
-};
+////////////////MEMBER CRUD OPERATIONS END//////////////////////
+
+////////////////META DATA START//////////////////////
 
 exports.health = (req, res) => {
   return res.status(200).send({ msg: "ok" });
@@ -223,3 +226,42 @@ exports.memberCount = async (req, res) => {
     });
   }
 };
+////////////////META DATA END//////////////////////
+
+////////////////MEMBER PAYMENT METHODS START//////////////////////
+
+exports.updatePaymentInfo = async (req, res) => {
+  try {
+    req.body.memberId = req.params.memberId;
+    await MemberPaymentModel.insert(req.body);
+    return res
+      .status(200)
+      .send({ message: "Payment info updated successfully" });
+  } catch {
+    return res.status(500).send({
+      error: [
+        { message: "Something went wrong while updating member payment info" },
+      ],
+    });
+  }
+};
+
+exports.getPaymentInfo = async (req, res) => {
+  try {
+    const MemberPaymentData = await MemberPaymentModel.findByMemberId(
+      req.params.memberId
+    );
+    return res.status(200).send({ data: MemberPaymentData });
+  } catch (err) {
+    return res.status(500).send({
+      error: [
+        {
+          message:
+            "Something went wrong while getting member payment info" + err,
+        },
+      ],
+    });
+  }
+};
+
+////////////////MEMBER PAYMENT METHODS END//////////////////////

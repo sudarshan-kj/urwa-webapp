@@ -59,4 +59,14 @@ membersRouter.patch("/:memberId", [
   MembersController.updateMember,
 ]);
 
+membersRouter.post("/payment/:memberId", [
+  ValidateMiddleware.isValidMemberId,
+  MembersController.updatePaymentInfo,
+]);
+
+membersRouter.get("/payment/:memberId", [
+  ValidateMiddleware.isValidMemberId,
+  MembersController.getPaymentInfo,
+]);
+
 module.exports = membersRouter;

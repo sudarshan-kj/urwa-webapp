@@ -1,13 +1,22 @@
 const MemberModel = require("../models/member.model");
 const MemberDetailsModel = require("../models/memberDetails.model");
+const MemberPaymentModel = require("../models/memberPayment.model");
 const PaymentTransactionModel = require("../models/paymentTransaction.model");
 const crypto = require("crypto");
 const logger = require("log4js").getLogger();
 const Joi = require("joi");
 logger.level = "debug";
 
-exports.payAmount = (req, res) => {
-  res.status(200).send({ message: "Payment is successful" });
+exports.payAmount = async (req, res) => {
+  try {
+    req.body.memberId = req.params.memberId;
+    await PaymentTransactionModel.insert(req.body);
+    return res.status(200).send({ message: "Payment successful" });
+  } catch {
+    return res
+      .status(500)
+      .send({ error: "Something went wrong while paying amount" });
+  }
 };
 
 exports.generateHash = async (req, res) => {

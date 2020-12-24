@@ -32,3 +32,8 @@ let PaymentTransaction = mongoose.model(
   "PaymentTransaction",
   paymentTransactionSchema
 );
+
+exports.insert = (paymentData) => {
+  let paymentTransaction = new PaymentTransaction(paymentData);
+  return paymentTransaction.save();
+};

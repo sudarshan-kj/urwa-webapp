@@ -8,7 +8,7 @@ paymentRouter.post("/hash/generate/:memberId", [
   PaymentController.generateHash,
 ]);
 paymentRouter.post("/hash/verify", [PaymentController.verifyHash]);
-paymentRouter.post("/subscription/:memberId", [
+paymentRouter.post("/capture/:memberId", [
   ValidateMiddleware.isValidMemberId,
   PaymentController.payAmount,
 ]);
