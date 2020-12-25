@@ -17,14 +17,18 @@ import config from "../../../config";
 import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 import { getMemberDetails } from "utils/Authz";
+import date from "date-and-time";
 
+const datePattern = date.compile("ddd, MMM DD YYYY");
 const MemberPayment = () => {
   const [reqBodyBolt, setReqBodyBolt] = React.useState({});
   const [isPayButtonActive, setPayButtonActive] = React.useState(false);
+  const [paymentDataArrayState, setPaymentDataArrayState] = React.useState({});
   const history = useHistory();
   const toast = useToast();
 
   React.useEffect(() => {
+    fetchPaymentDetails();
     authAxios()
       .post(`/api/payments/hash/generate/${getMemberDetails().memberId}`, {})
       .then((response) => {
@@ -55,6 +59,15 @@ const MemberPayment = () => {
         console.log("Error occured while contacting server", err);
         throw new Error("Error occured while contacting server");
       });
+  };
+
+  const fetchPaymentDetails = async () => {
+    const paymentDetails = await authAxios().get(
+      `/api/members/payment/${getMemberDetails().memberId}`
+    );
+    setPaymentDataArrayState(paymentDetails.data.data);
+    var myDate = new Date("2021-01-01T07:00:00.000Z");
+    let formattedDate = date.format(myDate, datePattern);
   };
 
   function launchBolt() {
