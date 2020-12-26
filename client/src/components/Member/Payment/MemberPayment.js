@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Center,
@@ -21,23 +21,26 @@ import date from "date-and-time";
 
 const datePattern = date.compile("ddd, MMM DD YYYY");
 const MemberPayment = () => {
-  const [reqBodyBolt, setReqBodyBolt] = React.useState({});
-  const [isPayButtonActive, setPayButtonActive] = React.useState(false);
-  const [paymentDataArrayState, setPaymentDataArrayState] = React.useState({});
+  const [reqBodyBolt, setReqBodyBolt] = useState({});
+  const [isPayButtonActive, setPayButtonActive] = useState(false);
+  const [paymentDataArrayState, setPaymentDataArrayState] = useState({});
   const history = useHistory();
   const toast = useToast();
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchPaymentDetails();
     authAxios()
       .post(`/api/payments/hash/generate/${getMemberDetails().memberId}`, {})
       .then((response) => {
-        setPayButtonActive(true);
         setReqBodyBolt({
           ...response.data,
         });
       });
   }, []);
+
+  useEffect(() => {
+    setPayButtonActive(true);
+  }, [reqBodyBolt]);
 
   const contactServer = () => {
     authAxios()
@@ -66,8 +69,8 @@ const MemberPayment = () => {
       `/api/members/payment/${getMemberDetails().memberId}`
     );
     setPaymentDataArrayState(paymentDetails.data.data);
-    var myDate = new Date("2021-01-01T07:00:00.000Z");
-    let formattedDate = date.format(myDate, datePattern);
+    // var myDate = new Date("2021-01-01T07:00:00.000Z");
+    // let formattedDate = date.format(myDate, datePattern);
   };
 
   function launchBolt() {
@@ -166,6 +169,70 @@ const MemberPayment = () => {
       </Center> */}
       <Box h={{ base: "100%", md: "80vh" }} m={8}>
         <Stack w="80%" m="auto" spacing={8}>
+          <Box>
+            <Badge borderRadius={10} colorScheme="orange" p={2}>
+              Due for
+            </Badge>
+          </Box>
+          <SimpleGrid minChildWidth="260px" spacing="40px">
+            <SimpleCard
+              link="#"
+              textContent={date.format(
+                new Date(paymentDataArrayState.dueFor),
+                datePattern
+              )}
+              paidStatus="DUE"
+              colorScheme="orange"
+              launchBolt={launchBolt}
+              isPayButtonActive={isPayButtonActive}
+            />
+          </SimpleGrid>
+
+          <Box>
+            <Badge borderRadius={10} colorScheme="red" p={2}>
+              Overdue for
+            </Badge>
+          </Box>
+          <SimpleGrid minChildWidth="260px" spacing="40px">
+            <SimpleCard
+              link="#"
+              textContent={date.format(
+                new Date(paymentDataArrayState.dueFor),
+                datePattern
+              )}
+              paidStatus="DUE"
+              colorScheme="orange"
+              launchBolt={launchBolt}
+              isPayButtonActive={isPayButtonActive}
+            />
+            <SimpleCard
+              link="#"
+              textContent={date.format(
+                new Date(paymentDataArrayState.dueFor),
+                datePattern
+              )}
+              paidStatus="DUE"
+              colorScheme="orange"
+              launchBolt={launchBolt}
+              isPayButtonActive={isPayButtonActive}
+            />
+            <SimpleCard
+              link="#"
+              textContent={date.format(
+                new Date(paymentDataArrayState.dueFor),
+                datePattern
+              )}
+              paidStatus="DUE"
+              colorScheme="orange"
+              launchBolt={launchBolt}
+              isPayButtonActive={isPayButtonActive}
+            />
+          </SimpleGrid>
+          <Box>
+            <Badge borderRadius={10} colorScheme="green" p={2}>
+              Previous Transactions
+            </Badge>
+          </Box>
           <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
             {paymentDataArray.map((card) => (
               <SimpleCard
@@ -214,7 +281,9 @@ const SimpleCard = ({
         <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
           {textContent}
         </Text>
-        <Badge colorScheme={colorScheme}>{paidStatus}</Badge>
+        <Badge borderRadius={5} colorScheme={colorScheme}>
+          {paidStatus}
+        </Badge>
         {paidStatus.includes("DUE") ? (
           <Button
             isDisabled={!isPayButtonActive}
