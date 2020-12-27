@@ -10,20 +10,22 @@ import {
   Stack,
   Badge,
   Text,
+  Skeleton,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import ReactDependentScript from "react-dependent-script";
-import config from "../../../config";
 import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 import { getMemberDetails } from "utils/Authz";
 import date from "date-and-time";
 
 const datePattern = date.compile("ddd, MMM DD YYYY");
+
 const MemberPayment = () => {
   const [reqBodyBolt, setReqBodyBolt] = useState({});
   const [isPayButtonActive, setPayButtonActive] = useState(false);
   const [paymentDataArrayState, setPaymentDataArrayState] = useState({});
+  const [isCardLoading, setCardLoading] = useState(true);
   const history = useHistory();
   const toast = useToast();
 
@@ -35,12 +37,9 @@ const MemberPayment = () => {
         setReqBodyBolt({
           ...response.data,
         });
+        setPayButtonActive(true);
       });
   }, []);
-
-  useEffect(() => {
-    setPayButtonActive(true);
-  }, [reqBodyBolt]);
 
   const contactServer = () => {
     authAxios()
@@ -69,8 +68,7 @@ const MemberPayment = () => {
       `/api/members/payment/${getMemberDetails().memberId}`
     );
     setPaymentDataArrayState(paymentDetails.data.data);
-    // var myDate = new Date("2021-01-01T07:00:00.000Z");
-    // let formattedDate = date.format(myDate, datePattern);
+    setCardLoading(false);
   };
 
   function launchBolt() {
@@ -184,6 +182,7 @@ const MemberPayment = () => {
               paidStatus="DUE"
               colorScheme="orange"
               launchBolt={launchBolt}
+              isLoading={isCardLoading}
               isPayButtonActive={isPayButtonActive}
             />
           </SimpleGrid>
@@ -203,6 +202,7 @@ const MemberPayment = () => {
               paidStatus="DUE"
               colorScheme="orange"
               launchBolt={launchBolt}
+              isLoading={isCardLoading}
               isPayButtonActive={isPayButtonActive}
             />
             <SimpleCard
@@ -214,6 +214,7 @@ const MemberPayment = () => {
               paidStatus="DUE"
               colorScheme="orange"
               launchBolt={launchBolt}
+              isLoading={isCardLoading}
               isPayButtonActive={isPayButtonActive}
             />
             <SimpleCard
@@ -225,6 +226,7 @@ const MemberPayment = () => {
               paidStatus="DUE"
               colorScheme="orange"
               launchBolt={launchBolt}
+              isLoading={isCardLoading}
               isPayButtonActive={isPayButtonActive}
             />
           </SimpleGrid>
@@ -238,6 +240,7 @@ const MemberPayment = () => {
               <SimpleCard
                 key={card.index}
                 link={card.link}
+                isLoading={isCardLoading}
                 textContent={card.textContent}
                 paidStatus={card.paidStatus}
                 colorScheme={card.colorScheme}
@@ -259,44 +262,47 @@ const SimpleCard = ({
   colorScheme,
   launchBolt,
   isPayButtonActive,
+  isLoading,
 }) => (
   <Link to={link}>
-    <Center
-      shadow="xl"
-      borderRadius="20px"
-      h="200px"
-      p={8}
-      bg="gray.100"
-      _hover={{
-        border: "2px solid",
-        borderColor: "teal.300",
-      }}
-    >
-      <Stack
-        direction={{ base: "column", md: "column" }}
-        justify="center"
-        align="center"
-        spacing={4}
+    <Skeleton startColor="gray.200" endColor="teal.400" isLoaded={!isLoading}>
+      <Center
+        shadow="xl"
+        borderRadius="20px"
+        h="200px"
+        p={8}
+        bg="gray.100"
+        _hover={{
+          border: "2px solid",
+          borderColor: "teal.300",
+        }}
       >
-        <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
-          {textContent}
-        </Text>
-        <Badge borderRadius={5} colorScheme={colorScheme}>
-          {paidStatus}
-        </Badge>
-        {paidStatus.includes("DUE") ? (
-          <Button
-            isDisabled={!isPayButtonActive}
-            onClick={() => launchBolt()}
-            colorScheme="teal"
-          >
-            Pay Now
-          </Button>
-        ) : (
-          <></>
-        )}
-      </Stack>
-    </Center>
+        <Stack
+          direction={{ base: "column", md: "column" }}
+          justify="center"
+          align="center"
+          spacing={4}
+        >
+          <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
+            {textContent}
+          </Text>
+          <Badge borderRadius={5} colorScheme={colorScheme}>
+            {paidStatus}
+          </Badge>
+          {paidStatus.includes("DUE") ? (
+            <Button
+              isDisabled={!isPayButtonActive}
+              onClick={() => launchBolt()}
+              colorScheme="teal"
+            >
+              Pay Now
+            </Button>
+          ) : (
+            <></>
+          )}
+        </Stack>
+      </Center>
+    </Skeleton>
   </Link>
 );
 
