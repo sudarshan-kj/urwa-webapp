@@ -223,7 +223,6 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 <FormControl id="details.dob">
                   <FormLabel>Birthday 🎉</FormLabel>
                   <Input
-                    color="orange.500"
                     focusBorderColor="teal.400"
                     bg="gray.100"
                     type="date"
