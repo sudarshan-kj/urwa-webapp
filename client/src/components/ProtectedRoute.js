@@ -16,8 +16,16 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { isAdmin, hasPermission, getMemberDetails } from "utils/Authz";
 import { Link } from "react-router-dom";
-import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+} from "@chakra-ui/react";
 import { ReactComponent as HomeIcon } from "assets/icons/home.svg";
+import { ReactComponent as ProfileIcon } from "assets/icons/user.svg";
+import { ReactComponent as LogoutIcon } from "assets/icons/logout.svg";
 
 const getPath = () => {
   if (isAdmin()) {
@@ -75,8 +83,17 @@ const CommonHeader = ({ component: Component }) => {
                       history.push(`/${getPath()}/home`);
                     }}
                   >
-                    Home
+                    <Icon
+                      as={HomeIcon}
+                      color="teal.300"
+                      fill="teal.300"
+                      w={{ base: 2, md: 3 }}
+                      h={{ base: 2, md: 3 }}
+                      mr={2}
+                    />
+                    <span>Home</span>
                   </MenuItem>
+
                   <MenuItem
                     onClick={() => {
                       history.push(
@@ -84,15 +101,32 @@ const CommonHeader = ({ component: Component }) => {
                       );
                     }}
                   >
-                    Profile
+                    <Icon
+                      as={ProfileIcon}
+                      color="teal.300"
+                      fill="teal.300"
+                      w={{ base: 2, md: 3 }}
+                      h={{ base: 2, md: 3 }}
+                      mr={2}
+                    />
+                    <span>Profile</span>
                   </MenuItem>
+                  <MenuDivider />
                   <MenuItem
                     onClick={() => {
                       logout();
                       history.push("/login");
                     }}
                   >
-                    Logout
+                    <Icon
+                      as={LogoutIcon}
+                      color="teal.300"
+                      fill="teal.300"
+                      w={{ base: 2, md: 3 }}
+                      h={{ base: 2, md: 3 }}
+                      mr={2}
+                    />
+                    <span>Logout</span>
                   </MenuItem>
                 </MenuList>
               </>
