@@ -27,17 +27,20 @@ const UpdateMember = () => {
           newObject.details.anniversary = newObject.details.anniversary.split(
             "T"
           )[0];
+        if (newObject.details.membershipStartDate)
+          newObject.details.membershipStartDate = newObject.details.membershipStartDate.split(
+            "T"
+          )[0];
+
         delete newObject.permissionLevel;
         delete newObject.id;
         delete newObject.npuf;
         newObject.password = "";
-        console.log(newObject);
         setSeedData(newObject);
       });
   }, [memberId]);
 
   const updateMember = (values, setUpdating, resetForm) => {
-    console.log("Values are", values);
     authAxios()
       .patch(`/api/members/${memberId}`, values)
       .then((res) => {

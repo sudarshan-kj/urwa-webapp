@@ -55,12 +55,13 @@ const schema = Joi.object({
     borewell: Joi.bool().required(),
     siteDimensions: Joi.string().valid("30x40", "40x60", "50x80").required(),
     address: Joi.string().min(4).max(30).required(),
+    membershipStartDate: Joi.date().required(),
   }),
 });
 
 ////////////////MEMBER CRUD OPERATIONS START//////////////////////
 
-exports.createMember = (req, res) => {
+exports.createMember = async (req, res) => {
   const { error } = schema.validate(req.body);
   if (error) {
     return res.status(400).send({ error: error.details });
@@ -75,26 +76,35 @@ exports.createMember = (req, res) => {
     .update(req.body.password)
     .digest("base64");
   req.body.password = salt + "$" + hash;
-  AdminMemberModel.findByEmail(req.body.email)
-    .then((adminMember) => {
-      if (!adminMember) {
-        req.body.permissionLevel = "0x00-0x06";
-        req.body.npuf = ["email", "monthlyMaintenance", "maintenanceAmount"];
-      } else {
-        req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
-        req.body.npuf = [];
-      }
-      MemberModel.insert(req.body)
-        .then((result) => {
-          res.status(201).send({ id: result._id });
-        })
-        .catch((err) => res.status(400).send({ errors: err }));
-    })
-    .catch((err) => {
-      return res.status(500).send({
-        error: [{ message: "Something went wrong while creating member" }],
-      });
+
+  try {
+    const adminMember = await AdminMemberModel.findByEmail(req.body.email);
+    if (!adminMember) {
+      req.body.permissionLevel = "0x00-0x06";
+      req.body.npuf = ["email", "monthlyMaintenance", "maintenanceAmount"];
+    } else {
+      req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
+      req.body.npuf = [];
+    }
+    const createdMember = await MemberModel.insert(req.body);
+    const membershipStartDate = new Date(req.body.details.membershipStartDate);
+    const dueDate = new Date(
+      membershipStartDate.setMonth(membershipStartDate.getMonth() + 1) // set due amount from the next month of start date
+    );
+    const paymentData = {
+      memberId: createdMember._id,
+      dueFor: dueDate,
+      overdueFor: [],
+      lastPaidFor: [],
+    };
+    await MemberPaymentModel.insert(paymentData);
+    return res.status(201).send({ id: createdMember._id });
+  } catch (err) {
+    logger.error("Something went wrong while creating new member ", err);
+    return res.status(500).send({
+      error: [{ message: "Something went wrong: " + err }],
     });
+  }
 };
 
 exports.updateMember = async (req, res) => {

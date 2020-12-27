@@ -37,7 +37,6 @@ let Member = mongoose.model("Member", memberSchema);
 
 exports.insert = (memberData) => {
   let member = new Member(memberData);
-  member.mDetails.push(memberData.details);
   return member.save().then((result) => {
     memberData.details.memberId = result._id;
     return MemberDetailsModel.insert(memberData.details).then(() => result._id);

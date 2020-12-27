@@ -29,6 +29,7 @@ let memberDetailsSchema = new Schema(
     borewell: Boolean,
     siteDimensions: String,
     address: String,
+    membershipStartDate: Date,
   },
   opts
 );

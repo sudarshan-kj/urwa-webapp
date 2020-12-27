@@ -17,6 +17,7 @@
       "maintenanceAmount": -1,
       "borewell": "false",
       "siteDimensions": "",
-      "address": ""
+      "address": "",
+      "membershipStartDate": ""
     }
   }
