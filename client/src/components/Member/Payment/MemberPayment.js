@@ -11,8 +11,11 @@ import {
   Badge,
   Text,
   Skeleton,
+  useDisclosure,
+  Fade,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import ReactDependentScript from "react-dependent-script";
 import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
@@ -26,6 +29,7 @@ const MemberPayment = () => {
   const [isPayButtonActive, setPayButtonActive] = useState(false);
   const [paymentDataArrayState, setPaymentDataArrayState] = useState({});
   const [isCardLoading, setCardLoading] = useState(true);
+  const { isOpen, onToggle } = useDisclosure();
   const history = useHistory();
   const toast = useToast();
 
@@ -186,7 +190,6 @@ const MemberPayment = () => {
               isPayButtonActive={isPayButtonActive}
             />
           </SimpleGrid>
-
           <Box>
             <Badge borderRadius={10} colorScheme="red" p={2}>
               Overdue for
@@ -230,25 +233,60 @@ const MemberPayment = () => {
               isPayButtonActive={isPayButtonActive}
             />
           </SimpleGrid>
-          <Box>
-            <Badge borderRadius={10} colorScheme="green" p={2}>
-              Previous Transactions
-            </Badge>
-          </Box>
-          <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
-            {paymentDataArray.map((card) => (
-              <SimpleCard
-                key={card.index}
-                link={card.link}
-                isLoading={isCardLoading}
-                textContent={card.textContent}
-                paidStatus={card.paidStatus}
-                colorScheme={card.colorScheme}
-                launchBolt={launchBolt}
-                isPayButtonActive={isPayButtonActive}
-              />
-            ))}
-          </SimpleGrid>
+          <Center>
+            <Skeleton
+              startColor="gray.200"
+              endColor="teal.400"
+              isLoaded={!isCardLoading}
+              mt={4}
+            >
+              <Button
+                p={7}
+                colorScheme="teal"
+                onClick={onToggle}
+                rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              >
+                {isOpen
+                  ? "Close Previous Transactions"
+                  : "Show Previous Transactions"}
+              </Button>
+            </Skeleton>
+          </Center>
+          <Fade in={isOpen} animateOpacity>
+            <Stack spacing={8}>
+              <Box>
+                <Badge borderRadius={10} colorScheme="green" p={2}>
+                  previous transactions
+                </Badge>
+              </Box>
+              <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
+                {paymentDataArray.map((card) => (
+                  <SimpleCard
+                    key={card.index}
+                    link={card.link}
+                    isLoading={isCardLoading}
+                    textContent={card.textContent}
+                    paidStatus={card.paidStatus}
+                    colorScheme={card.colorScheme}
+                    launchBolt={launchBolt}
+                    isPayButtonActive={isPayButtonActive}
+                  />
+                ))}
+              </SimpleGrid>
+            </Stack>
+          </Fade>
+          <Center>
+            <Skeleton
+              my={6}
+              startColor="gray.200"
+              endColor="orange.400"
+              isLoaded={!isCardLoading}
+            >
+              <Button p={7} colorScheme="orange">
+                Pay Total Due Amount: Rs 1
+              </Button>
+            </Skeleton>
+          </Center>
         </Stack>
       </Box>
     </ReactDependentScript>
@@ -267,7 +305,7 @@ const SimpleCard = ({
   <Link to={link}>
     <Skeleton startColor="gray.200" endColor="teal.400" isLoaded={!isLoading}>
       <Center
-        shadow="xl"
+        boxShadow="lg"
         borderRadius="20px"
         h="200px"
         p={8}

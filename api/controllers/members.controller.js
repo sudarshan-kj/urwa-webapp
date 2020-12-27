@@ -251,7 +251,7 @@ exports.getPaymentInfo = async (req, res) => {
     const MemberPaymentData = await MemberPaymentModel.findByMemberId(
       req.params.memberId
     );
-    return res.status(200).send({ data: MemberPaymentData });
+    setTimeout(() => res.status(200).send({ data: MemberPaymentData }), 3000);
   } catch (err) {
     return res.status(500).send({
       error: [

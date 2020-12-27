@@ -13,7 +13,7 @@ import {
   Spacer,
   Badge,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { isAdmin, hasPermission, getMemberDetails } from "utils/Authz";
 import { Link } from "react-router-dom";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
@@ -65,7 +65,7 @@ const CommonHeader = ({ component: Component }) => {
                   isActive={isOpen}
                   as={Button}
                   colorScheme="teal"
-                  rightIcon={<ChevronDownIcon />}
+                  rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
                 >
                   {getMemberDetails().firstName}
                 </MenuButton>
