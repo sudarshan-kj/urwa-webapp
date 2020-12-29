@@ -81,7 +81,12 @@ exports.createMember = async (req, res) => {
     const adminMember = await AdminMemberModel.findByEmail(req.body.email);
     if (!adminMember) {
       req.body.permissionLevel = "0x00-0x06";
-      req.body.npuf = ["email", "monthlyMaintenance", "maintenanceAmount"];
+      req.body.npuf = [
+        "email",
+        "monthlyMaintenance",
+        "maintenanceAmount",
+        "membershipStartDate",
+      ];
     } else {
       req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
       req.body.npuf = [];

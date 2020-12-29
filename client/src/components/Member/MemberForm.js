@@ -246,7 +246,10 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   />
                 </FormControl>
 
-                <FormControl id="details.membershipStartDate">
+                <FormControl
+                  id="details.membershipStartDate"
+                  isDisabled={isDisabled(npuf, "membershipStartDate")}
+                >
                   <FormLabel>Membership Start Date 🏳️‍🌈</FormLabel>
                   <Input
                     focusBorderColor="teal.400"
