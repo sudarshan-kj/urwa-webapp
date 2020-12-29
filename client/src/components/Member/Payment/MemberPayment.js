@@ -27,7 +27,12 @@ const datePattern = date.compile("ddd, MMM DD YYYY");
 const MemberPayment = () => {
   const [reqBodyBolt, setReqBodyBolt] = useState({});
   const [isPayButtonActive, setPayButtonActive] = useState(false);
-  const [paymentDataArrayState, setPaymentDataArrayState] = useState({});
+  const [isValidMember, setValidMember] = useState("NA");
+  const [paymentDataArrayState, setPaymentDataArrayState] = useState({
+    overdueFor: [],
+    dueFor: "",
+    lastPaidFor: [],
+  });
   const [isCardLoading, setCardLoading] = useState(true);
   const [shouldMemberPay, setShouldMemberPay] = useState("NA");
   const { isOpen, onToggle } = useDisclosure();
@@ -93,8 +98,13 @@ const MemberPayment = () => {
     const paymentDetails = await authAxios().get(
       `/api/members/payment/${getMemberDetails().memberId}`
     );
-    setPaymentDataArrayState(paymentDetails.data.data);
-    setCardLoading(false);
+    if (paymentDetails.data.data.memberId === getMemberDetails().memberId) {
+      setValidMember(true);
+      setPaymentDataArrayState(paymentDetails.data.data);
+      setCardLoading(false);
+    } else {
+      setValidMember(false);
+    }
   };
 
   function launchBolt() {
@@ -193,6 +203,17 @@ const MemberPayment = () => {
       </Center>
     );
 
+  if (!isValidMember) {
+    return (
+      <Center w="100%">
+        <Text>
+          Invalid member found while validating the member. This is an
+          application error. Please contact admin.
+        </Text>
+      </Center>
+    );
+  }
+
   return (
     <>
       <ReactDependentScript
@@ -214,7 +235,7 @@ const MemberPayment = () => {
         <Heading>Due amount is Rs 300</Heading>
         <Button onClick={() => launchBolt()}> Pay</Button>
       </Center> */}
-        <Box h={{ base: "100%", md: "80vh" }} m={8}>
+        <Box h="100%" minH={{ md: "80vh" }} m={8}>
           <Stack w="80%" m="auto" spacing={8}>
             <Box>
               <Badge borderRadius={10} colorScheme="orange" p={2}>
@@ -241,42 +262,31 @@ const MemberPayment = () => {
               </Badge>
             </Box>
             <SimpleGrid minChildWidth="260px" spacing="40px">
-              <SimpleCard
-                link="#"
-                textContent={date.format(
-                  new Date(paymentDataArrayState.dueFor),
-                  datePattern
-                )}
-                paidStatus="DUE"
-                colorScheme="orange"
-                launchBolt={launchBolt}
-                isLoading={isCardLoading}
-                isPayButtonActive={isPayButtonActive}
-              />
-              <SimpleCard
-                link="#"
-                textContent={date.format(
-                  new Date(paymentDataArrayState.dueFor),
-                  datePattern
-                )}
-                paidStatus="DUE"
-                colorScheme="orange"
-                launchBolt={launchBolt}
-                isLoading={isCardLoading}
-                isPayButtonActive={isPayButtonActive}
-              />
-              <SimpleCard
-                link="#"
-                textContent={date.format(
-                  new Date(paymentDataArrayState.dueFor),
-                  datePattern
-                )}
-                paidStatus="DUE"
-                colorScheme="orange"
-                launchBolt={launchBolt}
-                isLoading={isCardLoading}
-                isPayButtonActive={isPayButtonActive}
-              />
+              {paymentDataArrayState.overdueFor.length ? (
+                <SimpleCard
+                  link="#"
+                  textContent={date.format(
+                    new Date(paymentDataArrayState.dueFor),
+                    datePattern
+                  )}
+                  paidStatus="DUE"
+                  colorScheme="orange"
+                  launchBolt={launchBolt}
+                  isLoading={isCardLoading}
+                  isPayButtonActive={isPayButtonActive}
+                />
+              ) : (
+                <SimpleCard
+                  link="#"
+                  onlyText={true}
+                  textContent="All good. No payments are overdue."
+                  paidStatus="DUE"
+                  colorScheme="orange"
+                  launchBolt={launchBolt}
+                  isLoading={isCardLoading}
+                  isPayButtonActive={isPayButtonActive}
+                />
+              )}
             </SimpleGrid>
             <Center>
               <Skeleton
@@ -347,6 +357,7 @@ const SimpleCard = ({
   launchBolt,
   isPayButtonActive,
   isLoading,
+  onlyText,
 }) => (
   <Link to={link}>
     <Skeleton startColor="gray.200" endColor="teal.400" isLoaded={!isLoading}>
@@ -370,19 +381,23 @@ const SimpleCard = ({
           <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
             {textContent}
           </Text>
-          <Badge borderRadius={5} colorScheme={colorScheme}>
-            {paidStatus}
-          </Badge>
-          {paidStatus.includes("DUE") ? (
-            <Button
-              isDisabled={!isPayButtonActive}
-              onClick={() => launchBolt()}
-              colorScheme="teal"
-            >
-              Pay Now
-            </Button>
-          ) : (
-            <></>
+          {!onlyText && (
+            <>
+              <Badge borderRadius={5} colorScheme={colorScheme}>
+                {paidStatus}
+              </Badge>
+              {paidStatus.includes("DUE") ? (
+                <Button
+                  isDisabled={!isPayButtonActive}
+                  onClick={() => launchBolt()}
+                  colorScheme="teal"
+                >
+                  Pay Now
+                </Button>
+              ) : (
+                <></>
+              )}
+            </>
           )}
         </Stack>
       </Center>
