@@ -266,13 +266,40 @@ exports.getPaymentInfo = async (req, res) => {
     const MemberPaymentData = await MemberPaymentModel.findByMemberId(
       req.params.memberId
     );
-    setTimeout(() => res.status(200).send({ data: MemberPaymentData }), 3000);
+    setTimeout(
+      () =>
+        res
+          .status(200)
+          .send({ data: MemberPaymentData, shouldMemberPay: true }),
+      3000
+    );
   } catch (err) {
     return res.status(500).send({
       error: [
         {
           message:
             "Something went wrong while getting member payment info" + err,
+        },
+      ],
+    });
+  }
+};
+
+exports.shouldMemberPay = async (req, res) => {
+  try {
+    const MemberDetails = await MemberDetailsModel.findByMemberId(
+      req.params.memberId
+    );
+    if (MemberDetails.monthlyMaintenance === false) {
+      return res.status(200).send({ shouldMemberPay: false });
+    } else {
+      return res.status(200).send({ shouldMemberPay: true });
+    }
+  } catch (err) {
+    return res.status(500).send({
+      error: [
+        {
+          message: "Something went wrong while checking if member should pay",
         },
       ],
     });

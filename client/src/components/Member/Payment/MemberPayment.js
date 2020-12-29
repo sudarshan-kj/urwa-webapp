@@ -29,12 +29,21 @@ const MemberPayment = () => {
   const [isPayButtonActive, setPayButtonActive] = useState(false);
   const [paymentDataArrayState, setPaymentDataArrayState] = useState({});
   const [isCardLoading, setCardLoading] = useState(true);
+  const [shouldMemberPay, setShouldMemberPay] = useState("NA");
   const { isOpen, onToggle } = useDisclosure();
   const history = useHistory();
   const toast = useToast();
 
   useEffect(() => {
+    checkIfMemberShouldPay();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldMemberPay) return;
     fetchPaymentDetails();
+  }, [shouldMemberPay]);
+
+  useEffect(() => {
     authAxios()
       .post(`/api/payments/hash/generate/${getMemberDetails().memberId}`, {})
       .then((response) => {
@@ -43,7 +52,20 @@ const MemberPayment = () => {
         });
         setPayButtonActive(true);
       });
-  }, []);
+  }, [paymentDataArrayState]);
+
+  const checkIfMemberShouldPay = async () => {
+    try {
+      const result = await authAxios().get(
+        `/api/members/payment/check/${getMemberDetails().memberId}`
+      );
+
+      setShouldMemberPay(result.data.shouldMemberPay);
+    } catch (err) {
+      console.log("Error occured while checking if member should pay", err);
+      throw new Error("Error occured while checking if member should pay");
+    }
+  };
 
   const contactServer = () => {
     authAxios()
@@ -149,147 +171,171 @@ const MemberPayment = () => {
     },
   ];
 
+  if (shouldMemberPay === "NA")
+    return (
+      <Center w="100%">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="teal.500"
+          size="xl"
+        />
+      </Center>
+    );
+  if (!shouldMemberPay)
+    return (
+      <Center h="80vh">
+        <Text fontSize="2xl">
+          You are not subscribed to monthly payment subscription. Contact admin
+          for more details.
+        </Text>
+      </Center>
+    );
+
   return (
-    <ReactDependentScript
-      loadingComponent={
-        <VStack>
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="teal.500"
-            size="xl"
-          />
-          Payment page is loading...
-        </VStack>
-      }
-      scripts={["https://checkout-static.citruspay.com/bolt/run/bolt.min.js"]}
-    >
-      {/* <Center h="80vh">
+    <>
+      <ReactDependentScript
+        loadingComponent={
+          <VStack>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="teal.500"
+              size="xl"
+            />
+            Payment page is loading...
+          </VStack>
+        }
+        scripts={["https://checkout-static.citruspay.com/bolt/run/bolt.min.js"]}
+      >
+        {/* <Center h="80vh">
         <Heading>Due amount is Rs 300</Heading>
         <Button onClick={() => launchBolt()}> Pay</Button>
       </Center> */}
-      <Box h={{ base: "100%", md: "80vh" }} m={8}>
-        <Stack w="80%" m="auto" spacing={8}>
-          <Box>
-            <Badge borderRadius={10} colorScheme="orange" p={2}>
-              Due for
-            </Badge>
-          </Box>
-          <SimpleGrid minChildWidth="260px" spacing="40px">
-            <SimpleCard
-              link="#"
-              textContent={date.format(
-                new Date(paymentDataArrayState.dueFor),
-                datePattern
-              )}
-              paidStatus="DUE"
-              colorScheme="orange"
-              launchBolt={launchBolt}
-              isLoading={isCardLoading}
-              isPayButtonActive={isPayButtonActive}
-            />
-          </SimpleGrid>
-          <Box>
-            <Badge borderRadius={10} colorScheme="red" p={2}>
-              Overdue for
-            </Badge>
-          </Box>
-          <SimpleGrid minChildWidth="260px" spacing="40px">
-            <SimpleCard
-              link="#"
-              textContent={date.format(
-                new Date(paymentDataArrayState.dueFor),
-                datePattern
-              )}
-              paidStatus="DUE"
-              colorScheme="orange"
-              launchBolt={launchBolt}
-              isLoading={isCardLoading}
-              isPayButtonActive={isPayButtonActive}
-            />
-            <SimpleCard
-              link="#"
-              textContent={date.format(
-                new Date(paymentDataArrayState.dueFor),
-                datePattern
-              )}
-              paidStatus="DUE"
-              colorScheme="orange"
-              launchBolt={launchBolt}
-              isLoading={isCardLoading}
-              isPayButtonActive={isPayButtonActive}
-            />
-            <SimpleCard
-              link="#"
-              textContent={date.format(
-                new Date(paymentDataArrayState.dueFor),
-                datePattern
-              )}
-              paidStatus="DUE"
-              colorScheme="orange"
-              launchBolt={launchBolt}
-              isLoading={isCardLoading}
-              isPayButtonActive={isPayButtonActive}
-            />
-          </SimpleGrid>
-          <Center>
-            <Skeleton
-              startColor="gray.200"
-              endColor="teal.400"
-              isLoaded={!isCardLoading}
-              mt={4}
-            >
-              <Button
-                p={7}
-                colorScheme="teal"
-                onClick={onToggle}
-                rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+        <Box h={{ base: "100%", md: "80vh" }} m={8}>
+          <Stack w="80%" m="auto" spacing={8}>
+            <Box>
+              <Badge borderRadius={10} colorScheme="orange" p={2}>
+                Due for
+              </Badge>
+            </Box>
+            <SimpleGrid minChildWidth="260px" spacing="40px">
+              <SimpleCard
+                link="#"
+                textContent={date.format(
+                  new Date(paymentDataArrayState.dueFor),
+                  datePattern
+                )}
+                paidStatus="DUE"
+                colorScheme="orange"
+                launchBolt={launchBolt}
+                isLoading={isCardLoading}
+                isPayButtonActive={isPayButtonActive}
+              />
+            </SimpleGrid>
+            <Box>
+              <Badge borderRadius={10} colorScheme="red" p={2}>
+                Overdue for
+              </Badge>
+            </Box>
+            <SimpleGrid minChildWidth="260px" spacing="40px">
+              <SimpleCard
+                link="#"
+                textContent={date.format(
+                  new Date(paymentDataArrayState.dueFor),
+                  datePattern
+                )}
+                paidStatus="DUE"
+                colorScheme="orange"
+                launchBolt={launchBolt}
+                isLoading={isCardLoading}
+                isPayButtonActive={isPayButtonActive}
+              />
+              <SimpleCard
+                link="#"
+                textContent={date.format(
+                  new Date(paymentDataArrayState.dueFor),
+                  datePattern
+                )}
+                paidStatus="DUE"
+                colorScheme="orange"
+                launchBolt={launchBolt}
+                isLoading={isCardLoading}
+                isPayButtonActive={isPayButtonActive}
+              />
+              <SimpleCard
+                link="#"
+                textContent={date.format(
+                  new Date(paymentDataArrayState.dueFor),
+                  datePattern
+                )}
+                paidStatus="DUE"
+                colorScheme="orange"
+                launchBolt={launchBolt}
+                isLoading={isCardLoading}
+                isPayButtonActive={isPayButtonActive}
+              />
+            </SimpleGrid>
+            <Center>
+              <Skeleton
+                startColor="gray.200"
+                endColor="teal.400"
+                isLoaded={!isCardLoading}
+                mt={4}
               >
-                {isOpen
-                  ? "Close Previous Transactions"
-                  : "Show Previous Transactions"}
-              </Button>
-            </Skeleton>
-          </Center>
-          <Fade in={isOpen} animateOpacity>
-            <Stack spacing={8}>
-              <Box>
-                <Badge borderRadius={10} colorScheme="green" p={2}>
-                  previous transactions
-                </Badge>
-              </Box>
-              <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
-                {paymentDataArray.map((card) => (
-                  <SimpleCard
-                    key={card.index}
-                    link={card.link}
-                    isLoading={isCardLoading}
-                    textContent={card.textContent}
-                    paidStatus={card.paidStatus}
-                    colorScheme={card.colorScheme}
-                    launchBolt={launchBolt}
-                    isPayButtonActive={isPayButtonActive}
-                  />
-                ))}
-              </SimpleGrid>
-            </Stack>
-          </Fade>
-          <Center>
-            <Skeleton
-              my={6}
-              startColor="gray.200"
-              endColor="orange.400"
-              isLoaded={!isCardLoading}
-            >
-              <Button p={7} colorScheme="orange">
-                Pay Total Due Amount: Rs 1
-              </Button>
-            </Skeleton>
-          </Center>
-        </Stack>
-      </Box>
-    </ReactDependentScript>
+                <Button
+                  p={7}
+                  colorScheme="teal"
+                  onClick={onToggle}
+                  rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                >
+                  {isOpen
+                    ? "Close Previous Transactions"
+                    : "Show Previous Transactions"}
+                </Button>
+              </Skeleton>
+            </Center>
+            <Fade in={isOpen} animateOpacity>
+              <Stack spacing={8}>
+                <Box>
+                  <Badge borderRadius={10} colorScheme="green" p={2}>
+                    previous transactions
+                  </Badge>
+                </Box>
+                <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
+                  {paymentDataArray.map((card) => (
+                    <SimpleCard
+                      key={card.index}
+                      link={card.link}
+                      isLoading={isCardLoading}
+                      textContent={card.textContent}
+                      paidStatus={card.paidStatus}
+                      colorScheme={card.colorScheme}
+                      launchBolt={launchBolt}
+                      isPayButtonActive={isPayButtonActive}
+                    />
+                  ))}
+                </SimpleGrid>
+              </Stack>
+            </Fade>
+            <Center>
+              <Skeleton
+                my={6}
+                startColor="gray.200"
+                endColor="orange.400"
+                isLoaded={!isCardLoading}
+              >
+                <Button p={7} colorScheme="orange">
+                  Pay Total Due Amount: Rs 1
+                </Button>
+              </Skeleton>
+            </Center>
+          </Stack>
+        </Box>
+      </ReactDependentScript>
+    </>
   );
 };
 

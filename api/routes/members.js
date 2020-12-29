@@ -68,5 +68,9 @@ membersRouter.get("/payment/:memberId", [
   ValidateMiddleware.isValidMemberId,
   MembersController.getPaymentInfo,
 ]);
+membersRouter.get("/payment/check/:memberId", [
+  ValidateMiddleware.isValidMemberId,
+  MembersController.shouldMemberPay,
+]);
 
 module.exports = membersRouter;
