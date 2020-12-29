@@ -73,7 +73,6 @@ exports.checkFieldPermissionToUpdate = async (req, res, next) => {
         req.params.memberId
       );
       noPermissionToUpdateFields.forEach((element) => {
-        logger.debug(`Auto updating field ${element}`);
         if (element === "email") req.body.email = member.email;
         else req.body.details[`${element}`] = memberDetails[`${element}`];
       });
