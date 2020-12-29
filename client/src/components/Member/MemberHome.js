@@ -5,24 +5,25 @@ import SimpleHomeCard from "components/commons/SimpleHomeCard";
 import { ReactComponent as CreditCardIcon } from "assets/icons/credit-card.svg";
 import { ReactComponent as UserIcon } from "assets/icons/user.svg";
 import { getMemberDetails } from "utils/Authz";
-const gridDataArray = [
-  {
-    link: "/member/payment",
-    icon: CreditCardIcon,
-    textContent: "My Payments",
-  },
-  {
-    link: "#",
-    icon: SunIcon,
-    textContent: "Donations",
-  },
-  {
-    link: `/member/profile/${getMemberDetails().memberId}`,
-    icon: UserIcon,
-    textContent: "My Profile",
-  },
-];
+
 const MemberHome = () => {
+  const gridDataArray = [
+    {
+      link: "/member/payment",
+      icon: CreditCardIcon,
+      textContent: "My Payments",
+    },
+    {
+      link: "#",
+      icon: SunIcon,
+      textContent: "Donations",
+    },
+    {
+      link: `/member/profile/${getMemberDetails().memberId}`,
+      icon: UserIcon,
+      textContent: "My Profile",
+    },
+  ];
   return (
     <>
       <Box h={{ base: "100%", md: "80vh" }} m={8}>
