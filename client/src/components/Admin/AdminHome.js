@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Box } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { AddIcon, ViewIcon, SunIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import Home from "components/Home";
 import { ReactComponent as CreditCardIcon } from "assets/icons/credit-card.svg";
@@ -49,11 +49,7 @@ const AdminHome = () => {
     },
   ];
 
-  return (
-    <Box p={4}>
-      <Home data={gridDataArray} />
-    </Box>
-  );
+  return <Home data={gridDataArray} />;
 };
 
 export default AdminHome;

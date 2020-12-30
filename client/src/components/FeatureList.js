@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Stack, Heading, VStack, Badge } from "@chakra-ui/react";
+import { Stack, Heading, VStack, Badge } from "@chakra-ui/react";
 
 const FeatureList = () => (
   <>

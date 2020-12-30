@@ -216,7 +216,7 @@ const MemberPayment = () => {
   if (errorWithMessage.value === true)
     return (
       <Center w="100%">
-        <Text>{errorWithMessage.message}</Text>
+        <Text p={4}>{errorWithMessage.message}</Text>
       </Center>
     );
 
@@ -296,7 +296,7 @@ const MemberPayment = () => {
                 <SimpleCard
                   link="#"
                   onlyText={true}
-                  textContent="All good. No payments are overdue."
+                  textContent="No payments are overdue"
                   paidStatus="DUE"
                   colorScheme="orange"
                   launchBolt={launchBolt}
