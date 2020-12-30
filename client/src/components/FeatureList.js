@@ -3,7 +3,15 @@ import { Box, Stack, Heading, VStack, Badge } from "@chakra-ui/react";
 
 const FeatureList = () => (
   <>
-    <Stack bg="gray.200" h="100vh" w="50%" m="auto" p={20} spacing={20}>
+    <Stack
+      bg="gray.200"
+      h="100%"
+      minH="100vh"
+      w={{ base: "100%", md: "50%" }}
+      m="auto"
+      p={{ base: "5", md: "20" }}
+      spacing={20}
+    >
       <VStack spacing={10} border="1px solid black" p={8}>
         <Heading>Admin features</Heading>
         <ul>
