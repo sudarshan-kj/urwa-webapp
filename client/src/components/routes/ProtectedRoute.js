@@ -26,6 +26,7 @@ import {
 import { ReactComponent as HomeIcon } from "assets/icons/home.svg";
 import { ReactComponent as ProfileIcon } from "assets/icons/user.svg";
 import { ReactComponent as LogoutIcon } from "assets/icons/logout.svg";
+import useAutoScrollToTop from "hooks/useAutoScrollToTop";
 
 const getPath = () => {
   if (isAdmin()) {
@@ -36,6 +37,8 @@ const getPath = () => {
 
 const CommonHeader = ({ component: Component }) => {
   const history = useHistory();
+  useAutoScrollToTop(); /*mainly used in mobile screens. If you scroll down and navigate to a page, the new page will be navigated in the same scroll position.
+  In order to prevent that, we set scroll pos (x,y) to (0,0) so that we scroll to the top of the new page while navigating */
 
   return (
     <>
