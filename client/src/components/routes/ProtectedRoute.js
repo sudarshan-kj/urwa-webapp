@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Redirect, useHistory } from "react-router-dom";
-import { isAuthenticated, logout } from "../utils/Auth";
+import { isAuthenticated, logout } from "../../utils/Auth";
 import {
   Flex,
   Box,
@@ -145,19 +145,13 @@ const CommonHeader = ({ component: Component }) => {
   );
 };
 
-const ProtectedRoute = ({
-  path,
-  component,
-  adminOnly,
-  permission,
-  ...rest
-}) => {
+const ProtectedRoute = ({ component, adminOnly, permission, ...rest }) => {
   return (
     <>
       {isAuthenticated() ? (
         <>
           {hasPermission({ adminOnly, permission }) ? (
-            <Route to={path} {...rest}>
+            <Route {...rest}>
               <CommonHeader component={component} />
             </Route>
           ) : (

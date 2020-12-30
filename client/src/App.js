@@ -2,7 +2,7 @@ import LoginPage from "components/LoginPage";
 import NotFound from "components/NotFound";
 import LandingPage from "components/LandingPage";
 import { Route, Switch } from "react-router-dom";
-import ProtectedRoute from "components/ProtectedRoute";
+import ProtectedRoute from "components/routes/ProtectedRoute";
 import { permissions } from "utils/Authz";
 import AdminHome from "components/Admin/AdminHome";
 import AddMember from "components/Admin/AddMember";
@@ -12,20 +12,19 @@ import PaymentPage from "components/Member/Payment/MemberPayment";
 import PaymentStatus from "components/Member/Payment/PaymentStatus";
 import UpdateMember from "components/Member/UpdateMember";
 import FeatureList from "components/FeatureList";
+import RouteWithHeader from "components/routes/RouteWithHeader";
 
 function App() {
   return (
     <div className="App">
       <Switch>
-        <Route exact path={["/", "/test"]}>
+        <Route exact path="/">
           <LandingPage />
         </Route>
         <Route path="/login">
           <LoginPage />
         </Route>
-        <Route path="/featureList">
-          <FeatureList />
-        </Route>
+        <RouteWithHeader path="/featureList" component={FeatureList} />
         <ProtectedRoute
           adminOnly={false}
           permission={permissions.READ}
