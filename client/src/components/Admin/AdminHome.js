@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, Box } from "@chakra-ui/react";
-import { AddIcon, ViewIcon, SunIcon } from "@chakra-ui/icons";
+import { AddIcon, ViewIcon, SunIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import Home from "components/Home";
 import { ReactComponent as CreditCardIcon } from "assets/icons/credit-card.svg";
 import { authAxios } from "utils/Auth";
@@ -41,6 +41,11 @@ const AdminHome = () => {
       link: "#",
       icon: SunIcon,
       textContent: "Donations",
+    },
+    {
+      link: "/featureList",
+      icon: CheckCircleIcon,
+      textContent: "Feature List",
     },
   ];
 

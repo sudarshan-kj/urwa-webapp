@@ -11,6 +11,7 @@ import MemberTable from "components/Admin/ViewMembers/MemberTable";
 import PaymentPage from "components/Member/Payment/MemberPayment";
 import PaymentStatus from "components/Member/Payment/PaymentStatus";
 import UpdateMember from "components/Member/UpdateMember";
+import FeatureList from "components/FeatureList";
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
         </Route>
         <Route path="/login">
           <LoginPage />
+        </Route>
+        <Route path="/featureList">
+          <FeatureList />
         </Route>
         <ProtectedRoute
           adminOnly={false}
