@@ -32,9 +32,14 @@ const MemberPayment = () => {
     overdueFor: [],
     dueFor: "",
     lastPaidFor: [],
+    memberId: "",
   });
   const [isCardLoading, setCardLoading] = useState(true);
   const [shouldMemberPay, setShouldMemberPay] = useState("NA");
+  const [errorWithMessage, setErrorWithMessage] = useState({
+    value: "NA",
+    message: "",
+  });
   const { isOpen, onToggle } = useDisclosure();
   const history = useHistory();
   const toast = useToast();
@@ -95,15 +100,20 @@ const MemberPayment = () => {
   };
 
   const fetchPaymentDetails = async () => {
-    const paymentDetails = await authAxios().get(
-      `/api/members/payment/${getMemberDetails().memberId}`
-    );
-    if (paymentDetails.data.data.memberId === getMemberDetails().memberId) {
-      setValidMember(true);
-      setPaymentDataArrayState(paymentDetails.data.data);
-      setCardLoading(false);
-    } else {
-      setValidMember(false);
+    try {
+      const paymentDetails = await authAxios().get(
+        `/api/members/payment/${getMemberDetails().memberId}`
+      );
+      if (paymentDetails.data.data)
+        if (paymentDetails.data.data.memberId === getMemberDetails().memberId) {
+          setValidMember(true);
+          setPaymentDataArrayState(paymentDetails.data.data);
+          setCardLoading(false);
+        } else {
+          setValidMember(false);
+        }
+    } catch (err) {
+      setErrorWithMessage({ value: true, message: err.response.data.data });
     }
   };
 
@@ -200,6 +210,13 @@ const MemberPayment = () => {
           You are not subscribed to monthly payment subscription. Contact admin
           for more details.
         </Text>
+      </Center>
+    );
+
+  if (errorWithMessage.value === true)
+    return (
+      <Center w="100%">
+        <Text>{errorWithMessage.message}</Text>
       </Center>
     );
 

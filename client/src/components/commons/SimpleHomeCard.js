@@ -2,7 +2,7 @@ import React from "react";
 import { Stack, Text, Center, Icon } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-const SimpleCard = ({ link, textContent, icon }) => (
+const SimpleCard = ({ link, textContent, icon, metaData }) => (
   <Link to={link}>
     <Center
       shadow="xl"
@@ -31,6 +31,7 @@ const SimpleCard = ({ link, textContent, icon }) => (
         <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
           {textContent}
         </Text>
+        <Text>{metaData}</Text>
       </Stack>
     </Center>
   </Link>
