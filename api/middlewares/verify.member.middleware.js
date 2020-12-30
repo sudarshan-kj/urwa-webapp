@@ -22,6 +22,7 @@ exports.hasValidAuthFields = (req, res, next) => {
 };
 
 exports.verifyUserAndPassword = (req, res, next) => {
+  req.body.userName = req.body.userName.toLowerCase();
   MemberModel.findByEmail(req.body.userName)
     .then((member) => {
       if (!member) {
