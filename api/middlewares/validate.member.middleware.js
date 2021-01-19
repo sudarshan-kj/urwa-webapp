@@ -2,8 +2,7 @@ const jwt = require("jsonwebtoken");
 const tokenConfig = require("../config/token.config");
 const MemberModel = require("../models/member.model");
 const MemberDetailsModel = require("../models/memberDetails.model");
-const log4j = require("log4js");
-const logger = log4j.getLogger();
+const logger = require("log4js").getLogger();
 logger.level = "debug";
 
 exports.isValidJWTAccessToken = (req, res, next) => {

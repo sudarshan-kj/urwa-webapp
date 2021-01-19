@@ -94,7 +94,7 @@ const MemberPayment = () => {
         }
       })
       .catch((err) => {
-        console.log("Error occured while contacting server", err);
+        console.error("Error occured while contacting server", err);
         throw new Error("Error occured while contacting server");
       });
   };
@@ -279,31 +279,24 @@ const MemberPayment = () => {
               </Badge>
             </Box>
             <SimpleGrid minChildWidth="260px" spacing="40px">
-              {paymentDataArrayState.overdueFor.length ? (
-                <SimpleCard
-                  link="#"
-                  textContent={date.format(
-                    new Date(paymentDataArrayState.dueFor),
-                    datePattern
-                  )}
-                  paidStatus="DUE"
-                  colorScheme="orange"
-                  launchBolt={launchBolt}
-                  isLoading={isCardLoading}
-                  isPayButtonActive={isPayButtonActive}
-                />
-              ) : (
-                <SimpleCard
-                  link="#"
-                  onlyText={true}
-                  textContent="No payments are overdue"
-                  paidStatus="DUE"
-                  colorScheme="orange"
-                  launchBolt={launchBolt}
-                  isLoading={isCardLoading}
-                  isPayButtonActive={isPayButtonActive}
-                />
-              )}
+              <SimpleCard
+                link="#"
+                onlyText={paymentDataArrayState.overdueFor.length}
+                textContent={
+                  paymentDataArrayState.overdueFor.length
+                    ? date.format(
+                        new Date(paymentDataArrayState.dueFor),
+                        datePattern
+                      )
+                    : "No payments are overdue"
+                }
+                textContent="No payments are overdue"
+                paidStatus="DUE"
+                colorScheme="orange"
+                launchBolt={launchBolt}
+                isLoading={isCardLoading}
+                isPayButtonActive={isPayButtonActive}
+              />
             </SimpleGrid>
             <Center>
               <Skeleton
