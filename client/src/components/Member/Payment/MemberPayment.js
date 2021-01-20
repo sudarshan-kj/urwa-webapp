@@ -248,10 +248,6 @@ const MemberPayment = () => {
         }
         scripts={["https://checkout-static.citruspay.com/bolt/run/bolt.min.js"]}
       >
-        {/* <Center h="80vh">
-        <Heading>Due amount is Rs 300</Heading>
-        <Button onClick={() => launchBolt()}> Pay</Button>
-      </Center> */}
         <Box h="100%" minH={{ md: "80vh" }} m={8}>
           <Stack w="80%" m="auto" spacing={8}>
             <Box>
