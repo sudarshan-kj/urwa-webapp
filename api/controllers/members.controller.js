@@ -67,12 +67,10 @@ function generatePreviousOverDues(memberDetails) {
   if (memberDetails.monthlyMaintenance && memberDetails.openingBalance > 0) {
     let prevBalanceCount =
       memberDetails.openingBalance / memberDetails.maintenanceAmount;
-    let prevDate = new Date(memberDetails.membershipStartDate);
     for (let i = 0; i < prevBalanceCount; i++) {
-      prevDate = new Date(
-        prevDate.setMonth(prevDate.getMonth() - 1) // set all previous dues
-      );
-      overDueArray.push(prevDate);
+      let newDate = new Date(memberDetails.membershipStartDate);
+      newDate.setMonth(newDate.getMonth() - (i + 1));
+      overDueArray.push(newDate);
     }
   }
   return overDueArray;
