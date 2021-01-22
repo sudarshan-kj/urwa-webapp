@@ -52,6 +52,7 @@ const schema = Joi.object({
       then: Joi.number().valid(100, 300, 500).required(),
       otherwise: Joi.number().equal(-1),
     }),
+    openingBalance: Joi.number().max(50000).required(),
     borewell: Joi.bool().required(),
     siteDimensions: Joi.string().valid("30x40", "40x60", "50x80").required(),
     address: Joi.string().min(4).max(30).required(),
@@ -60,6 +61,22 @@ const schema = Joi.object({
 });
 
 ////////////////MEMBER CRUD OPERATIONS START//////////////////////
+
+function generatePreviousOverDues(memberDetails) {
+  let overDueArray = [];
+  if (memberDetails.monthlyMaintenance && memberDetails.openingBalance > 0) {
+    let prevBalanceCount =
+      memberDetails.openingBalance / memberDetails.maintenanceAmount;
+    let prevDate = new Date(memberDetails.membershipStartDate);
+    for (let i = 0; i < prevBalanceCount; i++) {
+      prevDate = new Date(
+        prevDate.setMonth(prevDate.getMonth() - 1) // set all previous dues
+      );
+      overDueArray.push(prevDate);
+    }
+  }
+  return overDueArray;
+}
 
 exports.createMember = async (req, res) => {
   const { error } = schema.validate(req.body);
@@ -91,16 +108,15 @@ exports.createMember = async (req, res) => {
       req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
       req.body.npuf = [];
     }
-    const createdMember = await MemberModel.insert(req.body);
     const membershipStartDate = new Date(req.body.details.membershipStartDate);
-    const dueDate = new Date(
-      membershipStartDate.setMonth(membershipStartDate.getMonth() + 1) // set due amount from the next month of start date
-    );
+    let overDueArray = generatePreviousOverDues(req.body.details);
+    const createdMember = await MemberModel.insert(req.body);
     const paymentData = {
       memberId: createdMember._id,
-      dueFor: dueDate,
-      overdueFor: [],
+      dueFor: membershipStartDate,
+      overdueFor: overDueArray,
       lastPaidFor: [],
+      totalAmountDue: req.body.details.openingBalance,
     };
     await MemberPaymentModel.insert(paymentData);
     return res.status(201).send({ id: createdMember._id });

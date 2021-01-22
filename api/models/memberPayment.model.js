@@ -3,7 +3,7 @@ const mongoose = require("../services/mongoose.service").mongoose;
 let { Schema } = mongoose;
 const opts = {
   toJSON: {
-    virtuals: true, //this adds the "id" field
+    virtuals: false, //this adds the "id" field
     versionKey: false,
     transform: function (doc, ret) {
       delete ret._id; //since id is added, this _id is not required
@@ -29,6 +29,7 @@ let memberPaymentSchema = new Schema(
         },
       },
     ],
+    totalAmountDue: Number,
   },
   opts
 );
@@ -40,6 +41,13 @@ let MemberPayment = mongoose.model("MemberPayment", memberPaymentSchema);
 exports.insert = (memberPaymentData) => {
   let memberPayment = new MemberPayment(memberPaymentData);
   return memberPayment.save();
+};
+
+exports.update = (memberId, newMemberPaymentData) => {
+  return MemberPayment.findOneAndUpdate(
+    { memberId: memberId },
+    newMemberPaymentData
+  );
 };
 
 exports.findByMemberId = (memberId) => {

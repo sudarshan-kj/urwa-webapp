@@ -16,12 +16,12 @@ const opts = {
 
 let paymentTransactionSchema = new Schema(
   {
-    memberId: { type: Schema.Types.ObjectId, ref: "Member" },
     amount: Number,
-    payUOrderId: String,
+    name: String,
+    email: String,
     payUTransactionId: String,
     status: String,
-    date: Date,
+    paidOn: Date,
   },
   opts
 );

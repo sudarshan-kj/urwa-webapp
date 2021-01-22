@@ -103,8 +103,8 @@ const MemberPayment = () => {
           history.push("/member/status/success?status=success");
         } else {
           toast({
-            title: "Transaction authentication failed",
-            description: "Invalid transaction",
+            title: "Transaction verification failed",
+            description: "Invalid transaction. Hash do not match.",
             status: "error",
             duration: 3000,
             isClosable: true,

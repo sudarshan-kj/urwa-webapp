@@ -100,6 +100,12 @@ const FeatureList = () => (
             The same email id cannot have 2 site numbers. Will have to update
             this, if that is the requirement
           </li>
+          <li>
+            <Badge>Opening Balance</Badge> indicates the amount already due for
+            the member, <br></br>which can be entered during member creation,
+            which in turn will be reflected in the total amount due for that
+            member.
+          </li>
         </ul>
       </VStack>
     </Stack>
