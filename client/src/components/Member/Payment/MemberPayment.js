@@ -12,10 +12,8 @@ import {
   Text,
   Skeleton,
   useDisclosure,
-  Fade,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import ReactDependentScript from "react-dependent-script";
 import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
