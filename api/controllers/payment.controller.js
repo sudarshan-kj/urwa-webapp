@@ -23,7 +23,7 @@ exports.generateHash = async (req, res) => {
   const memberId = req.params.memberId;
   const key = process.env.PAYU_KEY;
   const payu_salt = process.env.PAYU_SALT;
-  const txnid = "ORD-" + Math.floor(Math.random() * 10000) + "-" + Date.now();
+  const txnid = "ORD-" + Math.floor(Math.random() * 1000) + "-" + Date.now();
   let email, amount, phone, firstname;
 
   try {
@@ -111,8 +111,6 @@ exports.verifyHash = (req, res) => {
   let cryp = crypto.createHash("sha512");
   cryp.update(reverseKeyString);
   let calchash = cryp.digest("hex");
-
-  console.log("calc hash", calchash);
 
   if (calchash == resphash) {
     return res.status(200).send({ message: "Transaction successful" });

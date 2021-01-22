@@ -21,7 +21,6 @@ import { useHistory } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 import { getMemberDetails } from "utils/Authz";
 import date from "date-and-time";
-//added for a dummy commit
 
 const datePattern = date.compile("ddd, MMM DD YYYY");
 
@@ -50,20 +49,20 @@ const MemberPayment = () => {
   }, []);
 
   useEffect(() => {
-    if (!shouldMemberPay) return;
-    fetchPaymentDetails();
+    if (shouldMemberPay === true) fetchPaymentDetails();
   }, [shouldMemberPay]);
 
   useEffect(() => {
-    authAxios()
-      .post(`/api/payments/hash/generate/${getMemberDetails().memberId}`, {})
-      .then((response) => {
-        setReqBodyBolt({
-          ...response.data,
+    if (isValidMember === true)
+      authAxios()
+        .post(`/api/payments/hash/generate/${getMemberDetails().memberId}`, {})
+        .then((response) => {
+          setReqBodyBolt({
+            ...response.data,
+          });
+          setPayButtonActive(true);
         });
-        setPayButtonActive(true);
-      });
-  }, [paymentDataArrayState]);
+  }, [isValidMember]);
 
   const checkIfMemberShouldPay = async () => {
     try {

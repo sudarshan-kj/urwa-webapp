@@ -269,11 +269,9 @@ exports.getPaymentInfo = async (req, res) => {
     if (MemberPaymentData)
       return res.status(200).send({ data: MemberPaymentData });
     else
-      return res
-        .status(400)
-        .send({
-          data: `No payment data found for member with id: ${req.params.memberId}`,
-        });
+      return res.status(400).send({
+        data: `No payment data found for member with id: ${req.params.memberId}`,
+      });
   } catch (err) {
     return res.status(500).send({
       error: [
