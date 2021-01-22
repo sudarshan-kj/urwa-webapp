@@ -77,6 +77,24 @@ const MemberPayment = () => {
     }
   };
 
+  const fetchPaymentDetails = async () => {
+    try {
+      const paymentDetails = await authAxios().get(
+        `/api/members/payment/${getMemberDetails().memberId}`
+      );
+      if (paymentDetails.data.data)
+        if (paymentDetails.data.data.memberId === getMemberDetails().memberId) {
+          setValidMember(true);
+          setPaymentDataArrayState(paymentDetails.data.data);
+          setCardLoading(false);
+        } else {
+          setValidMember(false);
+        }
+    } catch (err) {
+      setErrorWithMessage({ value: true, message: err.response.data.data });
+    }
+  };
+
   const contactServer = () => {
     authAxios()
       .post("/api/payments/hash/verify", reqBodyBolt)
@@ -97,24 +115,6 @@ const MemberPayment = () => {
         console.error("Error occured while contacting server", err);
         throw new Error("Error occured while contacting server");
       });
-  };
-
-  const fetchPaymentDetails = async () => {
-    try {
-      const paymentDetails = await authAxios().get(
-        `/api/members/payment/${getMemberDetails().memberId}`
-      );
-      if (paymentDetails.data.data)
-        if (paymentDetails.data.data.memberId === getMemberDetails().memberId) {
-          setValidMember(true);
-          setPaymentDataArrayState(paymentDetails.data.data);
-          setCardLoading(false);
-        } else {
-          setValidMember(false);
-        }
-    } catch (err) {
-      setErrorWithMessage({ value: true, message: err.response.data.data });
-    }
   };
 
   function launchBolt() {
