@@ -1,5 +1,11 @@
 import React from "react";
-import { AddIcon, ViewIcon, SunIcon, CheckCircleIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  ViewIcon,
+  SunIcon,
+  CheckCircleIcon,
+  HamburgerIcon,
+} from "@chakra-ui/icons";
 import Home from "components/Home";
 import { ReactComponent as CreditCardIcon } from "assets/icons/credit-card.svg";
 import { authAxios } from "utils/Auth";
@@ -33,6 +39,11 @@ const AdminHome = () => {
       icon: ViewIcon,
       textContent: "View Members",
       metaData: `Member Count: ${metaData.count}`,
+    },
+    {
+      link: "/admin/viewPayments",
+      icon: HamburgerIcon,
+      textContent: "View Member Payments",
     },
     {
       link: `/member/payment`,
