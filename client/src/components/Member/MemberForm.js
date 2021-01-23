@@ -444,6 +444,26 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     <option value="500">₹500</option>
                   </StyledSelect>
                 </FormControl>
+                {buttonName === "Submit" && (
+                  <FormControl isRequired>
+                    <FormLabel>Opening Balance</FormLabel>
+                    <NumberInput
+                      value={formik.values.details.openingBalance}
+                      id="details.openingBalance"
+                      focusBorderColor="teal.400"
+                      bg="gray.100"
+                    >
+                      <NumberInputField
+                        onChange={(e) => {
+                          formik.handleChange(e);
+                        }}
+                      />
+                    </NumberInput>
+                    <FormHelperText>
+                      This field cannot be updated later
+                    </FormHelperText>
+                  </FormControl>
+                )}
               </Stack>
 
               <Button

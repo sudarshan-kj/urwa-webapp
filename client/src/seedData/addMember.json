@@ -18,6 +18,7 @@
       "borewell": "false",
       "siteDimensions": "",
       "address": "",
-      "membershipStartDate": ""
+      "membershipStartDate": "",
+      "openingBalance": 0
     }
   }

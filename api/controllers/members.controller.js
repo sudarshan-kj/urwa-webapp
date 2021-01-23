@@ -52,7 +52,7 @@ const schema = Joi.object({
       then: Joi.number().valid(100, 300, 500).required(),
       otherwise: Joi.number().equal(-1),
     }),
-    openingBalance: Joi.number().max(50000).required(),
+    openingBalance: Joi.number().max(50000),
     borewell: Joi.bool().required(),
     siteDimensions: Joi.string().valid("30x40", "40x60", "50x80").required(),
     address: Joi.string().min(4).max(30).required(),
@@ -139,7 +139,7 @@ exports.updateMember = async (req, res) => {
         .digest("base64");
       req.body.password = salt + "$" + hash;
     } else {
-      delete req.body.password;
+      delete req.body.password; //if blank passwords are sent, that is not be stored as is
     }
   }
   let toUpdateMemberId = req.params.memberId;
@@ -211,7 +211,7 @@ exports.getMember = (req, res) => {
           MemberDetailsModel.findByMemberId(foundMember._id)
             .then((memberDetails) => {
               foundMember.mDetails.push(memberDetails);
-              // this is done so that all json values 'appear' as strings so that the client can handle them wells
+              // this is done so that all json values 'appear' as strings so that the client can handle them well
               const jsonString = JSON.parse(
                 JSON.stringify(foundMember, replacer)
               );
