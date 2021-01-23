@@ -2,8 +2,14 @@ import React from "react";
 import { Stack, Text, Center, Icon } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-const SimpleCard = ({ link, textContent, icon, metaData }) => (
-  <Link to={link}>
+const SimpleCard = ({
+  link,
+  textContent,
+  icon,
+  maintenanceAmount,
+  metaData,
+}) => (
+  <Link to={{ pathname: link, maintenanceAmount: maintenanceAmount }}>
     <Center
       shadow="xl"
       borderRadius="20px"

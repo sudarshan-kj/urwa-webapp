@@ -12,10 +12,11 @@ import {
   Text,
   Skeleton,
   useDisclosure,
+  Heading,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import ReactDependentScript from "react-dependent-script";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { authAxios } from "utils/Auth";
 import { getMemberDetails } from "utils/Authz";
 import {
@@ -42,16 +43,18 @@ const MemberPayment = () => {
   });
   const [isCardLoading, setCardLoading] = useState(true);
   const [shouldMemberPay, setShouldMemberPay] = useState("NA");
+  const [monthlyAmount, setMonthlyAmount] = useState(0);
   const [errorWithMessage, setErrorWithMessage] = useState({
     value: "NA",
     message: "",
   });
-  const { isOpen, onToggle } = useDisclosure();
   const history = useHistory();
   const toast = useToast();
+  const location = useLocation();
 
   useEffect(() => {
     checkIfMemberShouldPay();
+    setMonthlyAmount(location.maintenanceAmount);
   }, []);
 
   useEffect(() => {
@@ -84,12 +87,13 @@ const MemberPayment = () => {
   };
 
   const fetchPaymentDetails = async () => {
+    const memberId = getMemberDetails().memberId;
     try {
       const paymentDetails = await authAxios().get(
-        `/api/members/payment/${getMemberDetails().memberId}`
+        `/api/members/payment/${memberId}`
       );
       if (paymentDetails.data.data)
-        if (paymentDetails.data.data.memberId === getMemberDetails().memberId) {
+        if (paymentDetails.data.data.memberId === memberId) {
           setValidMember(true);
           setPaymentDataArrayState(paymentDetails.data.data);
           setCardLoading(false);
@@ -256,6 +260,7 @@ const MemberPayment = () => {
       >
         <Box h="100%" minH={{ md: "80vh" }} m={8}>
           <Stack w="80%" m="auto" spacing={8}>
+            <Text>Monthly Payment Amount: ₹ {monthlyAmount}</Text>
             <Box>
               <Badge borderRadius={10} colorScheme="orange" p={2}>
                 Due for

@@ -1,5 +1,4 @@
 import React from "react";
-import { Box } from "@chakra-ui/react";
 import { AddIcon, ViewIcon, SunIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import Home from "components/Home";
 import { ReactComponent as CreditCardIcon } from "assets/icons/credit-card.svg";
@@ -8,11 +7,19 @@ import { getMemberDetails } from "utils/Authz";
 import { ReactComponent as UserIcon } from "assets/icons/user.svg";
 
 const AdminHome = () => {
-  const [metaData, setMetaData] = React.useState("");
+  const [metaData, setMetaData] = React.useState({
+    count: "",
+    maintenanceAmount: "",
+  });
   React.useEffect(() => {
     authAxios()
-      .get("/api/members/count")
-      .then((result) => setMetaData(`Member count: ${result.data.memberCount}`))
+      .get(`/api/members/metaData/${getMemberDetails().memberId}`)
+      .then((result) =>
+        setMetaData({
+          count: result.data.memberCount,
+          maintenanceAmount: result.data.maintenanceAmount,
+        })
+      )
       .catch((err) => console.error("Could not fetch member count"));
   }, []);
   const gridDataArray = [
@@ -25,12 +32,14 @@ const AdminHome = () => {
       link: "/admin/viewMembers",
       icon: ViewIcon,
       textContent: "View Members",
-      metaData: metaData,
+      metaData: `Member Count: ${metaData.count}`,
     },
     {
-      link: "/member/payment",
+      link: `/member/payment`,
       icon: CreditCardIcon,
+      maintenanceAmount: metaData.maintenanceAmount,
       textContent: "My Payments",
+      metaData: `Monthly Maintenance: ₹ ${metaData.maintenanceAmount}`,
     },
     {
       link: `/member/profile/${getMemberDetails().memberId}`,

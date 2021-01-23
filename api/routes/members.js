@@ -5,9 +5,10 @@ const permission = require("../config/permission.config");
 const membersRouter = express.Router();
 
 membersRouter.get("/health", [MembersController.health]);
-membersRouter.get("/count", [
+membersRouter.get("/metaData/:memberId", [
   ValidateMiddleware.isValidJWTAccessToken,
-  MembersController.memberCount,
+  ValidateMiddleware.isValidMemberId,
+  MembersController.memberMetaData,
 ]);
 
 membersRouter.get("/list", [

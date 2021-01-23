@@ -243,18 +243,27 @@ exports.health = (req, res) => {
   return res.status(200).send({ msg: "ok" });
 };
 
-exports.memberCount = async (req, res) => {
+exports.memberMetaData = async (req, res) => {
   try {
     const memberCount = await MemberModel.getMemberCount();
-    return res.status(200).send({ memberCount });
+    const memberDetails = await MemberDetailsModel.findByMemberId(
+      req.params.memberId
+    );
+    return res.status(200).send({
+      memberCount,
+      maintenanceAmount: memberDetails.maintenanceAmount,
+    });
   } catch (err) {
     return res.status(500).send({
       error: [
-        { message: "Something went wrong while fetching member count" + err },
+        {
+          message: "Something went wrong while fetching member meta data" + err,
+        },
       ],
     });
   }
 };
+
 ////////////////META DATA END//////////////////////
 
 ////////////////MEMBER PAYMENT METHODS START//////////////////////

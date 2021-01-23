@@ -16,6 +16,7 @@ const Home = ({ data }) => {
             link={card.link}
             textContent={card.textContent}
             icon={card.icon}
+            maintenanceAmount={card.maintenanceAmount}
             metaData={card.metaData ? card.metaData : ""}
           />
         ))}
