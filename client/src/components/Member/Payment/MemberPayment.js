@@ -11,8 +11,6 @@ import {
   Badge,
   Text,
   Skeleton,
-  useDisclosure,
-  Heading,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import ReactDependentScript from "react-dependent-script";

@@ -67,9 +67,7 @@ function App() {
           path="/admin/viewMembers"
           component={MemberTable}
         />
-        <Route>
-          <NotFound />
-        </Route>
+        <RouteWithHeader component={NotFound} />
       </Switch>
     </div>
   );
