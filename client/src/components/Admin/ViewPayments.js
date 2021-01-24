@@ -40,13 +40,16 @@ const payeeTableReducer = (state, action) => {
 const ViewPayments = () => {
   const [payeeList, dispatchPayeeList] = useReducer(payeeTableReducer, {
     data: [],
-    isLoading: true,
+    isLoading: false,
     isError: false,
     message: "",
   });
 
   useEffect(() => {
     async function fetchPaymentDetails() {
+      dispatchPayeeList({
+        type: "FETCH_INIT",
+      });
       try {
         const response = await authAxios().get(
           `/api/members/payments/all?page=0&limit=20`
