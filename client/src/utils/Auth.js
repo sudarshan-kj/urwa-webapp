@@ -1,4 +1,4 @@
-import config from "config";
+import config from "../config";
 import axios from "axios";
 
 export const isAuthenticated = () => {

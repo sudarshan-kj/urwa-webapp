@@ -163,6 +163,7 @@ exports.updateMember = async (req, res) => {
 //TODO: Delete admin member if any, when deleting this member
 exports.deleteMember = (req, res) => {
   MemberModel.delete(req.params.memberId)
+    .then(() => MemberPaymentModel.delete(req.params.memberId))
     .then(() =>
       res
         .status(200)
@@ -304,6 +305,35 @@ exports.getPaymentInfo = async (req, res) => {
         },
       ],
     });
+  }
+};
+
+exports.getAllMembersPaymentInfo = async (req, res) => {
+  if (req.query.page && req.query.limit) {
+    try {
+      let page = validateNumber(req.query.page);
+      let perPageLimit = validateNumber(req.query.limit);
+      perPageLimit = perPageLimit <= 25 ? perPageLimit : 25;
+      let members = await MemberModel.list(perPageLimit, page);
+      let membersPayments = await MemberPaymentModel.list(perPageLimit, page);
+      let merged = [];
+      members = JSON.parse(JSON.stringify(members));
+      membersPayments = JSON.parse(JSON.stringify(membersPayments));
+
+      for (let i = 0; i < members.length; i++) {
+        merged.push({
+          ...members[i],
+          ...membersPayments.find((item) => item.memberId === members[i].id),
+        });
+      }
+      return res.status(200).send(merged);
+    } catch {
+      return res.status(500).send({
+        error: "Something went wrong while fetching members payment info",
+      });
+    }
+  } else {
+    return res.status(400).send({ error: "Invalid page or limit parameter" });
   }
 };
 

@@ -65,10 +65,25 @@ membersRouter.post("/payment/:memberId", [
   MembersController.updatePaymentInfo,
 ]);
 
+membersRouter.get("/payments/all", [
+  ValidateMiddleware.isValidJWTAccessToken,
+  ValidateMiddleware.hasPermission({
+    adminOnly: true,
+    permission: permission.READ,
+  }),
+  MembersController.getAllMembersPaymentInfo,
+]);
+
 membersRouter.get("/payment/:memberId", [
+  ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.isValidMemberId,
+  ValidateMiddleware.hasPermission({
+    adminOnly: false,
+    permission: permission.READ,
+  }),
   MembersController.getPaymentInfo,
 ]);
+
 membersRouter.get("/payment/check/:memberId", [
   ValidateMiddleware.isValidMemberId,
   MembersController.shouldMemberPay,

@@ -50,6 +50,29 @@ exports.update = (memberId, newMemberPaymentData) => {
   );
 };
 
+exports.delete = (id) => {
+  return new Promise((resolve, reject) => {
+    MemberPayment.deleteMany({
+      memberId: id,
+    }).exec((err, deletedDetails) => {
+      if (err) reject(err);
+      else resolve(deletedDetails);
+    });
+  });
+};
+
 exports.findByMemberId = (memberId) => {
   return MemberPayment.findOne({ memberId: memberId });
+};
+
+exports.list = (perPage, page) => {
+  return new Promise((resolve, reject) => {
+    MemberPayment.find()
+      .limit(perPage)
+      .skip(perPage * page)
+      .exec((err, users) => {
+        if (err) reject(err);
+        else resolve(users);
+      });
+  });
 };

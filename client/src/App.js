@@ -13,6 +13,7 @@ import PaymentStatus from "components/Member/Payment/PaymentStatus";
 import UpdateMember from "components/Member/UpdateMember";
 import FeatureList from "components/FeatureList";
 import RouteWithHeader from "components/routes/RouteWithHeader";
+import ViewPayments from "components/Admin/ViewPayments";
 
 function App() {
   return (
@@ -66,6 +67,12 @@ function App() {
           permission={permissions.READ}
           path="/admin/viewMembers"
           component={MemberTable}
+        />
+        <ProtectedRoute
+          adminOnly={true}
+          permission={permissions.READ}
+          path="/admin/viewPayments"
+          component={ViewPayments}
         />
         <RouteWithHeader component={NotFound} />
       </Switch>
