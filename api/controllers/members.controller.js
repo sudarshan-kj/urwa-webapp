@@ -6,78 +6,13 @@ const crypto = require("crypto");
 const logger = require("log4js").getLogger();
 const Joi = require("joi");
 logger.level = "debug";
-
-const schema = Joi.object({
-  firstName: Joi.string().min(2).max(30).required(),
-  lastName: Joi.string().min(1).max(300).required(),
-  email: Joi.string()
-    .email({
-      minDomainSegments: 2,
-    })
-    .required(),
-  siteNumber: Joi.string()
-    .min(2)
-    .max(5)
-    .pattern(/^[0-9]+$/)
-    .required()
-    .allow("0"),
-  password: Joi.string().min(5).max(25).allow(null, ""),
-  revokeAccess: Joi.bool().required(),
-  details: Joi.object({
-    mobile: Joi.string()
-      .allow("0")
-      .length(10)
-      .pattern(/^[0-9]+$/)
-      .required(),
-    anniversary: Joi.date().allow(null, ""),
-    dob: Joi.date().allow(null, ""),
-    altContact: Joi.string()
-      .min(8)
-      .max(14)
-      .pattern(/^[0-9]+$/)
-      .required()
-      .allow("0"),
-    land: Joi.string().valid("vacant", "built").required(),
-    noOfFloors: Joi.string().when("land", {
-      is: "built",
-      then: Joi.string().valid("G", "G+1", "G+2", "G+3", "G+4").required(),
-      otherwise: Joi.string().equal("NA"),
-    }),
-    bloodGroup: Joi.string()
-      .valid("A+", "B+", "AB+", "O+", "A-", "B-", "AB-", "O-", "UNKNOWN")
-      .required(),
-    monthlyMaintenance: Joi.bool().required(),
-    maintenanceAmount: Joi.number().when("monthlyMaintenance", {
-      is: true,
-      then: Joi.number().valid(100, 300, 500).required(),
-      otherwise: Joi.number().equal(-1),
-    }),
-    openingBalance: Joi.number().max(50000),
-    borewell: Joi.bool().required(),
-    siteDimensions: Joi.string().valid("30x40", "40x60", "50x80").required(),
-    address: Joi.string().min(4).max(30).required(),
-    membershipStartDate: Joi.date().required(),
-  }),
-});
+const helperUtils = require("../helpers/helper.utils");
+const addMemberValidatorSchema = require("../validators/addMember.validator.schema");
 
 ////////////////MEMBER CRUD OPERATIONS START//////////////////////
 
-function generatePreviousOverDues(memberDetails) {
-  let overDueArray = [];
-  if (memberDetails.monthlyMaintenance && memberDetails.openingBalance > 0) {
-    let prevBalanceCount =
-      memberDetails.openingBalance / memberDetails.maintenanceAmount;
-    for (let i = 0; i < prevBalanceCount; i++) {
-      let newDate = new Date(memberDetails.membershipStartDate);
-      newDate.setMonth(newDate.getMonth() - (i + 1));
-      overDueArray.push(newDate);
-    }
-  }
-  return overDueArray;
-}
-
 exports.createMember = async (req, res) => {
-  const { error } = schema.validate(req.body);
+  const { error } = addMemberValidatorSchema.validate(req.body);
   if (error) {
     return res.status(400).send({ error: error.details });
   }
@@ -107,7 +42,7 @@ exports.createMember = async (req, res) => {
       req.body.npuf = [];
     }
     const membershipStartDate = new Date(req.body.details.membershipStartDate);
-    let overDueArray = generatePreviousOverDues(req.body.details);
+    let overDueArray = helperUtils.generatePreviousOverDues(req.body.details);
     const createdMember = await MemberModel.insert(req.body);
     const paymentData = {
       memberId: createdMember._id,
@@ -127,7 +62,7 @@ exports.createMember = async (req, res) => {
 };
 
 exports.updateMember = async (req, res) => {
-  const { error } = schema.validate(req.body);
+  const { error } = addMemberValidatorSchema.validate(req.body);
   if (error) {
     return res.status(400).send({ error: error.details });
   } else {
@@ -172,18 +107,16 @@ exports.deleteMember = (req, res) => {
     .catch((err) => logger.error("Error occurred while deleting", err));
 };
 
-const validateNumber = (value) => {
-  if (!Number.isInteger(parseInt(value))) {
-    throw new Error("Invalid data provided");
-  }
-};
-
-exports.listAllMembers = (req, res) => {
+exports.listAllMembers = async (req, res) => {
   if (req.query.page && req.query.limit) {
     try {
-      let page = validateNumber(req.query.page);
-      let perPageLimit = validateNumber(req.query.limit);
+      let page = helperUtils.validateNumber(req.query.page);
+      let perPageLimit = helperUtils.validateNumber(req.query.limit);
       perPageLimit = perPageLimit <= 25 ? perPageLimit : 25;
+      if (req.query.showAdminsAlso === true) {
+        const admins = await AdminMemberModel.list(perPageLimit, page);
+        admins = JSON.parse(JSON.stringify(admins));
+      }
       MemberModel.list(perPageLimit, page)
         .then((users) => res.status(200).send(users))
         .catch((err) => res.status(500).send({ error: [{ message: err }] }));
@@ -311,21 +244,19 @@ exports.getPaymentInfo = async (req, res) => {
 exports.getAllMembersPaymentInfo = async (req, res) => {
   if (req.query.page && req.query.limit) {
     try {
-      let page = validateNumber(req.query.page);
-      let perPageLimit = validateNumber(req.query.limit);
+      let page = helperUtils.validateNumber(req.query.page);
+      let perPageLimit = helperUtils.validateNumber(req.query.limit);
       perPageLimit = perPageLimit <= 25 ? perPageLimit : 25;
       let members = await MemberModel.list(perPageLimit, page);
       let membersPayments = await MemberPaymentModel.list(perPageLimit, page);
-      let merged = [];
       members = JSON.parse(JSON.stringify(members));
       membersPayments = JSON.parse(JSON.stringify(membersPayments));
-
-      for (let i = 0; i < members.length; i++) {
-        merged.push({
-          ...members[i],
-          ...membersPayments.find((item) => item.memberId === members[i].id),
-        });
-      }
+      let merged = helperUtils.mergeArrays(
+        members,
+        membersPayments,
+        "memberId",
+        "id"
+      );
       return res.status(200).send(merged);
     } catch {
       return res.status(500).send({

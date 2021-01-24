@@ -35,3 +35,15 @@ exports.delete = (email) => {
 exports.findByEmail = (email) => {
   return AdminMember.findOne({ email: email });
 };
+
+exports.list = (perPage, page) => {
+  return new Promise((resolve, reject) => {
+    AdminMember.find()
+      .limit(perPage)
+      .skip(perPage * page)
+      .exec((err, admins) => {
+        if (err) reject(err);
+        else resolve(admins);
+      });
+  });
+};
