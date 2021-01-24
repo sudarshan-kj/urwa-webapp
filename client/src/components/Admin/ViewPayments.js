@@ -40,7 +40,7 @@ const payeeTableReducer = (state, action) => {
 const ViewPayments = () => {
   const [payeeList, dispatchPayeeList] = useReducer(payeeTableReducer, {
     data: [],
-    isLoading: false,
+    isLoading: true,
     isError: false,
     message: "",
   });
