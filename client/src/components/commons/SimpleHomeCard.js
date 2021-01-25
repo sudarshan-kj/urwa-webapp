@@ -37,7 +37,7 @@ const SimpleCard = ({
         <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
           {textContent}
         </Text>
-        <Text>{metaData}</Text>
+        <Text align="center">{metaData}</Text>
       </Stack>
     </Center>
   </Link>

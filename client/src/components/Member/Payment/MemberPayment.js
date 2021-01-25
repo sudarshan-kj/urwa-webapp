@@ -157,45 +157,27 @@ const MemberPayment = () => {
   const paymentDataArray = [
     {
       index: 1,
-      link: "#",
       textContent: "January 2021",
       paidStatus: "PAID",
       colorScheme: "green",
     },
     {
       index: 2,
-      link: "#",
       textContent: "February 2021",
       paidStatus: "PAID",
       colorScheme: "green",
     },
     {
       index: 3,
-      link: "#",
       textContent: "March 2021",
       paidStatus: "PAID",
       colorScheme: "green",
     },
     {
       index: 4,
-      link: "#",
       textContent: "April 2021",
-      paidStatus: "OVERDUE",
-      colorScheme: "red",
-    },
-    {
-      index: 5,
-      link: "#",
-      textContent: "May 2021",
-      paidStatus: "OVERDUE",
-      colorScheme: "red",
-    },
-    {
-      index: 6,
-      link: "#",
-      textContent: "June 2021",
-      paidStatus: "DUE",
-      colorScheme: "orange",
+      paidStatus: "PAID",
+      colorScheme: "green",
     },
   ];
 
@@ -257,16 +239,18 @@ const MemberPayment = () => {
         scripts={["https://checkout-static.citruspay.com/bolt/run/bolt.min.js"]}
       >
         <Box h="100%" minH={{ md: "80vh" }} m={8}>
-          <Stack w="80%" m="auto" spacing={8}>
-            <Text>Monthly Payment Amount: ₹ {monthlyAmount}</Text>
-            <Box>
+          <Stack w={{ base: "90%", md: "70%" }} m="auto" spacing={8}>
+            <Text>
+              Monthly Payment Amount:{" "}
+              <Badge colorScheme="teal">₹{monthlyAmount}</Badge>
+            </Text>
+            <Center>
               <Badge borderRadius={10} colorScheme="orange" p={2}>
                 Due for
               </Badge>
-            </Box>
+            </Center>
             <SimpleGrid minChildWidth="260px" spacing="40px">
               <SimpleCard
-                link="#"
                 textContent={date.format(
                   new Date(paymentDataArrayState.dueFor),
                   datePattern
@@ -276,15 +260,14 @@ const MemberPayment = () => {
                 isLoading={isCardLoading}
               />
             </SimpleGrid>
-            <Box>
+            <Center>
               <Badge borderRadius={10} colorScheme="red" p={2}>
                 Overdue for ({paymentDataArrayState.overdueFor.length} months)
               </Badge>
-            </Box>
+            </Center>
             <SimpleGrid minChildWidth="260px" spacing="40px">
               {paymentDataArrayState.overdueFor.map((item) => (
                 <SimpleCard
-                  link="#"
                   onlyText={!paymentDataArrayState.overdueFor.length}
                   textContent={
                     paymentDataArrayState.overdueFor.length
@@ -298,21 +281,29 @@ const MemberPayment = () => {
               ))}
             </SimpleGrid>
             <Accordion allowMultiple>
-              <AccordionItem>
-                <AccordionButton _focus="none">
-                  <Box flex="1" textAlign="left">
-                    <Badge borderRadius={10} colorScheme="green" p={2}>
-                      previous transactions
-                    </Badge>
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-                <AccordionPanel pb={4}>
+              <AccordionItem p={0} m={0}>
+                <Center>
+                  <AccordionButton
+                    _focus="none"
+                    w="210px"
+                    borderRadius="20px"
+                    _hover={{
+                      bg: "none",
+                    }}
+                  >
+                    <Box flex="1" textAlign="left">
+                      <Badge borderRadius={10} colorScheme="green" p={2}>
+                        previous transactions
+                      </Badge>
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </Center>
+                <AccordionPanel px={0} pt={4}>
                   <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
                     {paymentDataArray.map((card) => (
                       <SimpleCard
                         key={card.index}
-                        link={card.link}
                         isLoading={isCardLoading}
                         textContent={card.textContent}
                         paidStatus={card.paidStatus}
@@ -349,46 +340,42 @@ const MemberPayment = () => {
 };
 
 const SimpleCard = ({
-  link,
   textContent,
   onlyText,
   paidStatus,
   colorScheme,
   isLoading,
 }) => (
-  <Link to={link}>
-    <Skeleton startColor="gray.200" endColor="teal.400" isLoaded={!isLoading}>
-      <Center
-        boxShadow="lg"
-        borderRadius="20px"
-        h="200px"
-        p={8}
-        bg="gray.100"
-        _hover={{
-          border: "2px solid",
-          borderColor: "teal.300",
-        }}
+  <Skeleton startColor="gray.200" endColor="teal.400" isLoaded={!isLoading}>
+    <Center
+      boxShadow="lg"
+      borderRadius="20px"
+      h="200px"
+      p={8}
+      bg="gray.100"
+      color={`${colorScheme}.800`}
+      border="1px solid"
+      borderColor={`${colorScheme}.300`}
+    >
+      <Stack
+        direction={{ base: "column", md: "column" }}
+        justify="center"
+        align="center"
+        spacing={4}
       >
-        <Stack
-          direction={{ base: "column", md: "column" }}
-          justify="center"
-          align="center"
-          spacing={4}
-        >
-          <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
-            {textContent}
-          </Text>
-          {!onlyText && (
-            <>
-              <Badge borderRadius={5} colorScheme={colorScheme}>
-                {paidStatus}
-              </Badge>
-            </>
-          )}
-        </Stack>
-      </Center>
-    </Skeleton>
-  </Link>
+        <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
+          {textContent}
+        </Text>
+        {!onlyText && (
+          <>
+            <Badge borderRadius={5} colorScheme={colorScheme}>
+              {paidStatus}
+            </Badge>
+          </>
+        )}
+      </Stack>
+    </Center>
+  </Skeleton>
 );
 
 export default MemberPayment;
