@@ -314,27 +314,29 @@ const MemberPayment = () => {
                 </AccordionPanel>
               </AccordionItem>
             </Accordion>
-            <Center>
-              <Skeleton
-                my={6}
-                startColor="gray.200"
-                endColor="orange.400"
-                isLoaded={!isCardLoading}
-              >
-                <Button
-                  p={7}
-                  onClick={() => launchBolt()}
-                  colorScheme="orange"
-                  disabled={!isPayButtonActive}
-                >
-                  Pay Total Due Amount: Rs{" "}
-                  {paymentDataArrayState.totalAmountDue}
-                </Button>
-              </Skeleton>
-            </Center>
           </Stack>
         </Box>
       </ReactDependentScript>
+      <Center pos="fixed" bottom="0" left="0" right="0">
+        <Skeleton
+          w="100%"
+          startColor="gray.200"
+          endColor="orange.400"
+          isLoaded={!isCardLoading}
+        >
+          <Button
+            w="100%"
+            p={10}
+            fontSize="xl"
+            onClick={() => launchBolt()}
+            borderRadius="0"
+            colorScheme="teal"
+            disabled={!isPayButtonActive}
+          >
+            Pay Total Due Amount: ₹ {paymentDataArrayState.totalAmountDue}
+          </Button>
+        </Skeleton>
+      </Center>
     </>
   );
 };
