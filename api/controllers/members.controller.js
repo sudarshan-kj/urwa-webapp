@@ -119,6 +119,7 @@ exports.deleteManyMembers = async (req, res) => {
       const deleted = await MemberModel.deleteMany(req.body.memberIds);
       response.ok(res, `Deleted documents`, {
         memberCount: deleted.deletedMembers.deletedCount,
+        memberDetails: deleted.deletedMemberDetails.deletedCount,
         memberPaymentsCount: deleted.deletedMemberPayments.deletedCount,
       });
     } catch (err) {

@@ -63,12 +63,13 @@ exports.delete = (id) => {
 
 exports.deleteMany = (memberIds) => {
   return new Promise((resolve, reject) => {
-    MemberPayment.deleteMany({ memberId: { $in: [...memberIds] } }).exec(
-      (err, deletedPayments) => {
+    MemberPayment.deleteMany()
+      .where("memberId")
+      .in(memberIds)
+      .exec((err, deletedPayments) => {
         if (err) reject(err);
         else resolve(deletedPayments);
-      }
-    );
+      });
   });
 };
 

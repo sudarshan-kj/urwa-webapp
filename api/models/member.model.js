@@ -59,22 +59,27 @@ exports.delete = (memberId) => {
 
 exports.deleteMany = (memberIds) => {
   return new Promise((resolve, reject) => {
-    Member.deleteMany({ _id: { $in: [...memberIds] } }).exec(
-      (err, deletedMembers) => {
+    Member.deleteMany()
+      .where("_id")
+      .in(memberIds)
+      .exec((err, deletedMembers) => {
         if (err) reject(err);
         else {
           MemberDetailsModel.deleteMany(memberIds)
-            .then(() => MemberPaymentModel.deleteMany(memberIds))
-            .then((deletedMemberPayments) =>
-              resolve({
-                deletedMembers,
-                deletedMemberPayments,
-              })
+            .then((deletedMemberDetails) =>
+              MemberPaymentModel.deleteMany(memberIds)
+                .then((deletedMemberPayments) =>
+                  resolve({
+                    deletedMembers,
+                    deletedMemberDetails,
+                    deletedMemberPayments,
+                  })
+                )
+                .catch((err) => reject(err))
             )
             .catch((err) => reject(err));
         }
-      }
-    );
+      });
   });
 };
 
