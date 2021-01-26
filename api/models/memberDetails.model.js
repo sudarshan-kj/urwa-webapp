@@ -52,6 +52,17 @@ exports.delete = (id) => {
   });
 };
 
+exports.deleteMany = (memberIds) => {
+  return new Promise((resolve, reject) => {
+    MemberDetails.deleteMany({ memberId: { $in: [...memberIds] } }).exec(
+      (err, deletedMemberDetails) => {
+        if (err) reject(err);
+        else resolve(deletedMemberDetails);
+      }
+    );
+  });
+};
+
 exports.update = (memberId, memberDetails) => {
   return MemberDetails.findOneAndUpdate({ memberId: memberId }, memberDetails);
 };

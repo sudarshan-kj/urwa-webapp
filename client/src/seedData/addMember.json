@@ -7,17 +7,17 @@
     "revokeAccess": false,
     "details": {
       "mobile": "",
-      "altContact": "",
+      "altContact": "0",
       "anniversary": "",
       "dob": "",
       "land": "built",
       "noOfFloors": "",
-      "bloodGroup": "",
+      "bloodGroup": "UNKNOWN",
       "monthlyMaintenance": "true",
       "maintenanceAmount": -1,
       "borewell": "false",
       "siteDimensions": "",
-      "address": "",
+      "address": "Upkar Layout, BLR-56",
       "membershipStartDate": "",
       "openingBalance": 0
     }

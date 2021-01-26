@@ -1,5 +1,6 @@
 const mongoose = require("../services/mongoose.service").mongoose;
 const MemberDetailsModel = require("./memberDetails.model");
+const MemberPaymentModel = require("./memberPayment.model");
 
 let { Schema } = mongoose;
 const opts = {
@@ -53,6 +54,27 @@ exports.delete = (memberId) => {
         )
         .catch((err) => reject(err));
     });
+  });
+};
+
+exports.deleteMany = (memberIds) => {
+  return new Promise((resolve, reject) => {
+    Member.deleteMany({ _id: { $in: [...memberIds] } }).exec(
+      (err, deletedMembers) => {
+        if (err) reject(err);
+        else {
+          MemberDetailsModel.deleteMany(memberIds)
+            .then(() => MemberPaymentModel.deleteMany(memberIds))
+            .then((deletedMemberPayments) =>
+              resolve({
+                deletedMembers,
+                deletedMemberPayments,
+              })
+            )
+            .catch((err) => reject(err));
+        }
+      }
+    );
   });
 };
 

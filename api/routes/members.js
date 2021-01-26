@@ -47,6 +47,15 @@ membersRouter.delete("/:memberId", [
   }),
   MembersController.deleteMember,
 ]);
+
+membersRouter.delete("/delete/many", [
+  ValidateMiddleware.isValidJWTAccessToken,
+  ValidateMiddleware.hasPermission({
+    adminOnly: true,
+    permission: permission.DELETE,
+  }),
+  MembersController.deleteManyMembers,
+]);
 membersRouter.patch("/:memberId", [
   ValidateMiddleware.isValidJWTAccessToken,
   ValidateMiddleware.isValidMemberId,

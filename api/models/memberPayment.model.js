@@ -61,6 +61,17 @@ exports.delete = (id) => {
   });
 };
 
+exports.deleteMany = (memberIds) => {
+  return new Promise((resolve, reject) => {
+    MemberPayment.deleteMany({ memberId: { $in: [...memberIds] } }).exec(
+      (err, deletedPayments) => {
+        if (err) reject(err);
+        else resolve(deletedPayments);
+      }
+    );
+  });
+};
+
 exports.findByMemberId = (memberId) => {
   return MemberPayment.findOne({ memberId: memberId });
 };

@@ -8,6 +8,7 @@ const Joi = require("joi");
 logger.level = "debug";
 const helperUtils = require("../helpers/helper.utils");
 const addMemberValidatorSchema = require("../validators/addMember.validator.schema");
+const response = require("../contracts/response");
 
 ////////////////MEMBER CRUD OPERATIONS START//////////////////////
 
@@ -104,7 +105,30 @@ exports.deleteMember = (req, res) => {
         .status(200)
         .send({ msg: `Deleted member with id: ${req.params.memberId}` })
     )
-    .catch((err) => logger.error("Error occurred while deleting", err));
+    .catch((err) => {
+      logger.error("Error occurred while deleting", err);
+      return res
+        .status(500)
+        .send({ error: "Something went wrong while deleteing member: " + err });
+    });
+};
+
+exports.deleteManyMembers = async (req, res) => {
+  if (req.body.memberIds)
+    try {
+      const deleted = await MemberModel.deleteMany(req.body.memberIds);
+      response.ok(res, `Deleted documents`, {
+        memberCount: deleted.deletedMembers.deletedCount,
+        memberPaymentsCount: deleted.deletedMemberPayments.deletedCount,
+      });
+    } catch (err) {
+      response.internalError(
+        res,
+        "Something went wrong while deleteing many members",
+        err
+      );
+    }
+  else response.badRequest(res);
 };
 
 exports.listAllMembers = async (req, res) => {
