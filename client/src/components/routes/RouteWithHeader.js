@@ -3,6 +3,7 @@ import { Route, Link } from "react-router-dom";
 import { Flex, Icon } from "@chakra-ui/react";
 import { ReactComponent as HomeIcon } from "assets/icons/home.svg";
 import useAutoScrollToTop from "hooks/useAutoScrollToTop";
+import { getPath } from "utils/Authz";
 
 const Header = ({ component: Component }) => {
   useAutoScrollToTop();
@@ -22,7 +23,7 @@ const Header = ({ component: Component }) => {
         right={0}
         zIndex={999}
       >
-        <Link to="/admin/home">
+        <Link to={`${getPath("/admin", "/member")}/home`}>
           <Icon
             as={HomeIcon}
             w={6}

@@ -4,6 +4,7 @@ import { authAxios } from "utils/Auth";
 import { useToast } from "@chakra-ui/react";
 import MemberForm from "components/Member/MemberForm";
 import seedDataJSON from "seedData/addMember.json";
+import { getPath } from "utils/Authz";
 
 const extractDate = (dateValue) => {
   return dateValue.split("T")[0];
@@ -57,12 +58,12 @@ const UpdateMember = () => {
       });
   }, [memberId]);
 
-  const updateMember = (values, setUpdating, resetForm) => {
+  const updateMember = (values, setUpdating) => {
     authAxios()
       .patch(`/api/members/${memberId}`, values)
       .then((res) => {
         if (res.status === 200) {
-          history.push("/admin/viewMembers");
+          history.push(`${getPath("/admin/viewMembers", "/member/home")}`);
           toast({
             title: "Account updated",
             description: `${values.firstName} has been updated`,

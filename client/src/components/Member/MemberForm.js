@@ -30,8 +30,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
       ...seedData,
     },
     onSubmit: (values, { resetForm, setSubmitting }) => {
-      console.log("Values are", values);
-      //callBack(values, setSubmitting, resetForm);
+      callBack(values, setSubmitting, resetForm);
     },
     enableReinitialize: true,
   });

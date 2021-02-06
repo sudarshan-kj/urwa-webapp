@@ -14,7 +14,7 @@ import {
   Badge,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
-import { isAdmin, hasPermission, getMemberDetails } from "utils/Authz";
+import { isAdmin, getPath, hasPermission, getMemberDetails } from "utils/Authz";
 import {
   Menu,
   MenuButton,
@@ -26,13 +26,6 @@ import { ReactComponent as HomeIcon } from "assets/icons/home.svg";
 import { ReactComponent as ProfileIcon } from "assets/icons/user.svg";
 import { ReactComponent as LogoutIcon } from "assets/icons/logout.svg";
 import useAutoScrollToTop from "hooks/useAutoScrollToTop";
-
-const getPath = () => {
-  if (isAdmin()) {
-    return "admin";
-  }
-  return "member";
-};
 
 const CommonHeader = ({ component: Component }) => {
   const history = useHistory();
@@ -55,7 +48,7 @@ const CommonHeader = ({ component: Component }) => {
       >
         <Box p="2">
           <HStack>
-            <Link to={`/${getPath()}/home`}>
+            <Link to={`${getPath("/admin", "/member")}/home`}>
               <Icon
                 as={HomeIcon}
                 w={6}
@@ -82,7 +75,7 @@ const CommonHeader = ({ component: Component }) => {
                 <MenuList>
                   <MenuItem
                     onClick={() => {
-                      history.push(`/${getPath()}/home`);
+                      history.push(`${getPath("/admin", "/member")}/home`);
                     }}
                   >
                     <Icon
@@ -173,7 +166,7 @@ const Unauthorized = () => {
       <Heading as="h1" size="md" p="4" fontWeight="100" textAlign="center">
         403 Unauthorized
       </Heading>
-      <Link to={`/${getPath()}/home`}>
+      <Link to={`${getPath("/admin", "/member")}/home`}>
         <Text>Go to Home</Text>
       </Link>
     </VStack>

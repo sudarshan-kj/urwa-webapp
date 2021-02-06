@@ -40,6 +40,13 @@ export const isAdmin = () => {
   return false;
 };
 
+export const getPath = (adminPath, memberPath) => {
+  if (isAdmin()) {
+    return adminPath;
+  }
+  return memberPath;
+};
+
 export const permissions = {
   CREATE: "0x08",
   READ: "0x04",
