@@ -1,9 +1,10 @@
  {
-    "siteNumber": "",
     "firstName": "",
     "lastName": "",
     "email": "",
     "password": "",
+    "siteNumber": "",
+    "doorNumber": "",
     "revokeAccess": false,
     "details": {
       "mobile": "",
@@ -17,8 +18,11 @@
       "maintenanceAmount": -1,
       "borewell": "false",
       "siteDimensions": "",
-      "address": "Upkar Layout, BLR-56",
+      "siteAddress": "",
+      "tenantResiding": false,
+      "ownerAddress": "",
       "membershipStartDate": "",
+      "subscriptionStartDate": "",
       "openingBalance": 0
     }
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Redirect, useHistory } from "react-router-dom";
+import { Route, Redirect, useHistory, Link } from "react-router-dom";
 import { isAuthenticated, logout } from "../../utils/Auth";
 import {
   Flex,
@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { isAdmin, hasPermission, getMemberDetails } from "utils/Authz";
-import { Link } from "react-router-dom";
 import {
   Menu,
   MenuButton,

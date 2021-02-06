@@ -19,11 +19,12 @@ const opts = {
 
 let memberSchema = new Schema(
   {
-    siteNumber: { type: Number, unique: false, required: true },
     firstName: { type: String, unique: false, required: true },
     lastName: { type: String, unique: false, required: true },
     email: { type: String, index: { unique: true }, required: true },
     password: { type: String, unique: false, required: true },
+    siteNumber: { type: Number, unique: false, required: true },
+    doorNumber: { type: String, unique: false, required: false },
     permissionLevel: { type: String, unique: false, required: true },
     npuf: { type: Array, unique: false, required: true },
     revokeAccess: { type: Boolean, unique: false, required: true },

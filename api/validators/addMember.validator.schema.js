@@ -14,6 +14,7 @@ const schema = Joi.object({
     .pattern(/^[0-9]+$/)
     .required()
     .allow("0"),
+  doorNumber: Joi.string().min(1).max(10).allow(null, ""),
   password: Joi.string().min(5).max(25).allow(null, ""),
   revokeAccess: Joi.bool().required(),
   details: Joi.object({
@@ -48,8 +49,19 @@ const schema = Joi.object({
     openingBalance: Joi.number().max(50000),
     borewell: Joi.bool().required(),
     siteDimensions: Joi.string().valid("30x40", "40x60", "50x80").required(),
-    address: Joi.string().min(4).max(30).required(),
+    siteAddress: Joi.string().min(4).max(30).required(),
+    tenantResiding: Joi.bool().required(),
+    ownerAddress: Joi.string().when("tenantResiding", {
+      is: true,
+      then: Joi.string().min(4).max(150).required(),
+      otherwise: Joi.string().equal(""),
+    }),
     membershipStartDate: Joi.date().required(),
+    subscriptionStartDate: Joi.date().when("monthlyMaintenance", {
+      is: true,
+      then: Joi.date().required(),
+      otherwise: Joi.date().allow(null, ""),
+    }),
   }),
 });
 

@@ -4,6 +4,7 @@ exports.validateNumber = (value) => {
   }
 };
 
+//intersection
 exports.mergeArrays = (arr1, arr2, key1, key2) => {
   let merged = [];
   for (let i = 0; i < arr1.length; i++) {
@@ -15,13 +16,16 @@ exports.mergeArrays = (arr1, arr2, key1, key2) => {
   return merged;
 };
 
+//symmetric difference
+exports.disjointArrays = (arr1, arr2, key1, key2) => {};
+
 exports.generatePreviousOverDues = (memberDetails) => {
   let overDueArray = [];
   if (memberDetails.monthlyMaintenance && memberDetails.openingBalance > 0) {
     let prevBalanceCount =
       memberDetails.openingBalance / memberDetails.maintenanceAmount;
     for (let i = 0; i < prevBalanceCount; i++) {
-      let newDate = new Date(memberDetails.membershipStartDate);
+      let newDate = new Date(memberDetails.subscriptionStartDate);
       newDate.setMonth(newDate.getMonth() - (i + 1));
       overDueArray.push(newDate);
     }

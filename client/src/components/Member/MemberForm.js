@@ -14,8 +14,9 @@ import {
   Select,
   Button,
   Stack,
+  Switch,
 } from "@chakra-ui/react";
-import { useFormik } from "formik";
+import { FormikContext, useFormik } from "formik";
 import { getMemberDetails } from "utils/Authz";
 
 function isDisabled(array, field) {
@@ -29,7 +30,8 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
       ...seedData,
     },
     onSubmit: (values, { resetForm, setSubmitting }) => {
-      callBack(values, setSubmitting, resetForm);
+      console.log("Values are", values);
+      //callBack(values, setSubmitting, resetForm);
     },
     enableReinitialize: true,
   });
@@ -39,7 +41,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
         <Box>
           <form onSubmit={formik.handleSubmit}>
             <VStack
-              w={{ base: "100%", md: "50%" }}
+              w={{ base: "100%", md: "60%" }}
               m="auto"
               py="30px"
               spacing="40px"
@@ -173,11 +175,27 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     />
                   </NumberInput>
                 </FormControl>
+                <FormControl>
+                  <FormLabel>Block / Door Number 🚪</FormLabel>
+                  <Input
+                    value={formik.values.doorNumber}
+                    id="doorNumber"
+                    focusBorderColor="teal.400"
+                    bg="gray.100"
+                    onChange={(e) => {
+                      formik.handleChange(e);
+                    }}
+                  />
+                  <FormHelperText>
+                    Enter this value only if multiple individual units are built
+                    on the same site. Else, leave it blank
+                  </FormHelperText>
+                </FormControl>
               </Stack>
             </VStack>
 
             <VStack
-              w={{ base: "100%", md: "50%" }}
+              w={{ base: "100%", md: "60%" }}
               m="auto"
               py="30px"
               spacing="40px"
@@ -204,7 +222,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 border="1px solid teal"
                 borderRadius="0 0 8px 8px"
               >
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel>Alternate Contact Number 📞</FormLabel>
                   <NumberInput
                     value={formik.values.details.altContact}
@@ -249,6 +267,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 <FormControl
                   id="details.membershipStartDate"
                   isDisabled={isDisabled(npuf, "membershipStartDate")}
+                  isRequired
                 >
                   <FormLabel>Membership Start Date 🏳️‍🌈</FormLabel>
                   <Input
@@ -282,18 +301,54 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   </StyledSelect>
                 </FormControl>
 
-                <FormControl id="details.address">
-                  <FormLabel>Address 📍</FormLabel>
+                <FormControl id="details.siteAddress" isRequired>
+                  <FormLabel>Site Address 📍</FormLabel>
                   <Input
                     focusBorderColor="teal.400"
                     bg="gray.100"
                     type="text"
-                    value={formik.values.details.address}
+                    value={formik.values.details.siteAddress}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
                   />
                   <FormHelperText>Enter only main and cross</FormHelperText>
+                </FormControl>
+
+                <FormControl display="flex" alignItems="center">
+                  <FormLabel htmlFor="tenantResiding" mb="0">
+                    Tenant Residing ?
+                  </FormLabel>
+                  <Switch
+                    colorScheme="teal"
+                    id="details.tenantResiding"
+                    isChecked={formik.values.details.tenantResiding}
+                    onChange={(e) => {
+                      formik.setFieldValue(
+                        "details.tenantResiding",
+                        e.target.checked
+                      );
+                    }}
+                  />
+                </FormControl>
+
+                <FormControl
+                  id="details.ownerAddress"
+                  isDisabled={formik.values.details.tenantResiding === false}
+                >
+                  <FormLabel>Owner Address 🏦</FormLabel>
+                  <Input
+                    focusBorderColor="teal.400"
+                    bg="gray.100"
+                    type="text"
+                    value={formik.values.details.ownerAddress}
+                    onChange={(e) => {
+                      formik.handleChange(e);
+                    }}
+                  />
+                  <FormHelperText>
+                    Enter full owner address if tenant is residing.
+                  </FormHelperText>
                 </FormControl>
 
                 <FormControl id="details.siteDimensions">
@@ -444,6 +499,27 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     <option value="500">₹500</option>
                   </StyledSelect>
                 </FormControl>
+
+                <FormControl
+                  id="details.subscriptionStartDate"
+                  isDisabled={
+                    formik.values.details.monthlyMaintenance === "false" ||
+                    isDisabled(npuf, "subscriptionStartDate")
+                  }
+                  isRequired
+                >
+                  <FormLabel>Subscription Start Date 🏳️‍🌈</FormLabel>
+                  <Input
+                    focusBorderColor="teal.400"
+                    bg="gray.100"
+                    type="date"
+                    value={formik.values.details.subscriptionStartDate}
+                    onChange={(e) => {
+                      formik.handleChange(e);
+                    }}
+                  />
+                </FormControl>
+
                 {buttonName === "Submit" && (
                   <FormControl isRequired>
                     <FormLabel>Opening Balance</FormLabel>
@@ -460,7 +536,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                       />
                     </NumberInput>
                     <FormHelperText>
-                      This field cannot be updated later
+                      Note: This field cannot be updated later
                     </FormHelperText>
                   </FormControl>
                 )}

@@ -31,11 +31,18 @@ const UpdateMember = () => {
           newObject.details.membershipStartDate = newObject.details.membershipStartDate.split(
             "T"
           )[0];
+        if (newObject.details.subscriptionStartDate)
+          newObject.details.subscriptionStartDate = newObject.details.subscriptionStartDate.split(
+            "T"
+          )[0];
 
         delete newObject.permissionLevel;
         delete newObject.id;
         delete newObject.npuf;
         newObject.password = "";
+        //Tenant residing value expects a boolean, but since we get strings, we convert to boolean
+        newObject.details.tenantResiding =
+          newObject.details.tenantResiding === "true";
         setSeedData(newObject);
       });
   }, [memberId]);

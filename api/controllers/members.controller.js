@@ -37,17 +37,18 @@ exports.createMember = async (req, res) => {
         "monthlyMaintenance",
         "maintenanceAmount",
         "membershipStartDate",
+        "subscriptionStartDate",
       ];
     } else {
       req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
       req.body.npuf = [];
     }
-    const membershipStartDate = new Date(req.body.details.membershipStartDate);
+    const dueDate = new Date(req.body.details.subscriptionStartDate);
     let overDueArray = helperUtils.generatePreviousOverDues(req.body.details);
     const createdMember = await MemberModel.insert(req.body);
     const paymentData = {
       memberId: createdMember._id,
-      dueFor: membershipStartDate,
+      dueFor: dueDate,
       overdueFor: overDueArray,
       lastPaidFor: [],
       totalAmountDue: req.body.details.openingBalance,
@@ -138,13 +139,29 @@ exports.listAllMembers = async (req, res) => {
       let page = helperUtils.validateNumber(req.query.page);
       let perPageLimit = helperUtils.validateNumber(req.query.limit);
       perPageLimit = perPageLimit <= 25 ? perPageLimit : 25;
-      if (req.query.showAdminsAlso === true) {
-        const admins = await AdminMemberModel.list(perPageLimit, page);
+      let admins;
+      if (req.query.showAdminsAlso === "1") {
+        console.log("Inside");
+        admins = await AdminMemberModel.list(perPageLimit, page);
         admins = JSON.parse(JSON.stringify(admins));
-      }
-      MemberModel.list(perPageLimit, page)
-        .then((users) => res.status(200).send(users))
-        .catch((err) => res.status(500).send({ error: [{ message: err }] }));
+        MemberModel.list(perPageLimit, page)
+          .then((users) => {
+            users = JSON.parse(JSON.stringify(users));
+            let joined = helperUtils.joinArrays(
+              users,
+              admins,
+              "email",
+              "email"
+            );
+            return res.status(200).send(joined);
+          })
+          .catch((err) => res.status(500).send({ error: [{ message: err }] }));
+      } else
+        MemberModel.list(perPageLimit, page)
+          .then((users) => {
+            return res.status(200).send(users);
+          })
+          .catch((err) => res.status(500).send({ error: [{ message: err }] }));
     } catch (err) {
       return res.status(400).send({ error: [{ message: err.message }] });
     }

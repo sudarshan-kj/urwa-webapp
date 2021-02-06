@@ -28,8 +28,11 @@ let memberDetailsSchema = new Schema(
     maintenanceAmount: Number,
     borewell: Boolean,
     siteDimensions: String,
-    address: String,
+    siteAddress: String,
+    tenantResiding: Boolean,
+    ownerAddress: String,
     membershipStartDate: Date,
+    subscriptionStartDate: Date,
   },
   opts
 );
