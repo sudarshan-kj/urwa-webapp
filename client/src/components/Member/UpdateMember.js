@@ -5,6 +5,10 @@ import { useToast } from "@chakra-ui/react";
 import MemberForm from "components/Member/MemberForm";
 import seedDataJSON from "seedData/addMember.json";
 
+const extractDate = (dateValue) => {
+  return dateValue.split("T")[0];
+};
+
 const UpdateMember = () => {
   const [seedData, setSeedData] = React.useState(seedDataJSON);
   const { memberId } = useParams();
@@ -21,28 +25,34 @@ const UpdateMember = () => {
         const newObject = { ...result.data };
         delete newObject.mDetails;
         newObject.details = details;
-        if (newObject.details.dob)
-          newObject.details.dob = newObject.details.dob.split("T")[0];
-        if (newObject.details.anniversary)
-          newObject.details.anniversary = newObject.details.anniversary.split(
-            "T"
-          )[0];
-        if (newObject.details.membershipStartDate)
-          newObject.details.membershipStartDate = newObject.details.membershipStartDate.split(
-            "T"
-          )[0];
-        if (newObject.details.subscriptionStartDate)
-          newObject.details.subscriptionStartDate = newObject.details.subscriptionStartDate.split(
-            "T"
-          )[0];
+        const {
+          dob,
+          anniversary,
+          membershipStartDate,
+          subscriptionStartDate,
+        } = details;
+        if (dob) newObject.details.dob = extractDate(dob);
+        if (anniversary)
+          newObject.details.anniversary = extractDate(anniversary);
+        if (membershipStartDate)
+          newObject.details.membershipStartDate = extractDate(
+            membershipStartDate
+          );
+        if (subscriptionStartDate)
+          newObject.details.subscriptionStartDate = extractDate(
+            subscriptionStartDate
+          );
 
+        //Tenant residing value in the ui expects a boolean, but since we get strings, we convert to boolean
+
+        newObject.details.tenantResiding =
+          newObject.details.tenantResiding === "true";
+        newObject.password = "";
+        // All the following data needs to be removed, since they are coming fromt the raw data we extracted from db
         delete newObject.permissionLevel;
         delete newObject.id;
         delete newObject.npuf;
-        newObject.password = "";
-        //Tenant residing value expects a boolean, but since we get strings, we convert to boolean
-        newObject.details.tenantResiding =
-          newObject.details.tenantResiding === "true";
+
         setSeedData(newObject);
       });
   }, [memberId]);
