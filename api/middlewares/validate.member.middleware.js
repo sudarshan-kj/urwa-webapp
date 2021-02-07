@@ -63,6 +63,9 @@ exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
   });
 };
 
+/* The following method retrieves the actual information from database on fields that are marked as NPUF since the UI sends them as dummy values, 
+and replaces the dummy values with actual values that should not be modified*/
+
 exports.checkFieldPermissionToUpdate = async (req, res, next) => {
   const noPermissionToUpdateFields = req.jwt.npuf;
   if (noPermissionToUpdateFields && noPermissionToUpdateFields.length) {
@@ -100,18 +103,32 @@ exports.isValidMemberId = async (req, res, next) => {
   }
 };
 
+async function allowSelfOrAdminUpdate(field, req) {
+  if (req.params.memberId) {
+    console.log("I am inside allowself or update");
+    try {
+      const requestedForMember = await MemberModel.findById(
+        req.params.memberId
+      );
+      //Note: We make sure that while admin/self is updating a member, he is not entering a field that already exists.
+      if (requestedForMember[field] === foundMember[field]) {
+        return true;
+      }
+    } catch {
+      throw new Error("Could not find requested for member");
+    }
+  }
+  return false;
+}
+
 exports.doesUserEmailAlreadyExist = async (req, res, next) => {
   req.body.email = req.body.email.toLowerCase();
   try {
     const foundMember = await MemberModel.findByEmail(req.body.email);
     if (foundMember) {
-      if (req.params.memberId) {
-        const requestingMember = await MemberModel.findById(
-          req.params.memberId
-        );
-        if (requestingMember.email === foundMember.email) {
-          return next();
-        }
+      //Note: The following if condition exists only to check while updating, and not while creating
+      if (await allowSelfOrAdminUpdate("email", req)) {
+        return next();
       }
       return res.status(409).send({
         error: [
@@ -139,13 +156,9 @@ exports.doesSiteNumberAlreadyExist = async (req, res, next) => {
   try {
     const foundMember = await MemberModel.findBySiteNumber(req.body.siteNumber);
     if (foundMember) {
-      if (req.params.memberId) {
-        const requestingMember = await MemberModel.findById(
-          req.params.memberId
-        );
-        if (requestingMember.siteNumber === foundMember.siteNumber) {
-          return next();
-        }
+      //Note: The following if condition exists only to check while updating, and not while creating
+      if (await allowSelfOrAdminUpdate("siteNumber", req)) {
+        return next();
       }
       return res.status(409).send({
         error: [

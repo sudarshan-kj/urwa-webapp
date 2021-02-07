@@ -48,7 +48,9 @@ const schema = Joi.object({
     }),
     openingBalance: Joi.number().max(50000),
     borewell: Joi.bool().required(),
-    siteDimensions: Joi.string().valid("30x40", "40x60", "50x80").required(),
+    siteDimensions: Joi.string()
+      .valid("30x40", "30x50", "40x60", "50x80", "Other")
+      .required(),
     siteAddress: Joi.string().min(4).max(30).required(),
     tenantResiding: Joi.bool().required(),
     ownerAddress: Joi.string().when("tenantResiding", {

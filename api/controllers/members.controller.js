@@ -43,17 +43,19 @@ exports.createMember = async (req, res) => {
       req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
       req.body.npuf = [];
     }
-    const dueDate = new Date(req.body.details.subscriptionStartDate);
-    let overDueArray = helperUtils.generatePreviousOverDues(req.body.details);
     const createdMember = await MemberModel.insert(req.body);
-    const paymentData = {
-      memberId: createdMember._id,
-      dueFor: dueDate,
-      overdueFor: overDueArray,
-      lastPaidFor: [],
-      totalAmountDue: req.body.details.openingBalance,
-    };
-    await MemberPaymentModel.insert(paymentData);
+    if (req.body.details.monthlyMaintenance) {
+      const dueDate = new Date(req.body.details.subscriptionStartDate);
+      let overDueArray = helperUtils.generatePreviousOverDues(req.body.details);
+      const paymentData = {
+        memberId: createdMember._id,
+        dueFor: dueDate,
+        overdueFor: overDueArray,
+        lastPaidFor: [],
+        totalAmountDue: req.body.details.openingBalance,
+      };
+      await MemberPaymentModel.insert(paymentData);
+    }
     return res.status(201).send({ id: createdMember._id });
   } catch (err) {
     logger.error("Something went wrong while creating new member ", err);
@@ -80,21 +82,32 @@ exports.updateMember = async (req, res) => {
     }
   }
   let toUpdateMemberId = req.params.memberId;
-  MemberModel.update(toUpdateMemberId, req.body)
-    .then(() =>
-      res
-        .status(200)
-        .send({ msg: `User id: ${toUpdateMemberId} has been updated` })
-    )
-    .catch((err) => {
-      let errorMsg = err.message;
-      if (!errorMsg) {
-        errorMsg = "Something went wrong while updating member";
-      }
-      return res.status(500).send({
-        errors: [{ type: "Internal error", message: errorMsg }],
-      });
+  try {
+    const updatedMember = await MemberModel.update(toUpdateMemberId, req.body);
+    if (req.body.details.monthlyMaintenance) {
+      const dueDate = new Date(req.body.details.subscriptionStartDate);
+      let overDueArray = helperUtils.generatePreviousOverDues(req.body.details);
+      const paymentData = {
+        memberId: updatedMember._id,
+        dueFor: dueDate,
+        overdueFor: overDueArray,
+        lastPaidFor: [],
+        totalAmountDue: req.body.details.openingBalance,
+      };
+      await MemberPaymentModel.insert(paymentData);
+    }
+    return res
+      .status(200)
+      .send({ msg: `User id: ${toUpdateMemberId} has been updated` });
+  } catch (err) {
+    let errorMsg = err.message;
+    if (!errorMsg) {
+      errorMsg = "Something went wrong while updating member";
+    }
+    return res.status(500).send({
+      errors: [{ type: "Internal error", message: errorMsg }],
     });
+  }
 };
 
 //TODO: Delete admin member if any, when deleting this member

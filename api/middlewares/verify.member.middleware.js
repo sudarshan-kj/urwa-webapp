@@ -22,6 +22,7 @@ exports.hasValidAuthFields = (req, res, next) => {
 };
 
 exports.verifyUserAndPassword = (req, res, next) => {
+  //Note: this is to make sure that case insensitive email id is also considered
   req.body.userName = req.body.userName.toLowerCase();
   MemberModel.findByEmail(req.body.userName)
     .then((member) => {

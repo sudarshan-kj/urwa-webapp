@@ -16,8 +16,9 @@ import {
   Stack,
   Switch,
 } from "@chakra-ui/react";
-import { FormikContext, useFormik } from "formik";
+import { useFormik } from "formik";
 import { getMemberDetails } from "utils/Authz";
+import DatePicker from "components/commons/DatePicker";
 
 function isDisabled(array, field) {
   return array.some((ele) => ele === field);
@@ -239,20 +240,23 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
 
                 <FormControl id="details.dob">
                   <FormLabel>Birthday 🎉</FormLabel>
-                  <Input
+                  {/* <Input
                     focusBorderColor="teal.400"
+                    format="dd-mm"
                     bg="gray.100"
                     type="date"
                     value={formik.values.details.dob}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
-                  />
+                  /> */}
+                  <DatePicker />
                 </FormControl>
 
                 <FormControl id="details.anniversary">
-                  <FormLabel>Anniversary Date 🎎</FormLabel>
-                  <Input
+                  <FormLabel>Anniversary 🎎</FormLabel>
+                  <DatePicker />
+                  {/* <Input
                     focusBorderColor="teal.400"
                     bg="gray.100"
                     type="date"
@@ -260,7 +264,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
-                  />
+                  /> */}
                 </FormControl>
 
                 <FormControl
@@ -359,8 +363,10 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     placeholder="Select site dimensions 🚩"
                   >
                     <option value="30x40">30x40</option>
+                    <option value="30x50">30x50</option>
                     <option value="40x60">40x60</option>
                     <option value="50x80">50x80</option>
+                    <option value="Other">Other</option>
                   </StyledSelect>
                 </FormControl>
 
