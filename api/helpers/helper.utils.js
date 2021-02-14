@@ -19,16 +19,30 @@ exports.mergeArrays = (arr1, arr2, key1, key2) => {
 //symmetric difference
 exports.disjointArrays = (arr1, arr2, key1, key2) => {};
 
-exports.generatePreviousOverDues = (memberDetails) => {
+exports.computeDues = (memberDetails) => {
+  let openingBalanceAbs = Math.abs(memberDetails.openingBalance);
   let overDueArray = [];
-  if (memberDetails.monthlyMaintenance && memberDetails.openingBalance > 0) {
-    let prevBalanceCount =
-      memberDetails.openingBalance / memberDetails.maintenanceAmount;
-    for (let i = 0; i < prevBalanceCount; i++) {
-      let newDate = new Date(memberDetails.subscriptionStartDate);
-      newDate.setMonth(newDate.getMonth() - (i + 1));
+  let dueFor = "";
+  let advancePaidArray = [];
+
+  let now = new Date();
+  if (memberDetails.openingBalance < 0) {
+    let prevBalanceMonthCount =
+      openingBalanceAbs / memberDetails.maintenanceAmount;
+    for (let i = 0; i < prevBalanceMonthCount; i++) {
+      let newDate = new Date(now);
+      newDate.setMonth(newDate.getMonth() - (i + 1)); // we are pushing the date object, and mongo can converts this into toISOString() internally before persisiting into the DB ( as per my understanding )
       overDueArray.push(newDate);
     }
+    dueFor = overDueArray.splice(1);
+  } else if (memberDetails.openingBalance > 0) {
+    let advancePaidMonthCount =
+      openingBalanceAbs / memberDetails.maintenanceAmount;
+    for (let i = 0; i < advancePaidMonthCount; i++) {
+      let newDate = new Date(now);
+      newDate.setMonth(newDate.getMonth() + (i + 1));
+      advancePaidArray.push(newDate);
+    }
   }
-  return overDueArray;
+  return { advancePaidArray, overDueArray };
 };

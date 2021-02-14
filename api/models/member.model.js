@@ -97,9 +97,10 @@ exports.findById = (memberId) => {
 };
 
 exports.update = (memberId, newValues) => {
-  let details = newValues.details;
-  delete newValues.details;
-  return Member.findByIdAndUpdate({ _id: memberId }, newValues).then(
+  const memberValues = Object.create(newValues);
+  const details = memberValues.details;
+  delete memberValues.details;
+  return Member.findByIdAndUpdate({ _id: memberId }, memberValues).then(
     (updatedMember) => {
       if (!updatedMember) {
         throw new Error("User not found");

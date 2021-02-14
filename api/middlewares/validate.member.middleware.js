@@ -103,9 +103,8 @@ exports.isValidMemberId = async (req, res, next) => {
   }
 };
 
-async function allowSelfOrAdminUpdate(field, req) {
+async function allowSelfOrAdminUpdate(field, foundMember, req) {
   if (req.params.memberId) {
-    console.log("I am inside allowself or update");
     try {
       const requestedForMember = await MemberModel.findById(
         req.params.memberId
@@ -114,7 +113,8 @@ async function allowSelfOrAdminUpdate(field, req) {
       if (requestedForMember[field] === foundMember[field]) {
         return true;
       }
-    } catch {
+    } catch (e) {
+      console.error("Error was: ", e);
       throw new Error("Could not find requested for member");
     }
   }
@@ -127,7 +127,7 @@ exports.doesUserEmailAlreadyExist = async (req, res, next) => {
     const foundMember = await MemberModel.findByEmail(req.body.email);
     if (foundMember) {
       //Note: The following if condition exists only to check while updating, and not while creating
-      if (await allowSelfOrAdminUpdate("email", req)) {
+      if (await allowSelfOrAdminUpdate("email", foundMember, req)) {
         return next();
       }
       return res.status(409).send({
@@ -157,7 +157,7 @@ exports.doesSiteNumberAlreadyExist = async (req, res, next) => {
     const foundMember = await MemberModel.findBySiteNumber(req.body.siteNumber);
     if (foundMember) {
       //Note: The following if condition exists only to check while updating, and not while creating
-      if (await allowSelfOrAdminUpdate("siteNumber", req)) {
+      if (await allowSelfOrAdminUpdate("siteNumber", foundMember, req)) {
         return next();
       }
       return res.status(409).send({

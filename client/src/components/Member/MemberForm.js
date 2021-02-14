@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Heading, VStack } from "@chakra-ui/react";
 import {
   FormControl,
@@ -242,7 +242,6 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   <FormLabel>Birthday 🎉</FormLabel>
                   {/* <Input
                     focusBorderColor="teal.400"
-                    format="dd-mm"
                     bg="gray.100"
                     type="date"
                     value={formik.values.details.dob}
@@ -250,21 +249,25 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                       formik.handleChange(e);
                     }}
                   /> */}
-                  <DatePicker />
+
+                  <DatePicker
+                    id="details.dob"
+                    key={formik.values.details.dob}
+                    value={formik.values.details.dob}
+                    onChange={(e) => formik.setFieldValue("details.dob", e)}
+                  />
                 </FormControl>
 
                 <FormControl id="details.anniversary">
                   <FormLabel>Anniversary 🎎</FormLabel>
-                  <DatePicker />
-                  {/* <Input
-                    focusBorderColor="teal.400"
-                    bg="gray.100"
-                    type="date"
+                  <DatePicker
+                    id="details.anniversary"
+                    key={formik.values.details.dob}
                     value={formik.values.details.anniversary}
-                    onChange={(e) => {
-                      formik.handleChange(e);
-                    }}
-                  /> */}
+                    onChange={(e) =>
+                      formik.setFieldValue("details.anniversary", e)
+                    }
+                  />
                 </FormControl>
 
                 <FormControl
