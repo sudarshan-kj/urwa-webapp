@@ -58,7 +58,7 @@ const AdminHome = () => {
       textContent: "My Profile",
     },
     {
-      link: "#",
+      link: "/donations",
       icon: SunIcon,
       textContent: "Donations",
     },

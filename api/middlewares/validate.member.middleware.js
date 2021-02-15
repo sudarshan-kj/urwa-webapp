@@ -103,16 +103,20 @@ exports.isValidMemberId = async (req, res, next) => {
   }
 };
 
-async function allowSelfOrAdminUpdate(field, foundMember, req) {
+async function allowSelfOrAdminUpdate(fields, foundMember, req) {
   if (req.params.memberId) {
+    // the above check indiactes it is an update
     try {
       const requestedForMember = await MemberModel.findById(
         req.params.memberId
       );
       //Note: We make sure that while admin/self is updating a member, he is not entering a field that already exists.
-      if (requestedForMember[field] === foundMember[field]) {
-        return true;
+      for (let field of fields) {
+        if (requestedForMember[field] !== foundMember[field]) {
+          return false;
+        }
       }
+      return true;
     } catch (e) {
       console.error("Error was: ", e);
       throw new Error("Could not find requested for member");
@@ -127,7 +131,7 @@ exports.doesUserEmailAlreadyExist = async (req, res, next) => {
     const foundMember = await MemberModel.findByEmail(req.body.email);
     if (foundMember) {
       //Note: The following if condition exists only to check while updating, and not while creating
-      if (await allowSelfOrAdminUpdate("email", foundMember, req)) {
+      if (await allowSelfOrAdminUpdate(["email"], foundMember, req)) {
         return next();
       }
       return res.status(409).send({
@@ -152,18 +156,27 @@ exports.doesUserEmailAlreadyExist = async (req, res, next) => {
   }
 };
 
-exports.doesSiteNumberAlreadyExist = async (req, res, next) => {
+exports.doesSiteAndDoorNumberAlreadyExist = async (req, res, next) => {
   try {
-    const foundMember = await MemberModel.findBySiteNumber(req.body.siteNumber);
+    const foundMember = await MemberModel.findBySiteAndDoorNumber(
+      req.body.siteNumber,
+      req.body.doorNumber
+    );
     if (foundMember) {
       //Note: The following if condition exists only to check while updating, and not while creating
-      if (await allowSelfOrAdminUpdate("siteNumber", foundMember, req)) {
+      if (
+        await allowSelfOrAdminUpdate(
+          ["siteNumber", "doorNumber"],
+          foundMember,
+          req
+        )
+      ) {
         return next();
       }
       return res.status(409).send({
         error: [
           {
-            message: `User with site number: ${req.body.siteNumber} already exists`,
+            message: `User with site number-door number: ${req.body.siteNumber}-${req.body.doorNumber} already exists`,
           },
         ],
       });
@@ -171,11 +184,14 @@ exports.doesSiteNumberAlreadyExist = async (req, res, next) => {
       return next();
     }
   } catch (err) {
-    console.error("Error while checking if site number already exists", err);
+    console.error(
+      "Error while checking if site number-door number already exists",
+      err
+    );
     return res.status(500).send({
       error: [
         {
-          message: `Something went wrong while checking if site already exists`,
+          message: `Something went wrong while checking if site-door number already exists`,
         },
       ],
     });

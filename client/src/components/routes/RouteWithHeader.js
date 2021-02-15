@@ -16,7 +16,7 @@ const Header = ({ component: Component }) => {
         align="center"
         pos="sticky"
         w="100%"
-        bgColor="gray.800"
+        bgColor="gray.700"
         p={4}
         px={10}
         top={0}

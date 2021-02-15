@@ -44,15 +44,24 @@ exports.createMember = async (req, res) => {
       req.body.npuf = [];
     }
     const createdMember = await MemberModel.insert(req.body);
+    let openingBalance = req.body.details.openingBalance;
+    if (openingBalance > 0) {
+      openingBalance = 0;
+    } else {
+      openingBalance = Math.abs(openingBalance);
+    }
     if (req.body.details.monthlyMaintenance) {
-      const dueDate = new Date(req.body.details.subscriptionStartDate);
-      let overDueArray = helperUtils.generatePreviousOverDues(req.body.details);
+      let {
+        dueFor,
+        paidArray,
+        overDueArray,
+      } = helperUtils.computeDuesAndAdvances(req.body.details);
       const paymentData = {
         memberId: createdMember._id,
-        dueFor: dueDate,
+        dueFor: dueFor,
         overdueFor: overDueArray,
-        lastPaidFor: [],
-        totalAmountDue: req.body.details.openingBalance,
+        paidFor: paidArray,
+        totalAmountDue: openingBalance,
       };
       await MemberPaymentModel.insert(paymentData);
     }
@@ -83,19 +92,7 @@ exports.updateMember = async (req, res) => {
   }
   let toUpdateMemberId = req.params.memberId;
   try {
-    const updatedMember = await MemberModel.update(toUpdateMemberId, req.body);
-    // if (req.body.details.monthlyMaintenance) {
-    //   const dueDate = new Date(req.body.details.subscriptionStartDate);
-    //   let overDueArray = helperUtils.generatePreviousOverDues(req.body.details);
-    //   const paymentData = {
-    //     memberId: updatedMember._id,
-    //     dueFor: dueDate,
-    //     overdueFor: overDueArray,
-    //     lastPaidFor: [],
-    //     totalAmountDue: req.body.details.openingBalance,
-    //   };
-    //   await MemberPaymentModel.insert(paymentData);
-    // }
+    await MemberModel.update(toUpdateMemberId, req.body);
     return res
       .status(200)
       .send({ msg: `User id: ${toUpdateMemberId} has been updated` });

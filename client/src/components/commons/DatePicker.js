@@ -9,11 +9,12 @@ import {
 const monthDays = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 const DatePicker = ({ id, value, onChange }) => {
-  let initialDay = Number(value.split("-")[2]);
-  let initialMonth = Number(value.split("-")[1]);
-
-  // let initialDay = 2;
-  // let initialMonth = 2;
+  let initialDay;
+  let initialMonth;
+  if (value) {
+    initialDay = Number(value.split("-")[2]);
+    initialMonth = Number(value.split("-")[1]);
+  }
 
   const [day, setDay] = useState(initialDay);
   const [month, setMonth] = useState(initialMonth);

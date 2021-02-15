@@ -14,6 +14,7 @@ import UpdateMember from "components/Member/UpdateMember";
 import FeatureList from "components/FeatureList";
 import RouteWithHeader from "components/routes/RouteWithHeader";
 import ViewPayments from "components/Admin/ViewPayments";
+import DonationPage from "components/Member/DonationPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <LoginPage />
         </Route>
         <RouteWithHeader path="/featureList" component={FeatureList} />
+        <RouteWithHeader path="/donations" component={DonationPage} />
         <ProtectedRoute
           adminOnly={false}
           permission={permissions.READ}

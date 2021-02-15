@@ -31,7 +31,7 @@ const MemberHome = () => {
       metaData: `Monthly Maintenance: ₹ ${metaData.maintenanceAmount}`,
     },
     {
-      link: "#",
+      link: "/donations",
       icon: SunIcon,
       textContent: "Donations",
     },

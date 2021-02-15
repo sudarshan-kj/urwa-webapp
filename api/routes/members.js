@@ -36,7 +36,7 @@ membersRouter.post("/add", [
     permission: permission.CREATE,
   }),
   ValidateMiddleware.doesUserEmailAlreadyExist,
-  ValidateMiddleware.doesSiteNumberAlreadyExist,
+  ValidateMiddleware.doesSiteAndDoorNumberAlreadyExist,
   MembersController.createMember,
 ]);
 membersRouter.delete("/:memberId", [
@@ -65,7 +65,7 @@ membersRouter.patch("/:memberId", [
   }),
   ValidateMiddleware.checkFieldPermissionToUpdate,
   ValidateMiddleware.doesUserEmailAlreadyExist,
-  ValidateMiddleware.doesSiteNumberAlreadyExist,
+  ValidateMiddleware.doesSiteAndDoorNumberAlreadyExist,
   MembersController.updateMember,
 ]);
 

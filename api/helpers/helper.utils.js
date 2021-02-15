@@ -19,11 +19,11 @@ exports.mergeArrays = (arr1, arr2, key1, key2) => {
 //symmetric difference
 exports.disjointArrays = (arr1, arr2, key1, key2) => {};
 
-exports.computeDues = (memberDetails) => {
+exports.computeDuesAndAdvances = (memberDetails) => {
   let openingBalanceAbs = Math.abs(memberDetails.openingBalance);
   let overDueArray = [];
+  let paidArray = [];
   let dueFor = "";
-  let advancePaidArray = [];
 
   let now = new Date();
   if (memberDetails.openingBalance < 0) {
@@ -34,15 +34,15 @@ exports.computeDues = (memberDetails) => {
       newDate.setMonth(newDate.getMonth() - (i + 1)); // we are pushing the date object, and mongo can converts this into toISOString() internally before persisiting into the DB ( as per my understanding )
       overDueArray.push(newDate);
     }
-    dueFor = overDueArray.splice(1);
+    [dueFor] = overDueArray.splice(0, 1);
   } else if (memberDetails.openingBalance > 0) {
     let advancePaidMonthCount =
       openingBalanceAbs / memberDetails.maintenanceAmount;
     for (let i = 0; i < advancePaidMonthCount; i++) {
       let newDate = new Date(now);
       newDate.setMonth(newDate.getMonth() + (i + 1));
-      advancePaidArray.push(newDate);
+      paidArray.push(newDate);
     }
   }
-  return { advancePaidArray, overDueArray };
+  return { dueFor, paidArray, overDueArray };
 };

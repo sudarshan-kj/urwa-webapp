@@ -20,15 +20,16 @@ let memberPaymentSchema = new Schema(
     memberId: { type: Schema.Types.ObjectId, ref: "Member" },
     dueFor: Date,
     overdueFor: [{ type: Schema.Types.Date }],
-    lastPaidFor: [
-      {
-        date: Date,
-        transactionDetails: {
-          type: Schema.Types.ObjectId,
-          ref: "PaymentTransaction",
-        },
-      },
-    ],
+    paidFor: [{ type: Schema.Types.Date }],
+    // lastPaidFor: [
+    //   {
+    //     date: Date,
+    //     transactionDetails: {
+    //       type: Schema.Types.ObjectId,
+    //       ref: "PaymentTransaction",
+    //     },
+    //   },
+    // ],
     totalAmountDue: Number,
   },
   opts

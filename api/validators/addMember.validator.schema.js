@@ -59,11 +59,7 @@ const schema = Joi.object({
       otherwise: Joi.string().equal(""),
     }),
     membershipStartDate: Joi.date().required(),
-    subscriptionStartDate: Joi.date().when("monthlyMaintenance", {
-      is: true,
-      then: Joi.date().required(),
-      otherwise: Joi.date().allow(null, ""),
-    }),
+    subscriptionStartDate: Joi.date().required(),
   }),
 });
 

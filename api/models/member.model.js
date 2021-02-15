@@ -92,6 +92,13 @@ exports.findBySiteNumber = (value) => {
   return Member.findOne({ siteNumber: value });
 };
 
+exports.findBySiteAndDoorNumber = (siteNumber, doorNumber) => {
+  return Member.findOne().and([
+    { siteNumber: siteNumber },
+    { doorNumber: doorNumber },
+  ]);
+};
+
 exports.findById = (memberId) => {
   return Member.findById({ _id: memberId });
 };

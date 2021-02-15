@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Heading, VStack } from "@chakra-ui/react";
 import {
   FormControl,
@@ -9,16 +9,20 @@ import {
   Radio,
   HStack,
   NumberInput,
-  FormHelperText,
   NumberInputField,
   Select,
   Button,
   Stack,
   Switch,
+  FormHelperText,
+  List,
+  ListItem,
+  ListIcon,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { getMemberDetails } from "utils/Authz";
 import DatePicker from "components/commons/DatePicker";
+import { WarningIcon } from "@chakra-ui/icons";
 
 function isDisabled(array, field) {
   return array.some((ele) => ele === field);
@@ -252,7 +256,9 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
 
                   <DatePicker
                     id="details.dob"
-                    key={formik.values.details.dob}
+                    key={formik.values.details.siteAddress}
+                    // we are making siteAddress as the key since only when the siteAddress  ( we could have chosen any other value below this date too) is changed,
+                    //this component is remounted. If the key is same as value, then after every key stroke value is remounted
                     value={formik.values.details.dob}
                     onChange={(e) => formik.setFieldValue("details.dob", e)}
                   />
@@ -262,7 +268,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   <FormLabel>Anniversary 🎎</FormLabel>
                   <DatePicker
                     id="details.anniversary"
-                    key={formik.values.details.dob}
+                    key={formik.values.details.siteAddress}
                     value={formik.values.details.anniversary}
                     onChange={(e) =>
                       formik.setFieldValue("details.anniversary", e)
@@ -281,6 +287,23 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     bg="gray.100"
                     type="date"
                     value={formik.values.details.membershipStartDate}
+                    onChange={(e) => {
+                      formik.handleChange(e);
+                    }}
+                  />
+                </FormControl>
+
+                <FormControl
+                  id="details.subscriptionStartDate"
+                  isDisabled={isDisabled(npuf, "subscriptionStartDate")}
+                  isRequired
+                >
+                  <FormLabel>Subscription Start Date 🏳️‍🌈</FormLabel>
+                  <Input
+                    focusBorderColor="teal.400"
+                    bg="gray.100"
+                    type="date"
+                    value={formik.values.details.subscriptionStartDate}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
@@ -508,26 +531,6 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   </StyledSelect>
                 </FormControl>
 
-                <FormControl
-                  id="details.subscriptionStartDate"
-                  isDisabled={
-                    formik.values.details.monthlyMaintenance === "false" ||
-                    isDisabled(npuf, "subscriptionStartDate")
-                  }
-                  isRequired
-                >
-                  <FormLabel>Subscription Start Date 🏳️‍🌈</FormLabel>
-                  <Input
-                    focusBorderColor="teal.400"
-                    bg="gray.100"
-                    type="date"
-                    value={formik.values.details.subscriptionStartDate}
-                    onChange={(e) => {
-                      formik.handleChange(e);
-                    }}
-                  />
-                </FormControl>
-
                 {buttonName === "Submit" && (
                   <FormControl isRequired>
                     <FormLabel>Opening Balance</FormLabel>
@@ -543,8 +546,18 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                         }}
                       />
                     </NumberInput>
-                    <FormHelperText>
-                      Note: This field cannot be updated later
+                    <FormHelperText color="red.600">
+                      <List spacing={2}>
+                        <ListItem>
+                          <ListIcon as={WarningIcon} color="red.500" />A
+                          negative value indicates a pending due. A positive
+                          value indicates an already paid advance.
+                        </ListItem>
+                        <ListItem>
+                          <ListIcon as={WarningIcon} color="red.500" />
+                          Opening balance cannot be updated later
+                        </ListItem>
+                      </List>
                     </FormHelperText>
                   </FormControl>
                 )}

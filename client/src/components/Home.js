@@ -1,5 +1,5 @@
 import React from "react";
-import { Center, Box, SimpleGrid } from "@chakra-ui/react";
+import { Center, SimpleGrid } from "@chakra-ui/react";
 import SimpleHomeCard from "components/commons/SimpleHomeCard";
 
 const Home = ({ data }) => {

@@ -12,7 +12,6 @@ import {
   Text,
   Skeleton,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
 import ReactDependentScript from "react-dependent-script";
 import { useHistory, useLocation } from "react-router-dom";
 import { authAxios } from "utils/Auth";
@@ -35,7 +34,7 @@ const MemberPayment = () => {
   const [paymentDataArrayState, setPaymentDataArrayState] = useState({
     overdueFor: [],
     dueFor: "",
-    lastPaidFor: [],
+    paidFor: [],
     memberId: "",
     totalAmountDue: 0,
   });
@@ -154,33 +153,6 @@ const MemberPayment = () => {
     });
   }
 
-  const paymentDataArray = [
-    {
-      index: 1,
-      textContent: "January 2021",
-      paidStatus: "PAID",
-      colorScheme: "green",
-    },
-    {
-      index: 2,
-      textContent: "February 2021",
-      paidStatus: "PAID",
-      colorScheme: "green",
-    },
-    {
-      index: 3,
-      textContent: "March 2021",
-      paidStatus: "PAID",
-      colorScheme: "green",
-    },
-    {
-      index: 4,
-      textContent: "April 2021",
-      paidStatus: "PAID",
-      colorScheme: "green",
-    },
-  ];
-
   if (shouldMemberPay === "NA")
     return (
       <Center w="100%">
@@ -240,109 +212,172 @@ const MemberPayment = () => {
       >
         <Box h="100%" minH={{ md: "80vh" }} m={8}>
           <Stack w={{ base: "90%", md: "70%" }} m="auto" spacing={8}>
-            <Text>
+            <Text textAlign={{ base: "center", md: "left" }} fontSize="xl">
               Monthly Payment Amount:{" "}
-              <Badge colorScheme="teal">₹{monthlyAmount}</Badge>
+              <Badge fontSize="xl" colorScheme="teal">
+                ₹{monthlyAmount}
+              </Badge>
             </Text>
-            <Center>
-              <Badge borderRadius={10} colorScheme="orange" p={2}>
-                Due for
-              </Badge>
-            </Center>
-            <SimpleGrid minChildWidth="260px" spacing="40px">
-              <SimpleCard
-                textContent={date.format(
-                  new Date(paymentDataArrayState.dueFor),
-                  datePattern
-                )}
-                paidStatus="DUE"
-                colorScheme="orange"
-                isLoading={isCardLoading}
-              />
-            </SimpleGrid>
-            <Center>
-              <Badge borderRadius={10} colorScheme="red" p={2}>
-                Overdue for ({paymentDataArrayState.overdueFor.length} months)
-              </Badge>
-            </Center>
-            <SimpleGrid minChildWidth="260px" spacing="40px">
-              {paymentDataArrayState.overdueFor.map((item) => (
-                <SimpleCard
-                  onlyText={!paymentDataArrayState.overdueFor.length}
-                  textContent={
-                    paymentDataArrayState.overdueFor.length
-                      ? date.format(new Date(item), datePattern)
-                      : "No payments are overdue"
-                  }
-                  paidStatus="OVERDUE"
-                  colorScheme="red"
-                  isLoading={isCardLoading}
-                />
-              ))}
-            </SimpleGrid>
-            <Accordion allowMultiple>
-              <AccordionItem p={0} m={0}>
+            {paymentDataArrayState.dueFor ? (
+              <>
                 <Center>
-                  <AccordionButton
-                    _focus="none"
-                    w="210px"
-                    borderRadius="20px"
-                    _hover={{
-                      bg: "none",
-                    }}
-                  >
-                    <Box flex="1" textAlign="left">
-                      <Badge borderRadius={10} colorScheme="green" p={2}>
-                        previous transactions
-                      </Badge>
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
+                  <Badge borderRadius={10} colorScheme="orange" p={2}>
+                    Due for
+                  </Badge>
                 </Center>
-                <AccordionPanel px={0} pt={4}>
-                  <SimpleGrid column={2} minChildWidth="260px" spacing="40px">
-                    {paymentDataArray.map((card) => (
-                      <SimpleCard
-                        key={card.index}
-                        isLoading={isCardLoading}
-                        textContent={card.textContent}
-                        paidStatus={card.paidStatus}
-                        colorScheme={card.colorScheme}
-                      />
-                    ))}
-                  </SimpleGrid>
-                </AccordionPanel>
-              </AccordionItem>
-            </Accordion>
+                <SimpleGrid minChildWidth="260px" spacing="40px">
+                  <SimpleCard
+                    mainContent={date.format(
+                      new Date(paymentDataArrayState.dueFor),
+                      datePattern
+                    )}
+                    paidStatus="DUE"
+                    colorScheme="orange"
+                    isLoading={isCardLoading}
+                  />
+                </SimpleGrid>
+                <Center>
+                  <Badge borderRadius={10} colorScheme="red" p={2}>
+                    Overdue for ({paymentDataArrayState.overdueFor.length}{" "}
+                    months)
+                  </Badge>
+                </Center>
+                <SimpleGrid minChildWidth="260px" spacing="40px">
+                  {paymentDataArrayState.overdueFor.map((item) => (
+                    <SimpleCard
+                      onlyText={!paymentDataArrayState.overdueFor.length}
+                      mainContent={
+                        paymentDataArrayState.overdueFor.length
+                          ? date.format(new Date(item), datePattern)
+                          : "No payments are overdue"
+                      }
+                      paidStatus="OVERDUE"
+                      colorScheme="red"
+                      isLoading={isCardLoading}
+                    />
+                  ))}
+                </SimpleGrid>
+                <Accordion allowMultiple>
+                  <AccordionItem p={0} m={0}>
+                    <Center>
+                      <AccordionButton
+                        _focus="none"
+                        w="210px"
+                        borderRadius="20px"
+                        _hover={{
+                          bg: "none",
+                        }}
+                      >
+                        <Box flex="1" textAlign="left">
+                          <Badge borderRadius={10} colorScheme="green" p={2}>
+                            previous transactions
+                          </Badge>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </Center>
+                    <AccordionPanel px={0} pt={4}>
+                      <SimpleGrid
+                        column={2}
+                        minChildWidth="260px"
+                        spacing="40px"
+                      >
+                        {/* {paymentDataArray.map((card) => (
+                          <SimpleCard
+                            key={card.index}
+                            isLoading={isCardLoading}
+                            mainContent={card.mainContent}
+                            paidStatus={card.paidStatus}
+                            colorScheme={card.colorScheme}
+                          />
+                        ))} */}
+                      </SimpleGrid>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              </>
+            ) : (
+              <>
+                <InfoCard
+                  mainContent="Good to go 👍"
+                  infoText1=" You have no pending dues!"
+                  colorScheme="green"
+                  infoText2={
+                    paymentDataArrayState.paidFor && (
+                      <p>
+                        Your next due is on{" "}
+                        {date.format(
+                          new Date(paymentDataArrayState.paidFor.slice(-1)),
+                          datePattern
+                        )}
+                      </p>
+                    )
+                  }
+                />
+              </>
+            )}
           </Stack>
         </Box>
       </ReactDependentScript>
-      <Center pos="fixed" bottom="0" left="0" right="0">
-        <Skeleton
-          w="100%"
-          startColor="gray.200"
-          endColor="orange.400"
-          isLoaded={!isCardLoading}
-        >
-          <Button
+      {paymentDataArrayState.totalAmountDue > 0 && (
+        <Center pos="fixed" bottom="0" left="0" right="0">
+          <Skeleton
             w="100%"
-            p={10}
-            fontSize="xl"
-            onClick={() => launchBolt()}
-            borderRadius="0"
-            colorScheme="teal"
-            disabled={!isPayButtonActive}
+            startColor="gray.200"
+            endColor="orange.400"
+            isLoaded={!isCardLoading}
           >
-            Pay Total Due Amount: ₹ {paymentDataArrayState.totalAmountDue}
-          </Button>
-        </Skeleton>
-      </Center>
+            <Button
+              w="100%"
+              p={10}
+              fontSize="xl"
+              onClick={() => launchBolt()}
+              borderRadius="0"
+              colorScheme="teal"
+              disabled={!isPayButtonActive}
+            >
+              Pay Total Due Amount: ₹ {paymentDataArrayState.totalAmountDue}
+            </Button>
+          </Skeleton>
+        </Center>
+      )}
     </>
   );
 };
 
+const InfoCard = ({ mainContent, infoText1, infoText2, colorScheme }) => (
+  <Center
+    boxShadow="lg"
+    borderRadius="20px"
+    h={{ base: "60vh", md: "70vh" }}
+    p={8}
+    bg="gray.100"
+    color={`${colorScheme}.800`}
+    border="1px solid"
+    borderColor={`${colorScheme}.300`}
+  >
+    <Stack
+      direction={{ base: "column", md: "column" }}
+      justify="center"
+      align="center"
+      spacing={4}
+    >
+      <Text align="center" fontSize={{ base: "3xl", md: "5xl" }}>
+        {mainContent}
+      </Text>
+      <Text align="center" fontSize={{ base: "2xl", md: "4xl" }}>
+        {infoText1}
+      </Text>
+      <Badge p={4} colorScheme="green" fontSize={{ base: "sm", md: "2xl" }}>
+        {infoText2}
+      </Badge>
+    </Stack>
+  </Center>
+);
+
 const SimpleCard = ({
-  textContent,
+  mainContent,
+  height,
   onlyText,
   paidStatus,
   colorScheme,
@@ -352,7 +387,7 @@ const SimpleCard = ({
     <Center
       boxShadow="lg"
       borderRadius="20px"
-      h="200px"
+      h={height || "200px"}
       p={8}
       bg="gray.100"
       color={`${colorScheme}.800`}
@@ -366,7 +401,7 @@ const SimpleCard = ({
         spacing={4}
       >
         <Text align="center" fontSize={{ base: "xl", md: "2xl" }}>
-          {textContent}
+          {mainContent}
         </Text>
         {!onlyText && (
           <>
