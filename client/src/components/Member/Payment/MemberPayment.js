@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   Button,
   Center,
@@ -27,7 +27,21 @@ import date from "date-and-time";
 
 const datePattern = date.compile("MMM DD, YYYY");
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "INIT_FETCH":
+      return { ...state, isLoading: true, isError: false };
+    case "FETCH_SUCCESS":
+      return { ...state, isLoading: false, isError: false };
+    case "FETCH_ERROR":
+      return { ...state, isLoading: false, isError: true };
+    default:
+      throw new Error("Invalid action type entered:", action.type);
+  }
+};
+
 const MemberPayment = () => {
+  const [paymentData, dispatchPaymentData] = useReducer();
   const [reqBodyBolt, setReqBodyBolt] = useState({});
   const [isPayButtonActive, setPayButtonActive] = useState(false);
   const [isValidMember, setValidMember] = useState("NA");
@@ -297,24 +311,26 @@ const MemberPayment = () => {
                 </Accordion>
               </>
             ) : (
-              <>
-                <InfoCard
-                  mainContent="Good to go 👍"
-                  infoText1=" You have no pending dues!"
-                  colorScheme="green"
-                  infoText2={
-                    paymentDataArrayState.paidFor && (
-                      <p>
-                        Your next due is on{" "}
-                        {date.format(
-                          new Date(paymentDataArrayState.paidFor.slice(-1)),
-                          datePattern
-                        )}
-                      </p>
-                    )
-                  }
-                />
-              </>
+              !isCardLoading && (
+                <>
+                  <InfoCard
+                    mainContent="Good to go 👍"
+                    infoText1=" You have no pending dues!"
+                    colorScheme="green"
+                    infoText2={
+                      paymentDataArrayState.paidFor && (
+                        <p>
+                          Your next due is on{" "}
+                          {date.format(
+                            new Date(paymentDataArrayState.paidFor.slice(-1)),
+                            datePattern
+                          )}
+                        </p>
+                      )
+                    }
+                  />
+                </>
+              )
             )}
           </Stack>
         </Box>
