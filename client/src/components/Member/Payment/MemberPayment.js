@@ -6,6 +6,7 @@ import {
   Spinner,
   VStack,
   Box,
+  Icon,
   SimpleGrid,
   Stack,
   Badge,
@@ -24,6 +25,7 @@ import {
   AccordionIcon,
 } from "@chakra-ui/react";
 import date from "date-and-time";
+import { ReactComponent as RightIcon } from "assets/icons/right.svg";
 
 const datePattern = date.compile("MMM DD, YYYY");
 
@@ -41,7 +43,7 @@ const reducer = (state, action) => {
 };
 
 const MemberPayment = () => {
-  const [paymentData, dispatchPaymentData] = useReducer();
+  const [paymentData, dispatchPaymentData] = useReducer(reducer, {});
   const [reqBodyBolt, setReqBodyBolt] = useState({});
   const [isPayButtonActive, setPayButtonActive] = useState(false);
   const [isValidMember, setValidMember] = useState("NA");
@@ -256,20 +258,44 @@ const MemberPayment = () => {
                     months)
                   </Badge>
                 </Center>
-                <SimpleGrid minChildWidth="260px" spacing="40px">
-                  {paymentDataArrayState.overdueFor.map((item) => (
-                    <SimpleCard
-                      onlyText={!paymentDataArrayState.overdueFor.length}
-                      mainContent={
-                        paymentDataArrayState.overdueFor.length
-                          ? date.format(new Date(item), datePattern)
-                          : "No payments are overdue"
-                      }
-                      paidStatus="OVERDUE"
-                      colorScheme="red"
-                      isLoading={isCardLoading}
-                    />
-                  ))}
+                <SimpleGrid minChildWidth="260px" spacing="40px" display="flex">
+                  <SimpleCard
+                    onlyText={!paymentDataArrayState.overdueFor.length}
+                    mainContent={
+                      paymentDataArrayState.overdueFor.length
+                        ? date.format(
+                            new Date(
+                              paymentDataArrayState.overdueFor.slice(-1)
+                            ),
+                            datePattern
+                          )
+                        : "No payments are overdue"
+                    }
+                    paidStatus="OVERDUE"
+                    colorScheme="red"
+                    isLoading={isCardLoading}
+                  />
+                  {paymentDataArrayState.overdueFor.length > 1 && (
+                    <>
+                      <Box display="flex" alignItems="center">
+                        <Icon as={RightIcon} />
+                      </Box>
+                      <SimpleCard
+                        onlyText={!paymentDataArrayState.overdueFor.length}
+                        mainContent={
+                          paymentDataArrayState.overdueFor.length
+                            ? date.format(
+                                new Date(paymentDataArrayState.overdueFor[0]),
+                                datePattern
+                              )
+                            : "No payments are overdue"
+                        }
+                        paidStatus="OVERDUE"
+                        colorScheme="red"
+                        isLoading={isCardLoading}
+                      />
+                    </>
+                  )}
                 </SimpleGrid>
                 <Accordion allowMultiple>
                   <AccordionItem p={0} m={0}>
