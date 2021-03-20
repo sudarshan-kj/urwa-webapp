@@ -151,7 +151,6 @@ exports.listAllMembers = async (req, res) => {
       perPageLimit = perPageLimit <= 25 ? perPageLimit : 25;
       let admins;
       if (req.query.showAdminsAlso === "1") {
-        console.log("Inside");
         admins = await AdminMemberModel.list(perPageLimit, page);
         admins = JSON.parse(JSON.stringify(admins));
         MemberModel.list(perPageLimit, page)
@@ -298,7 +297,7 @@ exports.getAllMembersPaymentInfo = async (req, res) => {
     try {
       let page = helperUtils.validateNumber(req.query.page);
       let perPageLimit = helperUtils.validateNumber(req.query.limit);
-      perPageLimit = perPageLimit <= 25 ? perPageLimit : 25;
+      perPageLimit = perPageLimit <= 50 ? perPageLimit : 50;
       let members = await MemberModel.list(perPageLimit, page);
       let membersPayments = await MemberPaymentModel.list(perPageLimit, page);
       members = JSON.parse(JSON.stringify(members));
