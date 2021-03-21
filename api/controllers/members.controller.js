@@ -148,7 +148,7 @@ exports.listAllMembers = async (req, res) => {
     try {
       let page = helperUtils.validateNumber(req.query.page);
       let perPageLimit = helperUtils.validateNumber(req.query.limit);
-      perPageLimit = perPageLimit <= 25 ? perPageLimit : 25;
+      perPageLimit = perPageLimit <= 50 ? perPageLimit : 50;
       let admins;
       if (req.query.showAdminsAlso === "1") {
         admins = await AdminMemberModel.list(perPageLimit, page);
