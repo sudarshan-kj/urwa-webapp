@@ -10,27 +10,27 @@ logger.level = "debug";
 exports.payAmount = async (req, res) => {
   try {
     const member = await MemberModel.findById(req.params.memberId);
-    const memberDetails = await MemberDetailsModel.findByMemberId(memberId);
     const currentPaymentStatus = await MemberPaymentModel.findByMemberId(
       req.params.memberId
     );
-    req.body.name = member.firstName + " " + member.lastName;
+    req.body.name = member.firstName + " / " + member.lastName;
     req.body.email = member.email;
-    let maintenanceAmount = memberDetails.maintenanceAmount;
+    req.body.paidOn = new Date().toISOString().split("T")[0];
 
-    let overDueAmount =
-      currentPaymentStatus.overdueFor.length * maintenanceAmount;
-    let payingForMonths = req.body.amount / maintenanceAmount;
-    currentPaymentStatus.overdueFor.splice(0, payingForMonths); // this ensures that the residual array contains whatever is not spliced
-    let updatedTotalAmountDue =
-      currentPaymentStatus.totalAmountDue - req.body.amount;
+    let totalDueAmount = currentPaymentStatus.totalAmountDue;
+    let payingAmount = Number(req.body.amount);
+    let dueAmountPostPayment = totalDueAmount - payingAmount;
 
     const paid = await PaymentTransactionModel.insert(req.body);
     const updatedMemberData = {
-      dueFor: "2021-03-22",
-      overdueFor: currentPaymentStatus.overdueFor,
-      lastPaidFor: [paid._id, ...currentPaymentStatus.lastPaidFor],
-      totalAmountDue: updatedTotalAmountDue,
+      dueFor: "",
+      overdueFor: "",
+      paidFor: [
+        currentPaymentStatus.dueFor,
+        ...currentPaymentStatus.overdueFor,
+        ...currentPaymentStatus.paidFor,
+      ],
+      totalAmountDue: dueAmountPostPayment,
     };
     await MemberPaymentModel.update(req.params.memberId, updatedMemberData);
 
@@ -42,7 +42,8 @@ exports.payAmount = async (req, res) => {
     } else {
       return res.status(400).send({ error: "Could not capture payment data" });
     }
-  } catch {
+  } catch (e) {
+    console.log("Error is", e);
     return res
       .status(500)
       .send({ error: "Something went wrong while paying amount" });
@@ -67,8 +68,8 @@ exports.generateHash = async (req, res) => {
 
   const productinfo = "URWA_SUBSCRIPTION";
   const udf5 = "URWA_PAYMENT_UDF5";
-  const surl = "https://google.com";
-  const furl = "https://google.com";
+  const surl = "https://urwa.in";
+  const furl = "https://urwa.in";
   let cryp = crypto.createHash("sha512");
   let text =
     key +
@@ -110,15 +111,17 @@ exports.verifyHash = (req, res) => {
   const payu_salt = process.env.PAYU_SALT;
   const udf5 = "URWA_PAYMENT_UDF5";
 
-  const txnid = req.body.txnid;
-  const amount = req.body.amount;
-  const productinfo = req.body.productinfo;
-  const firstname = req.body.firstname;
-  const email = req.body.email;
-  const status = req.body.status;
-  const resphash = req.body.hash;
+  const {
+    txnid,
+    amount,
+    productinfo,
+    firstname,
+    email,
+    status,
+    hash,
+  } = req.body;
 
-  var keyString =
+  let keyString =
     payu_key +
     "|" +
     txnid +
@@ -133,6 +136,7 @@ exports.verifyHash = (req, res) => {
     "|||||" +
     udf5 +
     "|||||";
+
   let keyArray = keyString.split("|");
   let reverseKeyArray = keyArray.reverse();
   let reverseKeyString =
@@ -141,8 +145,7 @@ exports.verifyHash = (req, res) => {
   let cryp = crypto.createHash("sha512");
   cryp.update(reverseKeyString);
   let calchash = cryp.digest("hex");
-
-  if (calchash == resphash) {
+  if (calchash == hash) {
     return res.status(200).send({ message: "Transaction successful" });
   }
   return res

@@ -52,6 +52,7 @@ const MemberPayment = () => {
     dueFor: "",
     paidFor: [],
     memberId: "",
+    paidTill: "2021-08-09",
     totalAmountDue: 0,
   });
   const [isCardLoading, setCardLoading] = useState(true);
@@ -118,9 +119,25 @@ const MemberPayment = () => {
     }
   };
 
-  const contactServer = () => {
+  const contactServer = ({
+    hash,
+    status,
+    amount,
+    txnid,
+    productinfo,
+    firstname,
+    email,
+  }) => {
+    let reqBody = {};
+    reqBody.hash = hash;
+    reqBody.status = status;
+    reqBody.amount = amount;
+    reqBody.txnid = txnid;
+    reqBody.productinfo = productinfo;
+    reqBody.firstname = firstname;
+    reqBody.email = email;
     authAxios()
-      .post("/api/payments/hash/verify", reqBodyBolt)
+      .post("/api/payments/hash/verify", reqBody)
       .then((result) => {
         if (result.status === 200) {
           history.push("/member/status/success?status=success");
@@ -144,7 +161,7 @@ const MemberPayment = () => {
     window.bolt.launch(reqBodyBolt, {
       responseHandler: function (BOLT) {
         if (BOLT.response.txnStatus === "SUCCESS") {
-          contactServer();
+          contactServer(BOLT.response);
         } else if (BOLT.response.txnStatus === "CANCEL") {
           toast({
             title: "User cancelled transaction",
@@ -297,7 +314,7 @@ const MemberPayment = () => {
                     </>
                   )}
                 </SimpleGrid>
-                <Accordion allowMultiple>
+                {/* <Accordion allowMultiple>
                   <AccordionItem p={0} m={0}>
                     <Center>
                       <AccordionButton
@@ -322,7 +339,7 @@ const MemberPayment = () => {
                         minChildWidth="260px"
                         spacing="40px"
                       >
-                        {/* {paymentDataArray.map((card) => (
+                        {paymentDataArray.map((card) => (
                           <SimpleCard
                             key={card.index}
                             isLoading={isCardLoading}
@@ -330,11 +347,11 @@ const MemberPayment = () => {
                             paidStatus={card.paidStatus}
                             colorScheme={card.colorScheme}
                           />
-                        ))} */}
+                        ))}
                       </SimpleGrid>
                     </AccordionPanel>
                   </AccordionItem>
-                </Accordion>
+                </Accordion> */}
               </>
             ) : (
               !isCardLoading && (
@@ -348,7 +365,7 @@ const MemberPayment = () => {
                         <p>
                           Your next due is on{" "}
                           {date.format(
-                            new Date(paymentDataArrayState.paidFor.slice(-1)),
+                            new Date(paymentDataArrayState.paidTill),
                             datePattern
                           )}
                         </p>
