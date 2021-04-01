@@ -2,12 +2,12 @@ const mongoose = require("../services/mongoose.service").mongoose;
 
 let { Schema } = mongoose;
 const opts = {
+  autoIndex: true,
   toJSON: {
     virtuals: false, //this adds the "id" field
     versionKey: false,
     transform: function (doc, ret) {
       delete ret._id; //since id is added, this _id is not required
-
       delete ret.createdAt;
       delete ret.updatedAt;
     },
@@ -17,7 +17,7 @@ const opts = {
 
 let memberPaymentSchema = new Schema(
   {
-    memberId: { type: Schema.Types.ObjectId, ref: "Member" },
+    memberId: { type: Schema.Types.ObjectId, unique: true, ref: "Member" },
     dueFor: Date,
     overdueFor: [{ type: Schema.Types.Date }],
     paidFor: [{ type: Schema.Types.Date }],

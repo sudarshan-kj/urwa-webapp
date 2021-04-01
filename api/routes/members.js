@@ -69,7 +69,7 @@ membersRouter.patch("/:memberId", [
   MembersController.updateMember,
 ]);
 
-membersRouter.post("/payment/:memberId", [
+membersRouter.patch("/payment/:memberId", [
   ValidateMiddleware.isValidMemberId,
   MembersController.updatePaymentInfo,
 ]);

@@ -4,6 +4,7 @@ const MemberPaymentModel = require("./memberPayment.model");
 
 let { Schema } = mongoose;
 const opts = {
+  autoIndex: true,
   toJSON: {
     virtuals: true, //this adds the "id" field
     versionKey: false,
@@ -21,7 +22,7 @@ let memberSchema = new Schema(
   {
     firstName: { type: String, unique: false, required: true },
     lastName: { type: String, unique: false, required: true },
-    email: { type: String, index: { unique: true }, required: true },
+    email: { type: String, unique: true, required: true },
     password: { type: String, unique: false, required: true },
     siteNumber: { type: Number, unique: false, required: true },
     doorNumber: { type: String, unique: false, required: false },

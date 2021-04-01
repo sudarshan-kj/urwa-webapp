@@ -255,12 +255,13 @@ exports.memberMetaData = async (req, res) => {
 
 exports.updatePaymentInfo = async (req, res) => {
   try {
-    req.body.memberId = req.params.memberId;
-    await MemberPaymentModel.insert(req.body);
+    let memberId = req.params.memberId;
+    await MemberPaymentModel.update(memberId, req.body);
     return res
       .status(200)
       .send({ message: "Payment info updated successfully" });
-  } catch {
+  } catch (error) {
+    console.log("Error occurred while updating member payment info", error);
     return res.status(500).send({
       error: [
         { message: "Something went wrong while updating member payment info" },

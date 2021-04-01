@@ -2,6 +2,7 @@ const mongoose = require("../services/mongoose.service").mongoose;
 
 let { Schema } = mongoose;
 const opts = {
+  autoIndex: true,
   toJSON: {
     virtuals: true, //this adds the "id" field
     versionKey: false,
@@ -21,6 +22,11 @@ let paymentTransactionSchema = new Schema(
     email: String,
     payUTransactionId: String,
     status: String,
+    type: {
+      type: String,
+      enum: ["donation", "monthly", "advance", "water", "others"],
+      required: true,
+    },
     paidOn: Date,
   },
   opts

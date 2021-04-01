@@ -15,7 +15,7 @@ exports.payAmount = async (req, res) => {
     );
     req.body.name = member.firstName + " / " + member.lastName;
     req.body.email = member.email;
-    req.body.paidOn = new Date().toISOString().split("T")[0];
+    req.body.paidOn = new Date().toISOString();
 
     let totalDueAmount = currentPaymentStatus.totalAmountDue;
     let payingAmount = Number(req.body.amount);
