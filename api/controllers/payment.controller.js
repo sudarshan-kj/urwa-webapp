@@ -58,7 +58,7 @@ exports.generateHash = async (req, res) => {
 
   try {
     const member = await MemberModel.findById(memberId);
-    const memberDetails = member.memberDetails;
+    const { memberDetails } = member;
     email = member.email;
     amount = memberDetails.maintenanceAmount / 1000;
     phone = memberDetails.mobile;

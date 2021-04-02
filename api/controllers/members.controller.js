@@ -127,10 +127,11 @@ exports.deleteMember = (req, res) => {
         .send({ msg: `Deleted member with id: ${req.params.memberId}` })
     )
     .catch((err) => {
-      logger.error("Error occurred while deleting", err);
-      return res
-        .status(500)
-        .send({ error: "Something went wrong while deleteing member: " + err });
+      return response.internalError(
+        res,
+        "Something went wrong while deleteing member",
+        err
+      );
     });
 };
 
@@ -138,14 +139,18 @@ exports.deleteManyMembers = async (req, res) => {
   if (req.body.memberIds)
     try {
       const deleted = await MemberModel.deleteMany(req.body.memberIds);
-      response.ok(res, `Deleted documents`, {
-        memberCount: deleted.deletedMembers.deletedCount,
-        memberPaymentsCount: deleted.deletedMemberPayments.deletedCount,
-      });
+      return response.ok(
+        res,
+        {
+          memberCount: deleted.deletedMembers.deletedCount,
+          memberPaymentsCount: deleted.deletedMemberPayments.deletedCount,
+        },
+        "Deleted members"
+      );
     } catch (err) {
       response.internalError(
         res,
-        "Something went wrong while deleteing many members",
+        "Something went wrong while deleting many members",
         err
       );
     }
@@ -237,20 +242,22 @@ exports.health = (req, res) => {
 exports.memberMetaData = async (req, res) => {
   try {
     const memberCount = await MemberModel.getMemberCount();
-    const member = await MemberModel.findById(req.params.memberId);
+    const { memberDetails } = await MemberModel.findById(req.params.memberId);
 
-    return res.status(200).send({
-      memberCount,
-      maintenanceAmount: member.memberDetails.maintenanceAmount,
-    });
+    return response.ok(
+      res,
+      {
+        memberCount,
+        maintenanceAmount: memberDetails.maintenanceAmount,
+      },
+      "Fetched member meta data"
+    );
   } catch (err) {
-    return res.status(500).send({
-      error: [
-        {
-          message: "Something went wrong while fetching member meta data" + err,
-        },
-      ],
-    });
+    return response.internalError(
+      res,
+      "Something went wrong while fetching member meta data",
+      err
+    );
   }
 };
 
@@ -327,10 +334,8 @@ exports.getAllMembersPaymentInfo = async (req, res) => {
 
 exports.shouldMemberPay = async (req, res) => {
   try {
-    const MemberDetails = await MemberDetailsModel.findByMemberId(
-      req.params.memberId
-    );
-    if (MemberDetails.monthlyMaintenance === false) {
+    const { memberDetails } = await MemberModel.findById(req.params.memberId);
+    if (memberDetails.monthlyMaintenance === false) {
       return res.status(200).send({ shouldMemberPay: false });
     } else {
       return res.status(200).send({ shouldMemberPay: true });

@@ -31,8 +31,8 @@ exports.badRequest = (
 
 exports.ok = (
   res,
-  successMessage = "Request fulfilled successfully",
-  dataObject = {}
+  dataObject = {},
+  successMessage = "Request fulfilled successfully"
 ) => {
   return res
     .status(200)

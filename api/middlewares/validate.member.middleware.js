@@ -71,8 +71,7 @@ exports.checkFieldPermissionToUpdate = async (req, res, next) => {
   const noPermissionToUpdateFields = req.jwt.npuf;
   if (noPermissionToUpdateFields && noPermissionToUpdateFields.length) {
     try {
-      let member = await MemberModel.findById(req.params.memberId);
-      let memberDetails = member.memberDetails;
+      let { memberDetails } = await MemberModel.findById(req.params.memberId);
       noPermissionToUpdateFields.forEach((element) => {
         // if (element === "email") req.body.email = member.email;
         // else req.body.memberDetails[`${element}`] = memberDetails[`${element}`];

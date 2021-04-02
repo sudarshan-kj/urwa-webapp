@@ -22,8 +22,8 @@ const AdminHome = () => {
       .get(`/api/members/metaData/${getMemberDetails().memberId}`)
       .then((result) =>
         setMetaData({
-          count: result.data.memberCount,
-          maintenanceAmount: result.data.maintenanceAmount,
+          count: result.data.data.memberCount,
+          maintenanceAmount: result.data.data.maintenanceAmount,
         })
       )
       .catch((err) => console.error("Could not fetch member count"));

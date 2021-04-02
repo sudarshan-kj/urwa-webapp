@@ -21,22 +21,20 @@ const UpdateMember = () => {
       .get(`/api/members/${memberId}?details=true`)
       .then((result) => {
         const member = result.data;
+        const { memberDetails } = member;
         delete member.id;
         const {
           dob,
           anniversary,
           membershipStartDate,
           subscriptionStartDate,
-        } = member.memberDetails;
-        if (dob) member.memberDetails.dob = extractDate(dob);
-        if (anniversary)
-          member.memberDetails.anniversary = extractDate(anniversary);
+        } = memberDetails;
+        if (dob) memberDetails.dob = extractDate(dob);
+        if (anniversary) memberDetails.anniversary = extractDate(anniversary);
         if (membershipStartDate)
-          member.memberDetails.membershipStartDate = extractDate(
-            membershipStartDate
-          );
+          memberDetails.membershipStartDate = extractDate(membershipStartDate);
         if (subscriptionStartDate)
-          member.memberDetails.subscriptionStartDate = extractDate(
+          memberDetails.subscriptionStartDate = extractDate(
             subscriptionStartDate
           );
         setSeedData(member);
