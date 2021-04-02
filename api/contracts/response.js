@@ -29,6 +29,16 @@ exports.badRequest = (
   return res.status(400).send(errObj);
 };
 
+exports.conflict = (res, errorMessage = "Conflicting data", errObject = {}) => {
+  let errObj = {
+    status: "DATA_CONFLICT",
+    message: errorMessage,
+    data: errObject,
+  };
+  logger.error("ERROR: 429", errObj);
+  return res.status(429).send(errObj);
+};
+
 exports.ok = (
   res,
   dataObject = {},
