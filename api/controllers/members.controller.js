@@ -129,7 +129,6 @@ exports.deleteManyMembers = async (req, res) => {
       const deleted = await MemberModel.deleteMany(req.body.memberIds);
       response.ok(res, `Deleted documents`, {
         memberCount: deleted.deletedMembers.deletedCount,
-        memberDetails: deleted.deletedMemberDetails.deletedCount,
         memberPaymentsCount: deleted.deletedMemberPayments.deletedCount,
       });
     } catch (err) {
@@ -181,7 +180,7 @@ exports.listAllMembers = async (req, res) => {
 };
 
 function replacer(key, value) {
-  if (typeof value === "boolean" || typeof value === "number") {
+  if (typeof value === "number") {
     return String(value);
   }
   return value;
@@ -192,16 +191,8 @@ exports.getMember = (req, res) => {
     .then((foundMember) => {
       if (req.query.details) {
         if (req.query.details === "true") {
-          MemberDetailsModel.findByMemberId(foundMember._id)
-            .then((memberDetails) => {
-              foundMember.mDetails.push(memberDetails);
-              // this is done so that all json values 'appear' as strings so that the client can handle them well
-              const jsonString = JSON.parse(
-                JSON.stringify(foundMember, replacer)
-              );
-              return res.status(200).send(jsonString);
-            })
-            .catch((err) => res.status(500).send({ error: err }));
+          const jsonString = JSON.parse(JSON.stringify(foundMember, replacer));
+          return res.status(200).send(jsonString);
         } else {
           return res.status(400).send({
             error: [
@@ -213,7 +204,12 @@ exports.getMember = (req, res) => {
           });
         }
       } else {
-        return res.status(200).send(foundMember);
+        let clonedFoundMember = Object.create(foundMember);
+        delete clonedFoundMember.memberDetails;
+        const jsonString = JSON.parse(
+          JSON.stringify(clonedFoundMember, replacer)
+        );
+        return res.status(200).send(jsonString);
       }
     })
     .catch((err) => res.status(500).send({ error: [{ message: err }] }));
@@ -230,12 +226,11 @@ exports.health = (req, res) => {
 exports.memberMetaData = async (req, res) => {
   try {
     const memberCount = await MemberModel.getMemberCount();
-    const memberDetails = await MemberDetailsModel.findByMemberId(
-      req.params.memberId
-    );
+    const member = await MemberModel.findById(req.params.memberId);
+
     return res.status(200).send({
       memberCount,
-      maintenanceAmount: memberDetails.maintenanceAmount,
+      maintenanceAmount: member.memberDetails.maintenanceAmount,
     });
   } catch (err) {
     return res.status(500).send({

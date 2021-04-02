@@ -20,41 +20,27 @@ const UpdateMember = () => {
     authAxios()
       .get(`/api/members/${memberId}?details=true`)
       .then((result) => {
-        const details = result.data.mDetails[0];
-        delete details.memberId;
-        delete details.id;
-        const newObject = { ...result.data };
-        delete newObject.mDetails;
-        newObject.details = details;
+        console.log("Details are", result.data);
+        const member = result.data;
+        delete member.id;
         const {
           dob,
           anniversary,
           membershipStartDate,
           subscriptionStartDate,
-        } = details;
-        if (dob) newObject.details.dob = extractDate(dob);
+        } = member.memberDetails;
+        if (dob) member.memberDetails.dob = extractDate(dob);
         if (anniversary)
-          newObject.details.anniversary = extractDate(anniversary);
+          member.memberDetails.anniversary = extractDate(anniversary);
         if (membershipStartDate)
-          newObject.details.membershipStartDate = extractDate(
+          member.memberDetails.membershipStartDate = extractDate(
             membershipStartDate
           );
         if (subscriptionStartDate)
-          newObject.details.subscriptionStartDate = extractDate(
+          member.memberDetails.subscriptionStartDate = extractDate(
             subscriptionStartDate
           );
-
-        //Tenant residing value in the ui expects a boolean, but since we get strings, we convert to boolean
-
-        newObject.details.tenantResiding =
-          newObject.details.tenantResiding === "true";
-        newObject.password = "";
-        // All the following data needs to be removed, since they are coming fromt the raw data we extracted from db
-        delete newObject.permissionLevel;
-        delete newObject.id;
-        delete newObject.npuf;
-
-        setSeedData(newObject);
+        setSeedData(member);
       });
   }, [memberId]);
 

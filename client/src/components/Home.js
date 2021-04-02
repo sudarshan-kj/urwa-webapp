@@ -11,8 +11,9 @@ const Home = ({ data }) => {
         minChildWidth={{ base: "160px", md: "320px" }}
         spacing="40px"
       >
-        {data.map((card) => (
+        {data.map((card, id) => (
           <SimpleHomeCard
+            key={id}
             link={card.link}
             textContent={card.textContent}
             icon={card.icon}

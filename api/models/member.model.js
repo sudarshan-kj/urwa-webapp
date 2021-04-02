@@ -13,6 +13,8 @@ const opts = {
       delete ret.password;
       delete ret.createdAt;
       delete ret.updatedAt;
+      delete ret.npuf;
+      delete ret.permissionLevel;
     },
   },
   timestamps: true,
@@ -53,6 +55,7 @@ let memberSchema = new Schema(
 
 //refer : https://stackoverflow.com/questions/5794834/how-to-access-a-preexisting-collection-with-mongoose, if you want to control the collection name
 
+memberSchema.index({ siteNumber: 1, doorNumber: 1 }, { unique: true });
 let Member = mongoose.model("Member", memberSchema);
 
 exports.insert = (memberData) => {
@@ -64,11 +67,7 @@ exports.delete = (memberId) => {
   return new Promise((resolve, reject) => {
     Member.deleteMany({ _id: memberId }).exec((err, deletedMember) => {
       if (err) reject(err);
-      MemberDetailsModel.delete(memberId)
-        .then((deletedMemberDetails) =>
-          resolve({ deletedMember, deletedMemberDetails })
-        )
-        .catch((err) => reject(err));
+      else resolve(deletedMember);
     });
   });
 };
@@ -81,17 +80,12 @@ exports.deleteMany = (memberIds) => {
       .exec((err, deletedMembers) => {
         if (err) reject(err);
         else {
-          MemberDetailsModel.deleteMany(memberIds)
-            .then((deletedMemberDetails) =>
-              MemberPaymentModel.deleteMany(memberIds)
-                .then((deletedMemberPayments) =>
-                  resolve({
-                    deletedMembers,
-                    deletedMemberDetails,
-                    deletedMemberPayments,
-                  })
-                )
-                .catch((err) => reject(err))
+          MemberPaymentModel.deleteMany(memberIds)
+            .then((deletedMemberPayments) =>
+              resolve({
+                deletedMembers,
+                deletedMemberPayments,
+              })
             )
             .catch((err) => reject(err));
         }
@@ -119,17 +113,7 @@ exports.findById = (memberId) => {
 };
 
 exports.update = (memberId, newValues) => {
-  const memberValues = Object.create(newValues);
-  const details = memberValues.details;
-  delete memberValues.details;
-  return Member.findByIdAndUpdate({ _id: memberId }, memberValues).then(
-    (updatedMember) => {
-      if (!updatedMember) {
-        throw new Error("User not found");
-      }
-      return MemberDetailsModel.update(memberId, details);
-    }
-  );
+  return Member.findByIdAndUpdate({ _id: memberId }, newValues);
 };
 
 exports.updateByEmailId = (email, newValues) => {

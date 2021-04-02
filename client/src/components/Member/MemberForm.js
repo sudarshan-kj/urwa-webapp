@@ -355,6 +355,9 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     id="memberDetails.tenantResiding"
                     isChecked={formik.values.memberDetails.tenantResiding}
                     onChange={(e) => {
+                      if (!e.target.checked) {
+                        formik.setFieldValue("memberDetails.ownerAddress", "");
+                      }
                       formik.setFieldValue(
                         "memberDetails.tenantResiding",
                         e.target.checked
@@ -403,9 +406,13 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 <FormControl as="fieldset">
                   <FormLabel as="legend">Borewell 🚰</FormLabel>
                   <RadioGroup
-                    value={formik.values.memberDetails.borewell}
+                    value={JSON.stringify(formik.values.memberDetails.borewell)}
                     onChange={(e) => {
-                      formik.setFieldValue("memberDetails.borewell", e);
+                      let borewellValue = e === "true" ? true : false;
+                      formik.setFieldValue(
+                        "memberDetails.borewell",
+                        borewellValue
+                      );
                     }}
                   >
                     <HStack spacing="24px">
@@ -486,7 +493,9 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 >
                   <FormLabel as="legend">Monthly Maintenance 💰</FormLabel>
                   <RadioGroup
-                    value={formik.values.memberDetails.monthlyMaintenance}
+                    value={JSON.stringify(
+                      formik.values.memberDetails.monthlyMaintenance
+                    )}
                     onChange={(e) => {
                       if (e === "false") {
                         formik.setFieldValue(
@@ -494,9 +503,11 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                           -1
                         );
                       }
+
+                      let maintenanceAmount = e === "true" ? true : false;
                       formik.setFieldValue(
                         "memberDetails.monthlyMaintenance",
-                        e
+                        maintenanceAmount
                       );
                     }}
                   >
