@@ -360,13 +360,11 @@ exports.shouldMemberPay = async (req, res) => {
       return res.status(200).send({ shouldMemberPay: true });
     }
   } catch (err) {
-    return res.status(500).send({
-      error: [
-        {
-          message: "Something went wrong while checking if member should pay",
-        },
-      ],
-    });
+    return response.internalError(
+      res,
+      "Something went wrong while checking if member should pay",
+      err
+    );
   }
 };
 
