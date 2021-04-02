@@ -3,7 +3,7 @@ module.exports = {
     MONGO_DB_USERNAME: "admin",
     MONGO_DB_PASSWORD: "admin",
     get MONGO_DB_URL() {
-      return "mongodb://localhost/urwa";
+      return "mongodb://localhost/urwa-test";
     },
   },
   production: {

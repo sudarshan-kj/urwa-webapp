@@ -29,7 +29,24 @@ let memberSchema = new Schema(
     permissionLevel: { type: String, unique: false, required: true },
     npuf: { type: Array, unique: false, required: true },
     revokeAccess: { type: Boolean, unique: false, required: true },
-    mDetails: [{ type: Schema.Types.ObjectId, ref: "MemberDetails" }],
+    memberDetails: {
+      mobile: Number,
+      altContact: Number,
+      anniversary: Date,
+      dob: Date,
+      land: String,
+      noOfFloors: String,
+      bloodGroup: String,
+      monthlyMaintenance: Boolean,
+      maintenanceAmount: Number,
+      borewell: Boolean,
+      siteDimensions: String,
+      siteAddress: String,
+      tenantResiding: Boolean,
+      ownerAddress: String,
+      membershipStartDate: Date,
+      subscriptionStartDate: Date,
+    },
   },
   opts
 );
@@ -40,10 +57,7 @@ let Member = mongoose.model("Member", memberSchema);
 
 exports.insert = (memberData) => {
   let member = new Member(memberData);
-  return member.save().then((result) => {
-    memberData.details.memberId = result._id;
-    return MemberDetailsModel.insert(memberData.details).then(() => result._id);
-  });
+  return member.save();
 };
 
 exports.delete = (memberId) => {

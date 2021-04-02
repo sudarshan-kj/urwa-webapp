@@ -17,7 +17,7 @@ const schema = Joi.object({
   doorNumber: Joi.string().min(1).max(10).allow(null, ""),
   password: Joi.string().min(5).max(25).allow(null, ""),
   revokeAccess: Joi.bool().required(),
-  details: Joi.object({
+  memberDetails: Joi.object({
     mobile: Joi.string()
       .allow("0")
       .length(10)

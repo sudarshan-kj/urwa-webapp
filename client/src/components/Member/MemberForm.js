@@ -151,8 +151,8 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 <FormControl isRequired>
                   <FormLabel>Mobile Number 📱</FormLabel>
                   <NumberInput
-                    value={formik.values.details.mobile}
-                    id="details.mobile"
+                    value={formik.values.memberDetails.mobile}
+                    id="memberDetails.mobile"
                     focusBorderColor="teal.400"
                     bg="gray.100"
                   >
@@ -229,8 +229,8 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 <FormControl>
                   <FormLabel>Alternate Contact Number 📞</FormLabel>
                   <NumberInput
-                    value={formik.values.details.altContact}
-                    id="details.altContact"
+                    value={formik.values.memberDetails.altContact}
+                    id="memberDetails.altContact"
                     focusBorderColor="teal.400"
                     bg="gray.100"
                   >
@@ -242,42 +242,44 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   </NumberInput>
                 </FormControl>
 
-                <FormControl id="details.dob">
+                <FormControl id="memberDetails.dob">
                   <FormLabel>Birthday 🎉</FormLabel>
                   {/* <Input
                     focusBorderColor="teal.400"
                     bg="gray.100"
                     type="date"
-                    value={formik.values.details.dob}
+                    value={formik.values.memberDetails.dob}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
                   /> */}
 
                   <DatePicker
-                    id="details.dob"
-                    key={formik.values.details.siteAddress}
+                    id="memberDetails.dob"
+                    key={formik.values.memberDetails.siteAddress}
                     // we are making siteAddress as the key since only when the siteAddress  ( we could have chosen any other value below this date too) is changed,
                     //this component is remounted. If the key is same as value, then after every key stroke value is remounted
-                    value={formik.values.details.dob}
-                    onChange={(e) => formik.setFieldValue("details.dob", e)}
+                    value={formik.values.memberDetails.dob}
+                    onChange={(e) =>
+                      formik.setFieldValue("memberDetails.dob", e)
+                    }
                   />
                 </FormControl>
 
-                <FormControl id="details.anniversary">
+                <FormControl id="memberDetails.anniversary">
                   <FormLabel>Anniversary 🎎</FormLabel>
                   <DatePicker
-                    id="details.anniversary"
-                    key={formik.values.details.siteAddress}
-                    value={formik.values.details.anniversary}
+                    id="memberDetails.anniversary"
+                    key={formik.values.memberDetails.siteAddress}
+                    value={formik.values.memberDetails.anniversary}
                     onChange={(e) =>
-                      formik.setFieldValue("details.anniversary", e)
+                      formik.setFieldValue("memberDetails.anniversary", e)
                     }
                   />
                 </FormControl>
 
                 <FormControl
-                  id="details.membershipStartDate"
+                  id="memberDetails.membershipStartDate"
                   isDisabled={isDisabled(npuf, "membershipStartDate")}
                   isRequired
                 >
@@ -286,7 +288,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     focusBorderColor="teal.400"
                     bg="gray.100"
                     type="date"
-                    value={formik.values.details.membershipStartDate}
+                    value={formik.values.memberDetails.membershipStartDate}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
@@ -294,7 +296,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 </FormControl>
 
                 <FormControl
-                  id="details.subscriptionStartDate"
+                  id="memberDetails.subscriptionStartDate"
                   isDisabled={isDisabled(npuf, "subscriptionStartDate")}
                   isRequired
                 >
@@ -303,16 +305,16 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                     focusBorderColor="teal.400"
                     bg="gray.100"
                     type="date"
-                    value={formik.values.details.subscriptionStartDate}
+                    value={formik.values.memberDetails.subscriptionStartDate}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
                   />
                 </FormControl>
 
-                <FormControl id="details.bloodGroup">
+                <FormControl id="memberDetails.bloodGroup">
                   <StyledSelect
-                    value={formik.values.details.bloodGroup}
+                    value={formik.values.memberDetails.bloodGroup}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
@@ -330,13 +332,13 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   </StyledSelect>
                 </FormControl>
 
-                <FormControl id="details.siteAddress" isRequired>
+                <FormControl id="memberDetails.siteAddress" isRequired>
                   <FormLabel>Site Address 📍</FormLabel>
                   <Input
                     focusBorderColor="teal.400"
                     bg="gray.100"
                     type="text"
-                    value={formik.values.details.siteAddress}
+                    value={formik.values.memberDetails.siteAddress}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
@@ -350,11 +352,11 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   </FormLabel>
                   <Switch
                     colorScheme="teal"
-                    id="details.tenantResiding"
-                    isChecked={formik.values.details.tenantResiding}
+                    id="memberDetails.tenantResiding"
+                    isChecked={formik.values.memberDetails.tenantResiding}
                     onChange={(e) => {
                       formik.setFieldValue(
-                        "details.tenantResiding",
+                        "memberDetails.tenantResiding",
                         e.target.checked
                       );
                     }}
@@ -362,15 +364,17 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 </FormControl>
 
                 <FormControl
-                  id="details.ownerAddress"
-                  isDisabled={formik.values.details.tenantResiding === false}
+                  id="memberDetails.ownerAddress"
+                  isDisabled={
+                    formik.values.memberDetails.tenantResiding === false
+                  }
                 >
                   <FormLabel>Owner Address 🏦</FormLabel>
                   <Input
                     focusBorderColor="teal.400"
                     bg="gray.100"
                     type="text"
-                    value={formik.values.details.ownerAddress}
+                    value={formik.values.memberDetails.ownerAddress}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
@@ -380,9 +384,9 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   </FormHelperText>
                 </FormControl>
 
-                <FormControl id="details.siteDimensions">
+                <FormControl id="memberDetails.siteDimensions">
                   <StyledSelect
-                    value={formik.values.details.siteDimensions}
+                    value={formik.values.memberDetails.siteDimensions}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
@@ -399,9 +403,9 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 <FormControl as="fieldset">
                   <FormLabel as="legend">Borewell 🚰</FormLabel>
                   <RadioGroup
-                    value={formik.values.details.borewell}
+                    value={formik.values.memberDetails.borewell}
                     onChange={(e) => {
-                      formik.setFieldValue("details.borewell", e);
+                      formik.setFieldValue("memberDetails.borewell", e);
                     }}
                   >
                     <HStack spacing="24px">
@@ -428,12 +432,12 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 <FormControl as="fieldset">
                   <FormLabel as="legend">Land status 🏛️</FormLabel>
                   <RadioGroup
-                    value={formik.values.details.land}
+                    value={formik.values.memberDetails.land}
                     onChange={(e) => {
                       if (e === "vacant") {
-                        formik.setFieldValue("details.noOfFloors", "NA");
+                        formik.setFieldValue("memberDetails.noOfFloors", "NA");
                       }
-                      formik.setFieldValue("details.land", e);
+                      formik.setFieldValue("memberDetails.land", e);
                     }}
                   >
                     <HStack spacing="24px">
@@ -458,11 +462,11 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 </FormControl>
 
                 <FormControl
-                  id="details.noOfFloors"
-                  isDisabled={formik.values.details.land === "vacant"}
+                  id="memberDetails.noOfFloors"
+                  isDisabled={formik.values.memberDetails.land === "vacant"}
                 >
                   <StyledSelect
-                    value={formik.values.details.noOfFloors}
+                    value={formik.values.memberDetails.noOfFloors}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
@@ -482,12 +486,18 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 >
                   <FormLabel as="legend">Monthly Maintenance 💰</FormLabel>
                   <RadioGroup
-                    value={formik.values.details.monthlyMaintenance}
+                    value={formik.values.memberDetails.monthlyMaintenance}
                     onChange={(e) => {
                       if (e === "false") {
-                        formik.setFieldValue("details.maintenanceAmount", -1);
+                        formik.setFieldValue(
+                          "memberDetails.maintenanceAmount",
+                          -1
+                        );
                       }
-                      formik.setFieldValue("details.monthlyMaintenance", e);
+                      formik.setFieldValue(
+                        "memberDetails.monthlyMaintenance",
+                        e
+                      );
                     }}
                   >
                     <HStack spacing="24px">
@@ -512,14 +522,14 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                 </FormControl>
 
                 <FormControl
-                  id="details.maintenanceAmount"
+                  id="memberDetails.maintenanceAmount"
                   isDisabled={
-                    formik.values.details.monthlyMaintenance === "false" ||
-                    isDisabled(npuf, "maintenanceAmount")
+                    formik.values.memberDetails.monthlyMaintenance ===
+                      "false" || isDisabled(npuf, "maintenanceAmount")
                   }
                 >
                   <StyledSelect
-                    value={formik.values.details.maintenanceAmount}
+                    value={formik.values.memberDetails.maintenanceAmount}
                     onChange={(e) => {
                       formik.handleChange(e);
                     }}
@@ -535,8 +545,8 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   <FormControl isRequired>
                     <FormLabel>Opening Balance</FormLabel>
                     <NumberInput
-                      value={formik.values.details.openingBalance}
-                      id="details.openingBalance"
+                      value={formik.values.memberDetails.openingBalance}
+                      id="memberDetails.openingBalance"
                       focusBorderColor="teal.400"
                       bg="gray.100"
                     >

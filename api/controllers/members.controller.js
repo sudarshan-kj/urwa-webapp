@@ -4,7 +4,6 @@ const MemberDetailsModel = require("../models/memberDetails.model");
 const MemberPaymentModel = require("../models/memberPayment.model");
 const crypto = require("crypto");
 const logger = require("log4js").getLogger();
-const Joi = require("joi");
 logger.level = "debug";
 const helperUtils = require("../helpers/helper.utils");
 const addMemberValidatorSchema = require("../validators/addMember.validator.schema");
@@ -44,18 +43,18 @@ exports.createMember = async (req, res) => {
       req.body.npuf = [];
     }
     const createdMember = await MemberModel.insert(req.body);
-    let openingBalance = req.body.details.openingBalance;
+    let openingBalance = req.body.memberDetails.openingBalance;
     if (openingBalance > 0) {
       openingBalance = 0;
     } else {
       openingBalance = Math.abs(openingBalance);
     }
-    if (req.body.details.monthlyMaintenance) {
+    if (req.body.memberDetails.monthlyMaintenance) {
       let {
         dueFor,
         paidArray,
         overDueArray,
-      } = helperUtils.computeDuesAndAdvances(req.body.details);
+      } = helperUtils.computeDuesAndAdvances(req.body.memberDetails);
       const paymentData = {
         memberId: createdMember._id,
         dueFor: dueFor,
