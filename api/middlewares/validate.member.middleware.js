@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const tokenConfig = require("../config/token.config");
 const MemberModel = require("../models/member.model");
-const MemberDetailsModel = require("../models/memberDetails.model");
 const logger = require("log4js").getLogger();
 logger.level = "debug";
 

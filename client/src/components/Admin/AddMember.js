@@ -35,15 +35,20 @@ const AddMember = () => {
         }
       })
       .catch((err) => {
-        let { status, message } = err.response.data;
+        let errorMessage = "Something went wrong while adding new member";
+        if (err.response) {
+          let { status, message } = err.response.data;
+          errorMessage = `${status} : ${message}`;
+        }
         toast({
           title: "Account was not created",
-          description: `${status} : ${message}`,
+          description: errorMessage,
           status: "error",
           duration: 5000,
           isClosable: true,
         });
       })
+
       .finally(() => setSubmitting(false));
   };
 

@@ -1,5 +1,4 @@
 const mongoose = require("../services/mongoose.service").mongoose;
-const MemberDetailsModel = require("./memberDetails.model");
 const MemberPaymentModel = require("./memberPayment.model");
 
 let { Schema } = mongoose;
@@ -56,7 +55,7 @@ let memberSchema = new Schema(
 
 //refer : https://stackoverflow.com/questions/5794834/how-to-access-a-preexisting-collection-with-mongoose, if you want to control the collection name
 
-memberSchema.index({ siteNumber: 1, doorNumber: 1 }, { unique: true });
+memberSchema.index({ siteNumber: 1, doorNumber: 1 }, { unique: true }); // to make sure that the siteNumber and doorNumber combination is unique
 let Member = mongoose.model("Member", memberSchema);
 
 exports.insert = (memberData) => {

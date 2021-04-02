@@ -1,5 +1,4 @@
 const MemberModel = require("../models/member.model");
-const MemberDetailsModel = require("../models/memberDetails.model");
 const MemberPaymentModel = require("../models/memberPayment.model");
 const PaymentTransactionModel = require("../models/paymentTransaction.model");
 const crypto = require("crypto");
@@ -59,7 +58,7 @@ exports.generateHash = async (req, res) => {
 
   try {
     const member = await MemberModel.findById(memberId);
-    const memberDetails = await MemberDetailsModel.findByMemberId(memberId);
+    const memberDetails = member.memberDetails;
     email = member.email;
     amount = memberDetails.maintenanceAmount / 1000;
     phone = memberDetails.mobile;

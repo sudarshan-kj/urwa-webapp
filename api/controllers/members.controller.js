@@ -1,6 +1,4 @@
 const MemberModel = require("../models/member.model");
-const AdminMemberModel = require("../models/adminMember.model");
-const MemberDetailsModel = require("../models/memberDetails.model");
 const MemberPaymentModel = require("../models/memberPayment.model");
 const crypto = require("crypto");
 const logger = require("log4js").getLogger();
@@ -8,6 +6,21 @@ logger.level = "debug";
 const helperUtils = require("../helpers/helper.utils");
 const addMemberValidatorSchema = require("../validators/addMember.validator.schema");
 const response = require("../contracts/response");
+
+function createOrUpdateErrorMsg(err, msg) {
+  return () => {
+    if (err.code) {
+      if (err.code === 11000) {
+        return response.badRequest(
+          res,
+          `Duplicate key: ${JSON.stringify(err.keyValue)}`,
+          err
+        );
+      }
+    }
+    return response.internalError(res, msg, err);
+  };
+}
 
 ////////////////MEMBER CRUD OPERATIONS START//////////////////////
 
@@ -67,19 +80,9 @@ exports.createMember = async (req, res) => {
     logger.info("Created new member with id: ", createdMember._id);
     return res.status(201).send({ id: createdMember._id });
   } catch (err) {
-    if (err.code) {
-      if (err.code === 11000) {
-        return response.badRequest(
-          res,
-          `Duplicate key: ${JSON.stringify(err.keyValue)}`,
-          err
-        );
-      }
-    }
-    return response.internalError(
-      res,
-      "Something went wrong while creating new member.",
-      err
+    createOrUpdateErrorMsg(
+      err,
+      "Something went wrong while creating new member"
     );
   }
 };
@@ -107,13 +110,10 @@ exports.updateMember = async (req, res) => {
       .status(200)
       .send({ msg: `User id: ${toUpdateMemberId} has been updated` });
   } catch (err) {
-    let errorMsg = err.message;
-    if (!errorMsg) {
-      errorMsg = "Something went wrong while updating member";
-    }
-    return res.status(500).send({
-      errors: [{ type: "Internal error", message: errorMsg }],
-    });
+    createOrUpdateErrorMsg(
+      err,
+      "Something went wrong while updating existing member"
+    );
   }
 };
 

@@ -30,13 +30,11 @@ membersRouter.get("/:memberId", [
 ]);
 
 membersRouter.post("/add", [
-  // ValidateMiddleware.isValidJWTAccessToken,
-  // ValidateMiddleware.hasPermission({
-  //   adminOnly: true,
-  //   permission: permission.CREATE,
-  // }),
-  // // ValidateMiddleware.doesUserEmailAlreadyExist,
-  // ValidateMiddleware.doesSiteAndDoorNumberAlreadyExist,
+  ValidateMiddleware.isValidJWTAccessToken,
+  ValidateMiddleware.hasPermission({
+    adminOnly: true,
+    permission: permission.CREATE,
+  }),
   MembersController.createMember,
 ]);
 membersRouter.delete("/:memberId", [
@@ -64,8 +62,6 @@ membersRouter.patch("/:memberId", [
     permission: permission.UPDATE,
   }),
   ValidateMiddleware.checkFieldPermissionToUpdate,
-  ValidateMiddleware.doesUserEmailAlreadyExist,
-  ValidateMiddleware.doesSiteAndDoorNumberAlreadyExist,
   MembersController.updateMember,
 ]);
 

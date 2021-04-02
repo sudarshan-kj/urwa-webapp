@@ -68,15 +68,16 @@ const UpdateMember = () => {
         }
       })
       .catch((err) => {
-        let errorMsg = "CMSG: Something went wrong";
+        let errorMessage = "Something went wrong while updating member";
         if (err.response) {
-          errorMsg = err.response.data.error[0].message;
+          let { status, message } = err.response.data;
+          errorMessage = `${status} : ${message}`;
         }
         toast({
           title: "Account was not updated",
-          description: `${errorMsg}`,
+          description: errorMessage,
           status: "error",
-          duration: 3000,
+          duration: 5000,
           isClosable: true,
         });
       })
