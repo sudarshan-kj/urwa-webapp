@@ -28,7 +28,7 @@ exports.createMember = async (req, res) => {
   req.body.password = salt + "$" + hash;
 
   try {
-    const adminMember = await AdminMemberModel.findByEmail(req.body.email);
+    const adminMember = req.body.isAdmin;
     if (!adminMember) {
       req.body.permissionLevel = "0x00-0x06";
       req.body.npuf = [
@@ -39,7 +39,7 @@ exports.createMember = async (req, res) => {
         "subscriptionStartDate",
       ];
     } else {
-      req.body.permissionLevel = `${adminMember.adminPermission}-${adminMember.selfPermission}`;
+      req.body.permissionLevel = "0x0F-0x0F";
       req.body.npuf = [];
     }
     const createdMember = await MemberModel.insert(req.body);
@@ -64,12 +64,23 @@ exports.createMember = async (req, res) => {
       };
       await MemberPaymentModel.insert(paymentData);
     }
+    logger.info("Created new member with id: ", createdMember._id);
     return res.status(201).send({ id: createdMember._id });
   } catch (err) {
-    logger.error("Something went wrong while creating new member ", err);
-    return res.status(500).send({
-      error: [{ message: "Something went wrong: " + err }],
-    });
+    if (err.code) {
+      if (err.code === 11000) {
+        return response.badRequest(
+          res,
+          `Duplicate key: ${JSON.stringify(err.keyValue)}`,
+          err
+        );
+      }
+    }
+    return response.internalError(
+      res,
+      "Something went wrong while creating new member.",
+      err
+    );
   }
 };
 

@@ -3,6 +3,7 @@ const Joi = require("joi");
 const schema = Joi.object({
   firstName: Joi.string().min(2).max(30).required(),
   lastName: Joi.string().min(1).max(300).required(),
+  isAdmin: Joi.bool(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,

@@ -20,5 +20,13 @@ membersRouter.delete("", [
   }),
   AdminMembersController.deleteAdminMember,
 ]);
+membersRouter.patch("", [
+  ValidateMiddleware.isValidJWTAccessToken,
+  ValidateMiddleware.hasPermission({
+    adminOnly: true,
+    permission: permission.UPDATE,
+  }),
+  AdminMembersController.updateMemberToAdmin,
+]);
 
 module.exports = membersRouter;

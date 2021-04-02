@@ -35,12 +35,12 @@ const AddMember = () => {
         }
       })
       .catch((err) => {
-        let errorMsg = err.response.data.error[0].message;
+        let { status, message } = err.response.data;
         toast({
           title: "Account was not created",
-          description: `${errorMsg}`,
+          description: `${status} : ${message}`,
           status: "error",
-          duration: 3000,
+          duration: 5000,
           isClosable: true,
         });
       })

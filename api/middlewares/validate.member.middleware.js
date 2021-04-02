@@ -65,7 +65,7 @@ exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
 
 /* The following method retrieves the actual information from database on fields that are marked as NPUF since the UI sends them as dummy values, 
 and replaces the dummy values with actual values that should not be modified
-Or instead you should not even send these values from ui, only send what has changed
+Or instead whenever, you send any npuf values, it should just ignore them
 */
 
 exports.checkFieldPermissionToUpdate = async (req, res, next) => {
@@ -75,8 +75,8 @@ exports.checkFieldPermissionToUpdate = async (req, res, next) => {
       let member = await MemberModel.findById(req.params.memberId);
       let memberDetails = member.memberDetails;
       noPermissionToUpdateFields.forEach((element) => {
-        if (element === "email") req.body.email = member.email;
-        else req.body.memberDetails[`${element}`] = memberDetails[`${element}`];
+        // if (element === "email") req.body.email = member.email;
+        // else req.body.memberDetails[`${element}`] = memberDetails[`${element}`];
       });
       return next();
     } catch {

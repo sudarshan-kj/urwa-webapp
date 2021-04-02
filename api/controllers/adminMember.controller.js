@@ -67,3 +67,5 @@ exports.deleteAdminMember = (req, res) => {
       })
     );
 };
+
+exports.updateMemberToAdmin = async (req, res) => {};

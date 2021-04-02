@@ -31,6 +31,7 @@ let memberSchema = new Schema(
     permissionLevel: { type: String, unique: false, required: true },
     npuf: { type: Array, unique: false, required: true },
     revokeAccess: { type: Boolean, unique: false, required: true },
+    isAdmin: { type: Boolean, default: false },
     memberDetails: {
       mobile: Number,
       altContact: Number,
