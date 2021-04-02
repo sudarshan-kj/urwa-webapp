@@ -20,7 +20,6 @@ const UpdateMember = () => {
     authAxios()
       .get(`/api/members/${memberId}?details=true`)
       .then((result) => {
-        console.log("Details are", result.data);
         const member = result.data;
         delete member.id;
         const {
