@@ -11,7 +11,7 @@ exports.internalError = (
     message: errorMessage,
     data: errObject,
   };
-  logger.error("ERROR: 500", errObj);
+  logger.error("ERROR: 500 ", errObj);
   return res.status(500).send(errObj);
 };
 

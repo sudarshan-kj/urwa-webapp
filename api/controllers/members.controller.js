@@ -205,30 +205,49 @@ function replacer(key, value) {
 exports.getMember = (req, res) => {
   MemberModel.findById(req.params.memberId)
     .then((foundMember) => {
-      if (req.query.details) {
-        if (req.query.details === "true") {
-          const jsonString = JSON.parse(JSON.stringify(foundMember, replacer));
-          return res.status(200).send(jsonString);
+      if (foundMember) {
+        if (req.query.details) {
+          if (req.query.details === "true") {
+            const jsonString = JSON.parse(
+              JSON.stringify(foundMember, replacer)
+            );
+            return response.ok(
+              res,
+              jsonString,
+              `Fetched member: ${foundMember._id} details`
+            );
+          } else {
+            return response.badRequest(
+              res,
+              "Invalid value found for query param. Must be true or the query param must not be present"
+            );
+          }
         } else {
-          return res.status(400).send({
-            error: [
-              {
-                message:
-                  "Invalid value found for query param. Must be true or the query param must not be present",
-              },
-            ],
-          });
+          let clonedFoundMember = Object.create(foundMember);
+          const jsonString = JSON.parse(
+            JSON.stringify(clonedFoundMember, replacer)
+          );
+          delete jsonString.memberDetails;
+          return response.ok(
+            res,
+            jsonString,
+            `Fetched member: ${foundMember._id} details`
+          );
         }
       } else {
-        let clonedFoundMember = Object.create(foundMember);
-        delete clonedFoundMember.memberDetails;
-        const jsonString = JSON.parse(
-          JSON.stringify(clonedFoundMember, replacer)
+        return response.badRequest(
+          res,
+          `Member: ${req.params.memberId} does not exist`
         );
-        return res.status(200).send(jsonString);
       }
     })
-    .catch((err) => res.status(500).send({ error: [{ message: err }] }));
+    .catch((err) =>
+      response.internalError(
+        res,
+        `Something went wrong while fetching member: ${req.params.memberId} details`,
+        err
+      )
+    );
 };
 
 ////////////////MEMBER CRUD OPERATIONS END//////////////////////

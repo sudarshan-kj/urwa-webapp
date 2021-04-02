@@ -20,7 +20,7 @@ const UpdateMember = () => {
     authAxios()
       .get(`/api/members/${memberId}?details=true`)
       .then((result) => {
-        const member = result.data;
+        const member = result.data.data;
         const { memberDetails } = member;
         delete member.id;
         const {
@@ -38,6 +38,20 @@ const UpdateMember = () => {
             subscriptionStartDate
           );
         setSeedData(member);
+      })
+      .catch((err) => {
+        let errorMessage = `Could not fetch member: ${memberId} 's details`;
+        if (err.response) {
+          let { status, message } = err.response.data;
+          errorMessage = `${status} : ${message}`;
+        }
+        toast({
+          title: "Something went wrong",
+          description: errorMessage,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       });
   }, [memberId]);
 
