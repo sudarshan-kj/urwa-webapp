@@ -256,7 +256,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
 
                   <DatePicker
                     id="memberDetails.dob"
-                    key={formik.values.memberDetails.siteAddress}
+                    key={formik.values.memberDetails.siteDimensions}
                     // we are making siteAddress as the key since only when the siteAddress  ( we could have chosen any other value below this date too) is changed,
                     //this component is remounted. If the key is same as value, then after every key stroke value is remounted
                     value={formik.values.memberDetails.dob}
@@ -270,7 +270,7 @@ const MemberForm = ({ seedData, callBack, buttonName }) => {
                   <FormLabel>Anniversary 🎎</FormLabel>
                   <DatePicker
                     id="memberDetails.anniversary"
-                    key={formik.values.memberDetails.siteAddress}
+                    key={formik.values.memberDetails.siteDimensions}
                     value={formik.values.memberDetails.anniversary}
                     onChange={(e) =>
                       formik.setFieldValue("memberDetails.anniversary", e)
