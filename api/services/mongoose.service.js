@@ -17,7 +17,7 @@ const options = {
 };
 
 const connect = () => {
-  logger.debug("Setting up MongoDB connection");
+  logger.info("Setting up MongoDB connection");
   mongoose
     .connect(mongoDBUrl, options)
     .then(() => logger.info("MongoDB is successfully connected"))
