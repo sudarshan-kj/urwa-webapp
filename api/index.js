@@ -13,7 +13,6 @@ const {
   PaymentRoutes,
 } = require("./routes");
 
-//Test app
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

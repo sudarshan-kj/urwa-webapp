@@ -61,11 +61,8 @@ exports.createMember = async (req, res) => {
       openingBalance = Math.abs(openingBalance);
     }
     if (req.body.memberDetails.monthlyMaintenance) {
-      let {
-        dueFor,
-        paidArray,
-        overDueArray,
-      } = helperUtils.computeDuesAndAdvances(req.body.memberDetails);
+      let { dueFor, paidArray, overDueArray } =
+        helperUtils.computeDuesAndAdvances(req.body.memberDetails);
       const paymentData = {
         memberId: createdMember._id,
         dueFor: dueFor,

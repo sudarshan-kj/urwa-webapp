@@ -73,9 +73,9 @@ const checkEnvVars = () => {
 };
 
 const preCheckAppConfig = () => {
-  logger.debug("Performing app config pre check");
+  logger.info("Performing app config pre check");
   checkEnvVars();
-  logger.debug("App pre check successful");
+  logger.info("App pre check successful");
 };
 
 preCheckAppConfig();

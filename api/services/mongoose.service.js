@@ -25,8 +25,7 @@ const connect = () => {
       logger.error(`Connection to '${mongoDBUrl}' unsuccessful`);
       process.exit(1);
     });
+  return mongoose;
 };
 
-connect();
-
-exports.mongoose = mongoose;
+exports.mongoose = connect();

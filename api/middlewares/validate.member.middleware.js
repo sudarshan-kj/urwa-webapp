@@ -31,36 +31,38 @@ exports.isValidJWTAccessToken = (req, res, next) => {
   }
 };
 
-exports.hasPermission = ({ permission, adminOnly }) => (req, res, next) => {
-  const memberPermission = req.jwt.permissionLevel.split("-");
-  const selfPermission = memberPermission[1];
-  const adminPermission = memberPermission[0];
-  if (adminOnly) {
-    if (permission & adminPermission) {
-      return next();
-    }
-  } else {
-    if (permission & adminPermission) {
-      return next();
-    } else if (permission & selfPermission) {
-      if (req.params.memberId) {
-        if (req.jwt.memberId === req.params.memberId) {
-          return next();
-        }
-      } else {
+exports.hasPermission =
+  ({ permission, adminOnly }) =>
+  (req, res, next) => {
+    const memberPermission = req.jwt.permissionLevel.split("-");
+    const selfPermission = memberPermission[1];
+    const adminPermission = memberPermission[0];
+    if (adminOnly) {
+      if (permission & adminPermission) {
         return next();
       }
+    } else {
+      if (permission & adminPermission) {
+        return next();
+      } else if (permission & selfPermission) {
+        if (req.params.memberId) {
+          if (req.jwt.memberId === req.params.memberId) {
+            return next();
+          }
+        } else {
+          return next();
+        }
+      }
     }
-  }
-  return res.status(403).send({
-    error: [
-      {
-        type: "Unauthorized user",
-        message: `You do not have necessary permissions to perform operation: ${permission}`,
-      },
-    ],
-  });
-};
+    return res.status(403).send({
+      error: [
+        {
+          type: "Unauthorized user",
+          message: `You do not have necessary permissions to perform operation: ${permission}`,
+        },
+      ],
+    });
+  };
 
 /* The following method retrieves the actual information from database on fields that are marked as NPUF since the UI sends them as dummy values, 
 and replaces the dummy values with actual values that should not be modified

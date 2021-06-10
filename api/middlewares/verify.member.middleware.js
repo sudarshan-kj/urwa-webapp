@@ -1,5 +1,4 @@
 const crypto = require("crypto");
-const { Logger } = require("mongodb");
 const MemberModel = require("../models/member.model");
 
 exports.hasValidAuthFields = (req, res, next) => {
